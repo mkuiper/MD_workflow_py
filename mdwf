@@ -1,0 +1,109 @@
+#!/usr/bin/env python
+#
+# MD workflow.   mdwf python job manager for 
+""" mdwf (md workflow)  """
+
+import sys
+import os 
+
+module_path = './bin'
+sys.path.append(module_path)
+import mdwf_functions as mdwf
+
+
+mdwf_option_list=['-h', '-help', '-m', '-monitor', '-i', '-initialize', '-u', '-update',\
+                  '-c', '-checkjob', '-b', '-benchmark', '-s', '-start',\
+                  '-p', '-production', '-r', '-recover', '-stop_all_jobs', '-new_round', '-erase_all_data']
+
+help_message = ("\nUsage:   mdwf [-option] [directory]\n"
+    "mdwf (md workflow) is a python program to help manage and monitor multiple\n"
+    "molecular dynamics jobs running in the /Main_Job_Directory.\n"
+    "(note: jobs can also be controlled manually from each job directory.)\n\n"
+    "mdwf options are one of: \n"
+    "-h, -help       \t help messages.\n"
+    "-m, -monitor    \t monitor job status on cluster.\n"
+    "-i, -initialize \t initialize and populate job directories.\n"
+    "-u, -update     \t update job directories with job scripts.\n"
+    "-c, -checkjob   \t check job input before running simulations.\n"
+    "-b, -benchmark  \t setup benchmarking for simulations.\n"
+    "-s, -start      \t start all jobs in /Main_Job_Directory.\n"
+    "-p, -production \t start (or restart) all production jobs in /Main_Job_Directory. \n"
+    "-r, -recover    \t recover and cleanup stopped jobs.\n"
+    "-stop_all_jobs  \t stop all jobs.\n"
+    "-new_round      \t initializes new round of jobs.\n"
+    "-erase_all_data \t erase all job data. Use with caution! This can't be undone!\n")
+
+
+def main():
+    script = sys.argv[0]
+    if len(sys.argv) > 1: 
+        action = sys.argv[1]
+        assert action in mdwf_option_list, help_message
+
+    else:            # pass -h  option if no arguments given.  
+        action = '-h'
+
+    process(action)
+
+
+def process(action):
+    if action == '-h' or action == '-help': 
+        print "you need help"
+        print help_message
+
+    if action == '-m' or action == '-monitor': 
+        print "monitoring job status:"
+        mdwf.monitor_jobs()
+
+    if action == '-i' or action == '-initialize': 
+        print "initializing job directories:"
+        mdwf.initialize_job_directories()
+
+    if action == '-c' or action == '-checkjob':
+        print "checking job input:" 
+        mdwf.check_job()
+
+    if action == '-stop_all_jobs':
+        print "stopping all jobs:" 
+        mdwf.stop_jobs()
+
+
+
+main()
+
+# mdwf proposed functions: 
+
+# mwdf_initalize_job()
+# -Initialize the workflow directory. 
+# -specify job type and experimental design. 
+# -configure accounts and cluster 
+
+# mdwf_check_job_input()
+# -script to check the input of the current job and indicate resources needed. 
+
+# mdwf_benchamrk_job()
+# -taking current input set up test jobs to benchmark cluster
+
+# mdwf_monitor_status()
+# -monitor staatus of current jobson cluster. 
+
+# mdwf_start_jobs()
+# -start multiple jobs. 
+
+# mdwf_stop_all_jobs_immediately()
+# -script to stop all jobs immediately
+
+# mdwf_stop_all_jobs_gently()
+# -script to stop all jobs gently -allowing them to finish current run. 
+
+# mdwf_restart_all_jobs()
+# -script to restart all jobs that may have stopped. 
+
+# mdwf_initialise_new_round() 
+# -script to restart new round of MD jobs. 
+
+# mdwf_recover_lost_jobs()
+# -script to recover and cleanup jobs in Main_Job_Directory. 
+
+
+
