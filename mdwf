@@ -1,100 +1,101 @@
 #!/usr/bin/env python
 #
-# MD workflow.   mdwf python job manager for 
-""" mdwf (md workflow)  """
+#  Michael Kuiper <kuiper.mike@gmail.com>
+#
+
+"""
+mdwf (md workflow) 
+mdwf is a python program used to help setup, run and monitor multiple molecular 
+dynamics jobs run on a cluster based on a customisable directory structure. 
+
+Usage:
+  mdwf -h | --help    
+  mdwf (-m|-i|-p|-c|-b|-s|-r) 
+  mdwf (--monitor | --initialize| --populate) 
+  mdwf (--checkjob| --benchmark | --start | --production)
+  mdwf (--recover | --stop_all_jobs| --init_new_round| --erase_all_data)
+
+Options:
+  -h  --help         Show this screen. 
+  -m  --monitor      Monitor Job status on cluster. 
+  -i  --initialize   Create and initialize job directories in /Main_Job_Directories.
+  -p  --populate     Populate or update job directories with job scripts. 
+  -c  --checkjob     Checks job input before running simulations.
+  -b  --benchmark    Setup benchmarking runs for job optimization. 
+  -s  --start        Start all jobs in the /Main_Job_Directory.
+  -r  --production   Restart all production jobs in /Main_Job_Directory.
+  --recover          Recover and cleanup stopped jobs. 
+  --stop_all_jobs    Stops all running jobs. 
+  --init_new_round   Initializes new Job round.  
+  --erase_all_data   Erases all job data. Use with caution!
+
+"""
 
 import sys
 import os 
+import shutil
 
 module_path = './bin'
 sys.path.append(module_path)
 import mdwf_functions as mdwf
-
-
-mdwf_option_list=['-h', '-help', '-m', '-monitor', '-i', '-initialize', '-p', '-populate',\
-                  '-c', '-checkjob', '-b', '-benchmark', '-s', '-start',\
-                  '-rs', '-production', '-recover', '-stop_all_jobs', '-new_round', '-erase_all_data']
-
-help_message = ("\nUsage:   mdwf [-option] [directory]\n"
-
-    "mdwf (md workflow) is a python program to help manage and monitor multiple\n"
-    "molecular dynamics jobs running in the /Main_Job_Directory.\n"
-    "(note: jobs can also be controlled manually from each job directory.)\n\n"
-
-    "mdwf options are one of: \n"
-    "-h, -help       \t help messages.\n"
-    "-m, -monitor    \t monitor job status on cluster.\n"
-    "-i, -initialize \t create and initialize job directories in /Main_Job_Directories.\n"
-    "-p, -populate   \t populate or update job directories with job scripts.\n"
-    "-c, -checkjob   \t check job input before running simulations.\n"
-    "-b, -benchmark  \t setup benchmarking for simulations.\n"
-    "-s, -start      \t start all jobs in /Main_Job_Directory.\n"
-    "-rs,-production \t restart all production jobs in /Main_Job_Directory. \n"
-    "-recover        \t recover and cleanup stopped jobs.\n"
-    "-stop_all_jobs  \t stop all jobs.\n"
-    "-new_round      \t initializes new round of jobs.\n"
-    "-erase_all_data \t erase all job data. Use with caution! This can't be undone!\n")
+from docopt import docopt
 
 
 def main():
-    script = sys.argv[0]
-    if len(sys.argv) > 1: 
-        action = sys.argv[1]
-        assert action in mdwf_option_list, help_message
-    else:   # pass -h  option if no arguments given.  
-        action = '-h'
+    args = docopt(__doc__)  # create argument dictionary
+    arg_list = args.keys()   
+    for i in arg_list: 
+        if args[i] == True:
+            print 'action:', i
+            action = i 
     process(action)
 
 
 def process(action):
-    if action == '-h' or action == '-help': 
-        print "you need help"
-        print help_message
-
-    if action == '-m' or action == '-monitor': 
-        print "monitoring job status:"
+    if action == '-m' or action == '--monitor': 
+        print "Monitoring job status:"
         mdwf.monitor_jobs()
 
-    if action == '-i' or action == '-initialize': 
+    if action == '-i' or action == '--initialize': 
         print "initializing job directories:"
         mdwf.initialize_job_directories()
 
-    if action == '-p' or action == '-populate': 
-        print "initializing job directories:"
+    if action == '-p' or action == '--populate': 
+        print "populating job directories:"
         mdwf.populate_job_directories()
 
-    if action == '-c' or action == '-checkjob':
+    if action == '-c' or action == '--checkjob':
         print "checking job input:" 
         mdwf.check_job()
 
-    if action == '-b' or action == '-benchmark':
+    if action == '-b' or action == '--benchmark':
         print "benchmarking job:" 
         mdwf.benchmark()
 
-    if action == '-s' or action == '-start':
+    if action == '-s' or action == '--start':
         print "starting jobs:" 
         mdwf.start_all_jobs()
 
-    if action == '-rs' or action == '-production':
+    if action == '-r' or action == '--production':
         print "restarting production jobs:" 
         mdwf.restart_all_production_jobs()
 
-    if action == '-recover':
+    if action == '--recover':
         print "recovering and restoring crashed jobs:" 
         mdwf.recover_all_jobs()
 
-    if action == '-stop_all_jobs':
+    if action == '--stop_all_jobs':
         print "stopping all jobs:" 
         mdwf.stop_jobs()
 
-    if action == '-new_round':
+    if action == '--init_new_round':
         print "setting up new job rounds:"
         mdwf.new_round()
 
-    if action == '-erase_all_data':
+    if action == '--erase_all_data':
         print "erasing all data:" 
         mdwf.erase_all_data()
 
-
-main()
+if __name__ == '__main__':
+    main()
 

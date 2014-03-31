@@ -1,5 +1,5 @@
 #------------------------------------------------------------------------------|
-#  Project Planning:                                      July 2013            |
+#  Project Planning:                                      March 2014           |
 |------------------------------------------------------------------------------|
 | This document is designed to help the user properly plan their molecular     |
 | dynamics experiments.  We encourage users to fill this out prior to a        |
@@ -7,7 +7,7 @@
 | future reference. Remember, any experiment that is not written up or used    |
 | in future work may as well not been run at all.                              |
 |                                                                              |
-| To aid this process we'll subscribe to 'Heilmeier's catechisms'              |
+| To aid this process we'll borrow from 'Heilmeier's catechisms'               |
 #------------------------------------------------------------------------------|
 Date:  
 
@@ -19,30 +19,21 @@ VLSCI Project:
 
 
 #-Heilmeier-catechisms---------------------------------------------------------|
-
 1) What are you trying to do? 
-
 
 2) How is it done today, and what are the limits of current practice?
 
-
 3) What's new in your approach and why do you think it will be successful?
-
 
 4) Who cares?
 
-
 5) If you're successful, what difference will it make?
-
 
 6) What are the risks and the payoffs?
 
-
 7) How much will it cost?
 
-
 8) How long will it take?
-
 
 9) What are the midterm and final indicators to check for success?
 
@@ -67,7 +58,7 @@ Analysis?  What will you measure from this?
 What figures or representation can you make from the results?  Is this 
 work going result in a publication? 
 
-What journal might you hope this work tobe published in. 
+What journal might you hope this work to be published in. 
 
 
 
