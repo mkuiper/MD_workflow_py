@@ -31,8 +31,6 @@ Options:
 
 import sys
 import os 
-import shutil
-import json
 
 module_path = './bin'
 sys.path.append(module_path)

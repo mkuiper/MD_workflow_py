@@ -1,0 +1,28 @@
+{
+"Comment0"       : "Job_details_json_file v0.1",
+
+"JOB_DIR"        : "Main_Job_Dir",
+"JobDirName"     : "unassigned",
+"JobDirNumber"   : "unassigned",
+
+"CurrentJobId"   : "0",
+"JobStatus"      : "uninitialized",
+"ErrorsMessages" : "0",
+
+"CurrentRound"   : "0",
+"RunCountDown"   : "0",
+"TotalRuns"      : "0",
+
+"PauseFlag"      : "0",
+"LastTimingValue": "0",
+"OldSlurmFileID" : "0",
+"LastJobId"      : "0",
+"LastSnapshotCoor: "0",
+
+
+"CustomFlag1"    : "0",
+"CustomFlag2"    : "0",
+"CustomFlag3"    : "0"
+
+}
+
