@@ -12,7 +12,7 @@
 "PdbFileName"  : "ChangeMe.pdb",
 
 "Comment2"     : "Job Setup Dimensions",
-"SimReplicates": "40",
+"SimReplicates": "45",
 "Runs"         : "10",
 "JobScheme"    : "simple",
 "Round"        : "1",

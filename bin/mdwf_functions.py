@@ -65,8 +65,11 @@ def initialize_job_directories():
         if os.path.exists(NewDirName):
             print " Directory {} already exists!! Skipping.".format(NewDirName) 
         else:
-            print "moving {} ".format(NewDirName)
-
+            try: 
+                shutil.copytree(TemplatePath, NewDirName)
+                print "Creating: {}".format(NewDirName)             
+            except: 
+                print "Error in copying directories."
 
 
  
