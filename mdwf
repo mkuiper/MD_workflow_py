@@ -8,32 +8,31 @@ mdwf (md workflow)
 mdwf is a python program used to help setup, run and monitor multiple molecular 
 dynamics jobs run on a cluster based on a customisable directory structure. 
 
-Usage:
-  mdwf -h | --help    
-  mdwf (-m|-i|-p|-c|-b|-s|-r) 
-  mdwf (--monitor | --initialize| --populate) 
-  mdwf (--checkjob| --benchmark | --start | --production)
-  mdwf (--recover | --stop_all_jobs| --init_new_round| --erase_all_data)
+Usage: mdwf (options) [<dir>] 
+       mdwf -h |--help
 
 Options:
-  -h  --help         Show this screen. 
-  -m  --monitor      Monitor Job status on cluster. 
-  -i  --initialize   Create and initialize job directories in /Main_Job_Directories.
-  -p  --populate     Populate or update job directories with job scripts. 
-  -c  --checkjob     Checks job input before running simulations.
-  -b  --benchmark    Setup benchmarking runs for job optimization. 
-  -s  --start        Start all jobs in the /Main_Job_Directory.
-  -r  --production   Restart all production jobs in /Main_Job_Directory.
+  -h --help         Show this screen. 
+  -m --monitor      Monitor Job status on cluster. 
+  -i --initialize   Initialize jobs directories in /Main_Job_Dir. 
+  -p --populate     Populate or update job directories with job scripts. 
+  -c --checkjob     Checks job input before running simulations.
+  -b --benchmark    Setup benchmarking runs for job optimization. 
+  -s --start        Start all jobs in the /Main_Job_Dir.
+  -r --production   Restart all production jobs in /Main_Job_Dir.
   --recover          Recover and cleanup stopped jobs. 
   --stop_all_jobs    Stops all running jobs. 
   --init_new_round   Initializes new Job round.  
   --erase_all_data   Erases all job data. Use with caution!
+  --new_job_dir      Create new job directory.
+  --clone            Clone directory structure without data. 
 
 """
 
 import sys
 import os 
 import shutil
+import json
 
 module_path = './bin'
 sys.path.append(module_path)
@@ -42,41 +41,45 @@ from docopt import docopt
 
 
 def main():
-    args = docopt(__doc__)  # create argument dictionary
+    args = docopt(__doc__, version=0.1)  # create argument dictionary
     arg_list = args.keys()   
+#    print args 
+    action = '--help'                    # default action 
     for i in arg_list: 
         if args[i] == True:
             print 'action:', i
             action = i 
-    process(action)
-
+    if action == '--help':
+        print __doc__
+    else:
+        process(action)
 
 def process(action):
-    if action == '-m' or action == '--monitor': 
+    if action == '--monitor': 
         print "Monitoring job status:"
         mdwf.monitor_jobs()
 
-    if action == '-i' or action == '--initialize': 
+    if action == '--initialize': 
         print "initializing job directories:"
         mdwf.initialize_job_directories()
 
-    if action == '-p' or action == '--populate': 
+    if action == '--populate': 
         print "populating job directories:"
         mdwf.populate_job_directories()
 
-    if action == '-c' or action == '--checkjob':
+    if action == '--checkjob':
         print "checking job input:" 
         mdwf.check_job()
 
-    if action == '-b' or action == '--benchmark':
+    if action == '--benchmark':
         print "benchmarking job:" 
         mdwf.benchmark()
 
-    if action == '-s' or action == '--start':
+    if action == '--start':
         print "starting jobs:" 
         mdwf.start_all_jobs()
 
-    if action == '-r' or action == '--production':
+    if action == '--production':
         print "restarting production jobs:" 
         mdwf.restart_all_production_jobs()
 
@@ -96,6 +99,12 @@ def process(action):
         print "erasing all data:" 
         mdwf.erase_all_data()
 
+    if action == '--clone':
+        print "cloning job_directory:" 
+        mdwf.erase_all_data()
+
 if __name__ == '__main__':
+
     main()
+
 

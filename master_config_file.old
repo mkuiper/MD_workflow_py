@@ -1,0 +1,33 @@
+{
+  'comment' : 'this is the master_config_file used with md_workflow',
+
+  'account':'VR0000',
+
+  'comment1': 'Node configurations job settings ',
+  'nodes':'2',
+  'ntpn':'8',
+  'ppn':'8',
+  'walltime':'24:0:0',
+  'modulefile':'namd-xl-pami-smp/2.9',
+
+  'sims':'4',
+  'runs':'10',
+  'round':'1',
+  'JOB_DIR':'Main_Job_Dir', 
+
+  'BaseDirName':'My_Sim_',
+  'jobname_opt':'optimization_job_',
+  'jobname_prod':'production_job_',
+
+  'comment2': 'Names of input files ',
+  'sbatch_start':'"sbatch_start.template',
+  'optimize_script':'sim_opt.conf',
+  'sbatch_prod':'sbatch_production.template',
+  'production_script':'sim_production.conf',
+
+  'jobfailtime':'300', 
+  'diskspacecutoff':'96',
+
+}
+
+
