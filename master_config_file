@@ -10,10 +10,12 @@
 "ModuleFile"   : "namd-xl-pami-smp/2.9",
 "PsfFileName"  : "ChangeMe.psf",
 "PdbFileName"  : "ChangeMe.pdb",
+"Temperature"  : "310",
+
 
 "Comment2"     : "Job Setup Dimensions",
-"SimReplicates": "45",
-"Runs"         : "10",
+"SimReplicates": "10",
+"Runs"         : "5",
 "JobScheme"    : "simple",
 "Round"        : "1",
 

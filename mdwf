@@ -32,10 +32,13 @@ Options:
 import sys
 import os 
 
-module_path = './bin'
-sys.path.append(module_path)
-import mdwf_functions as mdwf
-from docopt import docopt
+#module_path = os.path.abspath('./bin')
+#sys.path.append(module_path)
+
+from mdwf_lib import mdwf_functions as mdwf
+#import mdwf_functions as mdwf
+from mdwf_lib import docopt
+
 
 
 def main():
@@ -58,7 +61,6 @@ def process(action):
         mdwf.monitor_jobs()
 
     if action == '--initialize': 
-        print "initializing job directories:"
         mdwf.initialize_job_directories()
 
     if action == '--populate': 
@@ -94,7 +96,6 @@ def process(action):
         mdwf.new_round()
 
     if action == '--erase_all_data':
-        print "erasing all data:" 
         mdwf.erase_all_data()
 
     if action == '--clone':
@@ -104,5 +105,3 @@ def process(action):
 if __name__ == '__main__':
 
     main()
-
-
