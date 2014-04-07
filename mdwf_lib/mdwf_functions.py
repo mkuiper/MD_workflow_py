@@ -17,12 +17,9 @@ import hashlib
 #
 #
 
-
-
 def read_master_config_file():  
     """ Reads parameters from json file: master_config_file """  
     cwd=os.getcwd()
-    global mcf
     if os.path.isfile('master_config_file'):
         master_json = open('master_config_file')
         try: 
@@ -33,11 +30,11 @@ def read_master_config_file():
     else:
         error = "\nCan't see 'master_config_file' in directory:" + cwd + "\n" 
         sys.exit(error)
-    return mcf 
+    return mcf
         
 def read_local_job_details_file():  
     """ Reads parameters from json file: Setup_and_Config/job_details_template.json """  
-    global ljdf
+
     target=os.getcwd() +"/Setup_and_Config/job_details_template.json"
     if os.path.isfile(target):
         local_json = open(target)
@@ -49,8 +46,7 @@ def read_local_job_details_file():
     else:
         error = "\nCan't see 'job_details_template.json' in directory:" + cwd + "/Setup_and_Config/\n" 
         sys.exit(error)
-    return ldjf
-
+    return ljdf
 
 def check_for_pausejob():
     """checks for pausejob flag in local job details file"""
@@ -181,7 +177,7 @@ def populate_job_directories():
     """ -function to populate or update job directories with job scripts """
     # copy all files from /Setup_and_Config into each job_directory
     ljdf_t = read_local_job_details_file()        # create template
-#    mcf    = read_master_config_file()
+    mcf    = read_master_config_file()
     try:
         JobDir      = mcf["JobDir"]
         Sims    = int(mcf["SimReplicates"])
