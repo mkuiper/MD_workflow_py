@@ -34,9 +34,10 @@
 "custom_script1"    : "custom1.conf",
 "custom_script2"    : "custom2.conf",
 
-"Comment4"       : "Miscelaneous Parameters",
-"JobFailTime"    : "300", 
-"DiskSpaceCutOff": "95"
+"Comment4"          : "Miscelaneous Parameters",
+"JobFailTime"       : "300", 
+"DiskSpaceCutOff"   : "95",
+"AutoAnalysis"      : "False"
 
 }
 

@@ -30,14 +30,9 @@ Options:
 
 import sys
 import os 
-
-#module_path = os.path.abspath('./bin')
-#sys.path.append(module_path)
-
 from mdwf_lib import mdwf_functions as mdwf
 #import mdwf_functions as mdwf
 from mdwf_lib import docopt
-
 
 
 def main():
@@ -46,7 +41,7 @@ def main():
     action = '--help'                    # default action 
     for i in arg_list: 
         if args[i] == True:
-            print 'action:', i
+            print 'mdwf action:', i
             action = i 
     if action == '--help':
         print __doc__
@@ -54,6 +49,8 @@ def main():
         process(action)
 
 def process(action):
+    mcf = mdwf.read_master_config_file()
+
     if action == '--monitor': 
         print "Monitoring job status:"
         mdwf.monitor_jobs()
@@ -101,5 +98,4 @@ def process(action):
         mdwf.erase_all_data()
 
 if __name__ == '__main__':
-
     main()
