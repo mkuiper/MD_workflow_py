@@ -1,6 +1,7 @@
 {
 "Comment0"       : "Job_details_json_file v0.1",
 
+"TOP_DIR"        : "Top_Dir",
 "JOB_DIR"        : "Main_Job_Dir",
 "JobDirName"     : "unassigned",
 "JobDirNumber"   : "unassigned",
@@ -17,8 +18,8 @@
 "LastTimingValue": "0",
 "OldSlurmFileID" : "0",
 "LastJobId"      : "0",
-"LastSnapCoor"   : "0",
-
+"JobStartTime"   : "0",
+"JobFinishTime"  : "0",
 
 "CustomFlag1"    : "0",
 "CustomFlag2"    : "0",

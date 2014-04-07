@@ -1,0 +1,22 @@
+{
+  "Comment0": "Job_details_json_file v0.1", 
+  "TOP_DIR": "/home/mike/GIT/MD_workflow_py", 
+  "JOB_DIR": "Main_Job_Dir", 
+  "JobDirName": "My_Sim_004", 
+  "JobDirNumber": "unassigned", 
+  "CurrentJobId": "0", 
+  "JobStatus": "uninitialized", 
+  "ErrorsMessages": "0", 
+  "CurrentRound": "1", 
+  "RunCountDown": "0", 
+  "TotalRuns": "5", 
+  "PauseFlag": "0", 
+  "LastTimingValue": "0", 
+  "OldSlurmFileID": "0", 
+  "LastJobId": "0", 
+  "JobStartTime": "0", 
+  "JobFinishTime": "0", 
+  "CustomFlag1": "0", 
+  "CustomFlag2": "0", 
+  "CustomFlag3": "0"
+}

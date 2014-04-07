@@ -1,0 +1,88 @@
+#!/bin/bash
+##  sbatch launching script                          Jan  2013  MKuiper
+## -A generic script to launch a series of production namd runs
+## on the Avoca bluegene cluster at vlsci. 
+
+#--------------------------------------------------------------- 
+#                                                              #
+#         Make all changes in "master_config_file"             #
+#                                                              #
+#     -you shouldn't have to change anything in here!          #
+#                                                              #
+#---------------------------------------------------------------
+
+#-- Sbatch parameters:------------------------------------------
+#-- the X values will be substituted with a values from the master_config_file 
+#-- use "./populate_config_files" to populate job directories with input files.   
+
+#SBATCH --nodes=X
+#SBATCH --time=X
+#SBATCH --account=X
+
+ntpn=X         # number of tasks per node: 
+ppn=X          # processors per node: 
+module load X  # module file:
+
+# Source common functions:
+source ../../Scripts/common_functions.sh
+
+#-- Read variables from master_config_file:
+read_master_config_file . 
+jobname=$jobname_prod.$round
+
+# -- slurm file cleanup: ------------------
+cleanup_old_slurm_files
+
+## --check for pausejob flag:-------------- 
+check_for_pausejob_flag
+
+##  -- check disk quota before starting job! : stop job if too close: ------------------  
+check_disk_quota
+
+### - read job countdowntimer: stop if .countdown.txt <=0 ----------------------------
+check_countdown_file
+
+## -- job fail safe check timestamp: - (to stop job if it completes in less than a specified time: --
+create_job_check_timestamps_1
+
+## -- create job log: 
+create_job_log
+
+# -- launching job for avoca: -----------------------------------------------------------------------
+echo -e "P:Running" >.job_status
+# +ppn is for smp version only. 
+# smp version:
+srun  --ntasks-per-node $ntpn  namd2 +ppn $ppn $production_script >OutputText/$basename.out 2>Errors/$basename.err;
+
+# pmi version:
+#srun  --ntasks-per-node $ntpn  namd2 $production_script >OutputText/$basename.out 2>Errors/$basename.err;
+
+echo -e "P:CleaningUp" >.job_status
+
+### -- after the job has finished: ------------------------------------------------------------------ 
+create_job_check_timestamps_2
+
+# check for job fail:
+check_job_fail
+
+# log job details:
+log_job_timings
+
+### -- Rename output and move data into respective folders: ----------------------------------------- 
+redirect_output_files
+
+## -- adjust countdowntimer:-----------------------------------------------------------
+countdown_timer
+
+## -- Just finished final job?  Check countdown timer and clean up:---------------- 
+check_for_end_of_run
+
+## -- check for pausejob flag before relaunching:-------------------------------------------- 
+check_for_pausejob_flag
+
+## -- if all ok, relaunch job:-----------------------------------------------------------------
+echo -e "P:Submitted">.job_status
+sbatch $sbatch_prod
+
+## --------------------------------------------------------------------------------------------
+

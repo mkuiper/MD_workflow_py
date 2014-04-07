@@ -9,14 +9,6 @@ import sys
 from collections import OrderedDict
 import json
 import shutil
-import hashlib
-
-##
-#
-#
-#
-#
-
 
 
 def read_master_config_file():  
@@ -49,41 +41,7 @@ def read_local_job_details_file():
         error = "\nCan't see 'job_details_template.json' in directory:" + cwd + "/Setup_and_Config/\n" 
         sys.exit(error)
     return ljdf
-
-def check_for_pausejob():
-    """checks for pausejob flag in local job details file"""
-    return
-
-def initialize_job_countdown(equilib = "single"):
-    """intializes rounds and countdown timers of local details file based on master_config_file"""
-    # equilib represents equilibration strategy:
-    # "single" for one equilibration that is then passed to all other job directories. 
-    # or "multiple" for each job directory starting its own unique equilibration phase.
-    return
         
-def check_disk_quota():
-    """ function for checking that there is enough diskspace on the system before starting job"""
-    return
-
-def log_job_details(jobid):
-    """logging cluster job details"""
-    return
-
-def record_start_time():
-    """ to log start time in unix time to local details"""
-    # JobStartTime
-    return
-
-def create_job_basename():
-    """ creates a time stamped basename for current job"""
-    return 
-
-def update_local_job_status(status):
-    """ updates local job status """
-    return 
-
-
-
 
 def monitor_jobs():
     """ -function to monitor jobs status on the cluster """ 
@@ -92,24 +50,18 @@ def monitor_jobs():
 
 
 
+def initialize_job_directories():
+    """ -function to setup job directories """
 
-def md5sum(filename, blocksize=65536):
-    """function for returning md5 checksum"""
-    hash = hashlib.md5()
-    with open(filename, "r+b") as f:
-        for block in iter(lambda: f.read(blocksize), ""):
-            hash.update(block)
-        f.close()
-    return hash.hexdigest()
+def monitor_jobs():
+    """ -function to monitor jobs status on the cluster """ 
+    print "-- monitoring job status ---"
 
-def getfilesize(filename):
-    size = os.path.getsize(filename)
-    return size
 
 
 
 def initialize_job_directories():
-    """ -function to setup job directories """
+    """ -function to create and setup job directories """
     mcf = read_master_config_file()
     try:
         JobDir      = mcf["JobDir"]
@@ -160,21 +112,26 @@ def populate_job_directories():
         JobDir      = mcf["JobDir"]
         Sims    = int(mcf["SimReplicates"])
         BaseDirName = mcf["BaseDirName"]
-        Runs        = mcf["Runs"]
-        Round       = mcf["Round"]
+
+        Nodes       = mcf["nodes"]
+        Ntpn        = mcf["ntpn"]
+        Ppn         = mcf["ppn"]
+        Walltime    = mcf["WallTime"]
+        ModuleFile  = mcf["ModuleFile"] 
+
+        PsfFile     = mcf["PsfFileName"]
+        PdbFile     = mcf["PdbFileName"]
+ 
+
+
     except:
         sys.exit("\nError reading master_config_file variables.\n")
 
     cwd=os.getcwd()
     TargetJobDir = cwd + "/" +JobDir
+      
     
-    # create staging file from ljdf_template
-    stagef = ljdf_t           
-
-    # modify elements in staging dictionary file:
-    stagef['TOP_DIR'] = cwd
-    stagef['CurrentRound'] = Round
-    stagef['TotalRuns'] = Runs
+    
 
     zf = len(str(Sims)) + 1    
     for i in range(1,Sims+1):
@@ -182,17 +139,24 @@ def populate_job_directories():
         suffix = str(i).zfill(zf)
         NewDirName = JobDir + "/" + BaseDirName + suffix          
         if not os.path.exists(NewDirName):
-            print " Directory {} doesn't exists!".format(NewDirName) 
-            
+            print " Directory {} doesn't exists! - have you initiailzed job directories?".format(BaseDirName) 
         else:
-            # modify elements in staging dictionary file:
-            stagef['JobDirName'] = BaseDirName + suffix
-            
+            # modify elements in stage file:
+            stagef['JOB_DIR']   = JobDir
+            stagef['JobDirName']   = BaseDirName + suffix
+            stagef['JobDirNumber'] = i
+            stagef['JobStatus']    = "not started"
+            stagef['CurrentRound'] = mcf["Round"]
+
             ljdfile = NewDirName + "/local_job_details.json"
-            # write copy of staging file to new directory:
             with open(ljdfile, 'w') as outfile:
                 json.dump(stagef, outfile, indent=2)
             outfile.close()
+
+            
+        
+
+
 
 
 def check_job():
@@ -231,7 +195,7 @@ def erase_all_data():
     print "for making a clean start, but disasterous if this is the wrong folder!"
     print "\n Proceed with caution!"
     print "This operation will delete all data in the folders:"
-    print " /Main_Job_Dir/                    - main job directory." 
+    print " /{}/                    - main job directory.".format(DIR) 
     print " /JobLog/                          - Job logs." 
     print " /Setup_and_Config/Benchmarking/   - Benchmarking data." 
     
@@ -255,6 +219,8 @@ def clone():
     """ -function to clone directory without data, but preseving input files."""
     print "-- cloning data directory!!" 
 
+
+# mdwf_monitor_status()
 
 
 

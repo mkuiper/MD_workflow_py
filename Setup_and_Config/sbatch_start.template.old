@@ -1,0 +1,83 @@
+#!/bin/bash
+##  sbatch launching script                          Jan  2013  MKuiper
+## -A generic script to launch an optimization/equilibration script before
+## launching a series of production jobs on the Avoca bluegene cluster at vlsci. 
+#--------------------------------------------------------------- 
+#         SBATCH optimization job avoca template               #
+#         Make all changes in "master_config_file"             #
+#                                                              #
+#     -you shouldn't have to change anything in here!          #
+#---------------------------------------------------------------
+#-- Sbatch parameters:------------------------------------------
+#-- the X values will be substituted with a values from the master_config_file 
+#-- use "./populate_config_files" to populate job directories with input files.   
+
+#SBATCH --nodes=X
+#SBATCH --time=X
+#SBATCH --account=X
+
+ntpn=X         # number of tasks per node: 
+ppn=X         # processors per node:       <- not needed for pami version. 
+module load X  # module file:
+
+#--------------------------------------------------------------------------------
+# Source common functions:
+source ../../Scripts/common_functions.sh
+
+# -- Read variables from master_config_file:
+read_master_config_file . 
+jobname=$jobname_opt
+
+# -- for later slurm file clean up: 
+ls slurm-* > .old_slurm_file
+
+## --Check for pausejob flag:-------------- 
+check_for_pausejob_flag
+
+##  -- check disk quota before starting job! : stop job if too close: ------------------  
+check_disk_quota
+
+
+# -- set up counters for number of repeat jobs, log details: ---------------------------------------- 
+echo $runs > .total_runs.txt
+echo $runs > .countdown.txt
+echo $SLURM_JOBID >.current_job_id.txt
+
+scontrol show job $SLURM_JOBID >>JobLog/$date2$jobname.optimization.txt;  # log job details
+
+# -- job fail safe check timestamp: - (to stop job if it completes in less than a specified time: --
+create_job_check_timestamps_1
+
+basename="$date2.$jobname_opt";      # create timestamped basename for optimization
+
+# -- launching job for avoca: -----------------------------------------------------------------------
+echo -e "O:Running" >.job_status
+
+srun  --ntasks-per-node $ntpn  namd2 +ppn $ppn $optimize_script >OutputText/$basename.out 2>Errors/$basename.err;
+
+echo -e "O:CleaningUp" >.job_status
+
+### -- after the job has finished: ------------------------------------------------------------------ 
+create_job_check_timestamp_2
+
+check_job_fail
+
+job_log_timings
+
+### -- rename output and move data into respective folders: ----------------------------------------- 
+# - (optimization dcd output suffixed with a ".x" so not to be included with production output) 
+redirect_optimization_output
+
+## -- clean up, check for core dump files:----------------------------------------------------------- 
+optimization_cleanup
+
+## -- check for pause flag:-------------------------------------------------------------------------
+check_for_pausejob_flag
+
+## -- launch production job:------------------------------------------------------------------------   
+
+echo -e "O:SubmittedProduction" >.job_status 
+sbatch $sbatch_prod
+
+## -------------------------------------------------------------------------------------------------
+
