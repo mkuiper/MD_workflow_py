@@ -10,7 +10,8 @@ from collections import OrderedDict
 import json
 import shutil
 import hashlib
-
+import time 
+import datetime
 ##
 #
 #
@@ -48,8 +49,14 @@ def read_local_job_details_file():
         sys.exit(error)
     return ljdf
 
+# checks for pausejob flag. Stops job if present. 
 def check_for_pausejob():
     """checks for pausejob flag in local job details file"""
+    if os.path.isfile("pausejob"):
+        error = "\npausejob flag present. Stopping job.\n" 
+        status = "Stopped: Pausejob flag present"
+        update_local_job_status(status)
+        sys.exit(error)
     return
 
 def initialize_job_countdown(equilib = "single"):
@@ -69,16 +76,33 @@ def log_job_details(jobid):
 
 def record_start_time():
     """ to log start time in unix time to local details"""
-    # JobStartTime
-    return
+    starttime = int(time.time())
+    try:
+        ljdf["JobStartTime"] = starttime
+    except:
+        print "\ncan't write start time to local job detail file.\n"
+    return 
 
 def record_finish_time():
-    """ to log finsh time in unix time to local details"""
-    # JobStartTime
-    return
+    """ to log start time in unix time to local details"""
+    finishtime = int(time.time())
+    try:
+        ljdf["JobFinishTime"] = finishtime
+    except:
+        print "\ncan't write finish time to local job detail file.\n"
+    return 
 
 def check_job_fail():
     """ check for job failure """
+    sta = ljdf["JobStartTime"]
+    fin = ljdf["JobFinishTime"]
+    cutoff = mcf["JobFailTime"]
+    runtime = fin - sta
+    if runtime < cutoff: 
+        error = "Job ran shorter than expected. Possible crash." 
+        status = "Short run time: crash? Stopped Job"
+        update_local_job_status(status)
+        sys.exit(error) 
     return 
 
 def log_job_timing():
@@ -87,7 +111,10 @@ def log_job_timing():
 
 def create_job_basename():
     """ creates a time stamped basename for current job"""
-    return 
+    ts = time.time()
+    stamp = datetime.datetime.fromtimestamp(ts).strftime('%Y_%h_%d_%H%S_')
+    basename = stamp + ljdf["JobBaseName"] + "_r_" + ljdf["CurrentJobRound"]
+    return basename 
 
 def update_local_job_status(status):
     """ updates local job status """

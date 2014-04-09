@@ -5,12 +5,13 @@
 "JOB_DIR"        : "Main_Job_Dir",
 "JobDirName"     : "unassigned",
 "JobDirNumber"   : "unassigned",
+"JobBaseName"    : "My_Sim_",
 
 "CurrentJobId"   : "0",
 "JobStatus"      : "uninitialized",
 "ErrorsMessages" : "0",
 
-"CurrentRound"   : "0",
+"CurrentJobRound": "0", 
 "RunCountDown"   : "0",
 "TotalRuns"      : "0",
 
