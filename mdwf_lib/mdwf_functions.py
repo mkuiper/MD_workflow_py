@@ -135,7 +135,18 @@ def countdown_timer():
 
 def monitor_jobs():
     """ -function to monitor jobs status on the cluster """ 
-    print "-- monitoring job status ---"
+    mcf = read_master_config_file()
+    JobDir = mcf["JobDir"]
+
+    if os.path.exists(JobDir):
+        jobdirlist = os.walk(JobDir).next()[1]
+
+    jobdirlist.sort()
+    print jobdirlist
+
+
+
+
 
 
 
