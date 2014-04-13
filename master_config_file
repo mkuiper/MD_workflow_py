@@ -22,6 +22,7 @@
 "Comment3"          : "Job Input Details",
 "JobDir"            : "Main_Job_Dir",
 "BaseDirName"       : "My_Sim_",
+"JobBaseName"       : "My_Job_",
 
 "OptJobName"        : "optimization_job_",
 "SbatchStartScript" : "sbatch_start.template",

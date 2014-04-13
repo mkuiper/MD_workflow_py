@@ -221,6 +221,8 @@ def populate_job_directories():
         BaseDirName = mcf["BaseDirName"]
         Runs        = mcf["Runs"]
         Round       = mcf["Round"]
+        JobBaseName = mcf["JobBaseName"]
+
     except:
         sys.exit("\nError reading master_config_file variables.\n")
 
@@ -234,6 +236,7 @@ def populate_job_directories():
     stagef['TOP_DIR'] = cwd
     stagef['CurrentRound'] = Round
     stagef['TotalRuns'] = Runs
+    stagef['JobBaseName'] = JobBaseName
 
     zf = len(str(Sims)) + 1    
     for i in range(1,Sims+1):
