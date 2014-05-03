@@ -50,7 +50,7 @@ def main():
 
 def process(action):
     if action == '--monitor': 
-        print "Monitoring job status:"
+        print "Monitoring job status:\n"
         mdwf.monitor_jobs()
 
     if action == '--initialize': 

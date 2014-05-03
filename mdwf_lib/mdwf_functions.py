@@ -143,16 +143,23 @@ def monitor_jobs():
         jobdirlist = os.walk(JobDir).next()[1]
 
     jobdirlist.sort()
-
-    print "JobName:    Account:   Status:" 
+    
+    print "JobDirName:   |Progress:| JobId:  |Status:   |Cores: |Walltime: |Job_messages: "
+    print "--------------|---------|---------|----------|-------|----------|------------- "
 
     for i in jobdirlist: 
         dir_path = JobDir + "/" + i  
         ljdf_t = read_local_job_details_file(dir_path, "local_job_details.json") 
-        jdn = ljdf_t["JobDirName"]
-        js  = ljdf_t["JobStatus"]
+        jdn  = ljdf_t["JobDirName"]
+        qs   = ljdf_t["QueueStatus"]
+        js   = ljdf_t["JobStatus"]
+        cores= ljdf_t["Cores"]
+        wt   = ljdf_t["WallTime"]
+        cjid = str(ljdf_t["CurrentJobId"])
+        prog = str(ljdf_t["CurrentJobRound"] + ": " + ljdf_t["RunCountDown"] + "/" + ljdf_t["TotalRuns"]) 
 
-        print "%-12s %s %s " % (jdn[0:11],Account, js[0:15]) 
+
+        print "%-14s  %-s %11s %10s %7s %10s %s" % (jdn[0:11], prog, cjid, qs[0:10], cores, wt, js) 
 
 
 

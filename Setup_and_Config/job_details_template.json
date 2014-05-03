@@ -8,8 +8,11 @@
 "JobBaseName"    : "unassigned",
 
 "CurrentJobId"   : "0",
-"JobStatus"      : "uninitialized",
+"QueueStatus"    : "NotStarted",
+"JobStatus"      : "NotStarted",
 "ErrorsMessages" : "0",
+"Cores"          : "0",
+"WallTime"       : "0",
 
 "CurrentJobRound": "0", 
 "RunCountDown"   : "0",
