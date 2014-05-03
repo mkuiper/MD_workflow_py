@@ -6,7 +6,6 @@ import os
 
 """ A python script to help setup the optimization phase of a MD simulation."""
 
-
 jobid = argv[2]
 
 def main():
@@ -15,10 +14,7 @@ def main():
 
     # check Ok for job to run:
     check_for_pausejob()
-    try:
-        check_disk_quota()
-    except:
-        print "system disk quota not checked properly"
+    check_disk_quota()
 
     # record job details:
     log_job_details()
