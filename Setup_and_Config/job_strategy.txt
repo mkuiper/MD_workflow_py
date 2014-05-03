@@ -6,19 +6,19 @@ Create jobs.
    - how many replicates. 
 
  
-
-
  create job directories. 
 
  populate job directories 
      
 
 Run optimization phase:
+
  -1) could run an optimization phase in each job directory. 
 
  -2) run 1 optimization job, then propagate restart files to all other job directories. 
 
 
 Run production jobs:
+
  -1) 
 

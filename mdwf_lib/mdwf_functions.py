@@ -32,10 +32,10 @@ def read_master_config_file():
         sys.exit(error)
     return mcf
         
-def read_local_job_details_file():  
+def read_local_job_details_file(path="Setup_and_Config",ljdf_target="job_details_template.json"):  
     """ Reads parameters from json file: Setup_and_Config/job_details_template.json """  
 
-    target=os.getcwd() +"/Setup_and_Config/job_details_template.json"
+    target=os.getcwd() + "/" + path + "/" + ljdf_target
     if os.path.isfile(target):
         local_json = open(target)
         try: 
@@ -44,7 +44,7 @@ def read_local_job_details_file():
         except:
             print "\nPossible json format errors of 'job_details_template.json'.\n"
     else:
-        error = "\nCan't see 'job_details_template.json' in directory:" + cwd + "/Setup_and_Config/\n" 
+        error = "\nCan't see '{}' in directory:{}/{}/ ".format(ljdf_target,os.getcwd(),path) 
         sys.exit(error)
     return ljdf
 
@@ -136,18 +136,23 @@ def countdown_timer():
 def monitor_jobs():
     """ -function to monitor jobs status on the cluster """ 
     mcf = read_master_config_file()
-    JobDir = mcf["JobDir"]
+    JobDir  = mcf["JobDir"]
+    Account = mcf["Account"]
 
     if os.path.exists(JobDir):
         jobdirlist = os.walk(JobDir).next()[1]
 
     jobdirlist.sort()
-    print jobdirlist
 
+    print "JobName:    Account:   Status:" 
 
+    for i in jobdirlist: 
+        dir_path = JobDir + "/" + i  
+        ljdf_t = read_local_job_details_file(dir_path, "local_job_details.json") 
+        jdn = ljdf_t["JobDirName"]
+        js  = ljdf_t["JobStatus"]
 
-
-
+        print "%-12s %s %s " % (jdn[0:11],Account, js[0:15]) 
 
 
 
@@ -221,6 +226,8 @@ def populate_job_directories():
         BaseDirName = mcf["BaseDirName"]
         Runs        = mcf["Runs"]
         Round       = mcf["Round"]
+        JobBaseName = mcf["JobBaseName"]
+
     except:
         sys.exit("\nError reading master_config_file variables.\n")
 
@@ -234,6 +241,7 @@ def populate_job_directories():
     stagef['TOP_DIR'] = cwd
     stagef['CurrentRound'] = Round
     stagef['TotalRuns'] = Runs
+    stagef['JobBaseName'] = JobBaseName
 
     zf = len(str(Sims)) + 1    
     for i in range(1,Sims+1):

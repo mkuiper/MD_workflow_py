@@ -4,7 +4,7 @@
   "JOB_DIR": "Main_Job_Dir", 
   "JobDirName": "My_Sim_005", 
   "JobDirNumber": "unassigned", 
-  "JobBaseName": "My_Sim_", 
+  "JobBaseName": "My_Job_", 
   "CurrentJobId": "0", 
   "JobStatus": "uninitialized", 
   "ErrorsMessages": "0", 
