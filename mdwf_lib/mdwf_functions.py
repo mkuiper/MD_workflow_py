@@ -12,10 +12,19 @@ import shutil
 import hashlib
 import time 
 import datetime
+import glob
+
 #
 #
 #
-#
+# ansi color variables for formatting purposes: 
+
+c0 = '\033[0m'    # default
+c1 = '\033[94m'   # blue 
+c2 = '\033[92m'   # green
+c3 = '\033[93m'   # yellow
+c4 = '\033[91m'   # red
+c5 = '\033[96m'   # cyan
 
 def read_master_config_file():  
     """ Reads parameters from json file: master_config_file """  
@@ -26,10 +35,10 @@ def read_master_config_file():
             mcf = json.load(master_json,object_pairs_hook=OrderedDict)
             master_json.close()
         except:
-            print "\nPossible json format errors of 'master_config_file'.\n"
+            print "\n{}Possible json format errors of {}'master_config_file'{}\n".format(c3,c3,c0)
     else:
-        error = "\nCan't see 'master_config_file' in directory:" + cwd + "\n" 
-        sys.exit(error)
+        print "{}Can't see {}'master_config_file'{} in directory:{} {}\n".format(c3,c4,c3,cwd,c0) 
+        sys.exit()
     return mcf
         
 
@@ -43,7 +52,7 @@ def read_local_job_details_file(path="Setup_and_Config",ljdf_target="job_details
             ljdf = json.load(local_json,object_pairs_hook=OrderedDict)
             local_json.close()
         except:
-            print "\nPossible json format errors of 'job_details_template.json'.\n"
+            print "\n{}Possible json format errors of {}'master_config_file'{}\n".format(c3,c3,c0)
     else:
         error = "\nCan't see '{}' in directory:{}/{}/ ".format(ljdf_target,os.getcwd(),path) 
         sys.exit(error)
@@ -161,7 +170,7 @@ def monitor_jobs():
 
     jobdirlist = get_current_joblist(JobDir)
     
-    print "JobDirName:   |Progress:| JobId:  |Status:   |Cores: |Walltime: |Job_messages: "
+    print "{}JobDirName:  {}|Progress:{}| JobId:  |Status:   |Cores: |Walltime: |Job_messages:{}".format(c2,c3,c1,c0)
     print "--------------|---------|---------|----------|-------|----------|------------- "
 
     for i in jobdirlist: 
@@ -176,7 +185,7 @@ def monitor_jobs():
         prog = str(ljdf_t["CurrentJobRound"] + ": " + ljdf_t["RunCountDown"] + "/" + ljdf_t["TotalRuns"]) 
 
 
-        print "%-14s %9s %9s %10s %7s %10s %s" % (jdn[0:11], prog, cjid, qs[0:10], cores, wt, js) 
+        print "%s%-14s %9s %9s %10s %7s %10s %s" % (c2,jdn[0:11], prog, cjid, qs[0:10], cores, wt, js) 
 
 
 
@@ -209,11 +218,11 @@ def initialize_job_directories():
     cwd=os.getcwd()
     TargetJobDir = cwd + "/" +JobDir
     if not os.path.exists(TargetJobDir):
-        print " Job directory /{} does not exist. Making new directory.".format(JobDir)
+        print "{} Job directory /{} does not exist. Making new directory.{}".format(c3,JobDir,c0)
         try:
             os.makedirs(JobDir)
         except:
-            error = "\nError making directory in /{}.".format(cwd)
+            error = "\n{}Error making directory in /{}.{}".format(c3,cwd,c0)
             sys.exit(error) 
 
     # Copy directory structure from /Setup_and Config/JobTemplate
@@ -221,15 +230,15 @@ def initialize_job_directories():
     TemplatePath = cwd + "/Setup_and_Config/JobTemplate"
     # check existance of JobTemplate directory:
     if not os.path.exists(TemplatePath):
-        error = "\nCan't see /Setup_and_Config/JobTemplate. exiting."
-        sys.exit(error) 
+        print "\n{} Can't see /Setup_and_Config/JobTemplate. exiting.{}".format(c3,c0)
+        sys.exit() 
     
     zf = len(str(Sims)) + 1    
     for i in range(1,Sims+1):
         suffix = str(i).zfill(zf)
         NewDirName = JobDir + "/" + BaseDirName + suffix          
         if os.path.exists(NewDirName):
-            print " Directory {} already exists!! Skipping.".format(NewDirName) 
+            print "{}Directory {} already exists!! Skipping.{}".format(c3,NewDirName,c0) 
         else:
             try: 
                 shutil.copytree(TemplatePath, NewDirName)
@@ -242,19 +251,21 @@ def initialize_job_directories():
 def populate_job_directories():
     """ -function to populate or update job directories with job scripts """
     # copy all files from /Setup_and_Config into each job_directory
+
     ljdf_t = read_local_job_details_file()        # create template
     mcf    = read_master_config_file()
 
     try:
         JobDir      = mcf["JobDir"]
-        Sims    = int(mcf["SimReplicates"])
+        Sims        = int(mcf["SimReplicates"])
         BaseDirName = mcf["BaseDirName"]
         Runs        = mcf["Runs"]
         Round       = mcf["Round"]
         JobBaseName = mcf["JobBaseName"]
 
     except:
-        sys.exit("\nError reading master_config_file variables.\n")
+        print "\n{}Error reading master_config_file variables.{}\n".format(c4,c0)
+        sys.exit()
 
     cwd=os.getcwd()
     TargetJobDir = cwd + "/" +JobDir
@@ -263,28 +274,32 @@ def populate_job_directories():
     stagef = ljdf_t           
 
     # modify elements in staging dictionary file:
-    stagef['TOP_DIR'] = cwd
+    stagef['TOP_DIR']      = cwd
     stagef['CurrentRound'] = Round
-    stagef['TotalRuns'] = Runs
-    stagef['JobBaseName'] = JobBaseName
+    stagef['TotalRuns']    = Runs
+    stagef['JobBaseName']  = JobBaseName
 
-    zf = len(str(Sims)) + 1    
-    for i in range(1,Sims+1):
-        stagef = ljdf_t           # create staging file from ljdf_template
-        suffix = str(i).zfill(zf)
-        NewDirName = JobDir + "/" + BaseDirName + suffix          
-        if not os.path.exists(NewDirName):
-            print " Directory {} doesn't exists!".format(NewDirName) 
-            
-        else:
-            # modify elements in staging dictionary file:
-            stagef['JobDirName'] = BaseDirName + suffix
-            
-            ljdfile = NewDirName + "/local_job_details.json"
-            # write copy of staging file to new directory:
-            with open(ljdfile, 'w') as outfile:
-                json.dump(stagef, outfile, indent=2)
-            outfile.close()
+    jobdirlist = get_current_joblist(JobDir)
+
+    for i in jobdirlist:
+        print "{}populating:{} {}{}/{}{}".format(c0,c1,c5,JobDir,i,c0)
+        stagef['JobDirName'] = i
+        ljdfile = JobDir + "/" + i +"/local_job_details.json"
+        with open(ljdfile, 'w') as outfile:
+            json.dump(stagef, outfile, indent=2)
+        outfile.close()
+
+# copy across python scripts from /Setup_and_Config:
+        jobdir = JobDir + "/" + i + "/"
+
+        for pyfile in glob.glob(r'Setup_and_Config/*.py'):
+            try:
+                shutil.copy2(pyfile, jobdir)
+                print "{}copying:{} {} {}".format(c2, c1, pyfile, c0)
+            except:
+                print "{}Can't copy python scripts from /Setup_and_Config/{} ".format(c3, c0)  
+
+
 
 
 def check_job():
@@ -345,13 +360,13 @@ def erase_all_data():
     """ -function to erase all data for a clean start.  Use with caution!"""
     mcf = read_master_config_file()
     cwd = os.getcwd()
-    print "We are about to erase all data in this directory, which can be useful" 
-    print "for making a clean start, but disasterous if this is the wrong folder!"
-    print "\n Proceed with caution!"
-    print "This operation will delete all data in the folders:"
-    print " /Main_Job_Dir/                    - main job directory." 
-    print " /JobLog/                          - Job logs." 
-    print " /Setup_and_Config/Benchmarking/   - Benchmarking data." 
+    print "{}We are about to erase all data in this directory, which can be useful{}".format(c3,c0) 
+    print "{}for making a clean start, but disasterous if this is the wrong folder!{}".format(c3,c0)
+    print "{}Proceed with caution!{}".format(c4,c0)
+    print "This operation will delete all data in the folders:\n"
+    print "{}/Main_Job_Dir/                   {}- main job directory.{}".format(c2,c1,c0) 
+    print "{}/JobLog/                         {}- Job logs.{}".format(c2,c1,c0) 
+    print "{}/Setup_and_Config/Benchmarking/  {}- Benchmarking data.{}".format(c2,c1,c0) 
     
     str = raw_input("\nPress 'enter' to quit or type: 'erase all my data':")
     if str == "erase all my data": 

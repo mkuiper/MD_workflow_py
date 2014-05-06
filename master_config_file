@@ -27,10 +27,12 @@
 "OptJobName"        : "optimization_job_",
 "SbatchStartScript" : "sbatch_start.template",
 "OptimizeConfScript": "sim_opt.conf",
+"StartCommand"      : "sbatch sbatch_start_script",
 
 "ProductionJobName" : "production_job_",
 "SbatchProdScript"  : "sbatch_production.template",
 "ProdConfScript"    : "sim_production.conf",
+"ProductionCommand" : "sbatch sbatch_production_script", 
 
 "custom_script1"    : "custom1.conf",
 "custom_script2"    : "custom2.conf",
