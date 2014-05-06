@@ -13,7 +13,7 @@
   "WallTime": "0", 
   "CurrentJobRound": "0", 
   "RunCountDown": "0", 
-  "TotalRuns": "5", 
+  "TotalRuns": "10", 
   "PauseFlag": "0", 
   "LastTimingValue": "0", 
   "OldSlurmFileID": "0", 

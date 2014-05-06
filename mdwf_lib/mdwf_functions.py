@@ -32,6 +32,7 @@ def read_master_config_file():
         sys.exit(error)
     return mcf
         
+
 def read_local_job_details_file(path="Setup_and_Config",ljdf_target="job_details_template.json"):  
     """ Reads parameters from json file: Setup_and_Config/job_details_template.json """  
 
@@ -48,7 +49,7 @@ def read_local_job_details_file(path="Setup_and_Config",ljdf_target="job_details
         sys.exit(error)
     return ljdf
 
-# checks for pausejob flag. Stops job if present. 
+
 def check_for_pausejob():
     """checks for pausejob flag in local job details file"""
     if os.path.isfile("pausejob"):
@@ -58,6 +59,7 @@ def check_for_pausejob():
         sys.exit(error)
     return
 
+
 def initialize_job_countdown(equilib = "single"):
     """intializes rounds and countdown timers of local details file based on master_config_file"""
     # equilib represents equilibration strategy:
@@ -65,13 +67,16 @@ def initialize_job_countdown(equilib = "single"):
     # or "multiple" for each job directory starting its own unique equilibration phase.
     return
         
+
 def check_disk_quota():
     """ function for checking that there is enough diskspace on the system before starting job"""
     return
 
+
 def log_job_details(jobid):
     """logging cluster job details"""
     return
+
 
 def record_start_time():
     """ to log start time in unix time to local details"""
@@ -82,6 +87,7 @@ def record_start_time():
         print "\ncan't write start time to local job detail file.\n"
     return 
 
+
 def record_finish_time():
     """ to log start time in unix time to local details"""
     finishtime = int(time.time())
@@ -90,6 +96,7 @@ def record_finish_time():
     except:
         print "\ncan't write finish time to local job detail file.\n"
     return 
+
 
 def check_job_fail():
     """ check for job failure """
@@ -104,9 +111,11 @@ def check_job_fail():
         sys.exit(error) 
     return 
 
+
 def log_job_timing():
     """ log length of job in human readable format """
     return
+
 
 def create_job_basename():
     """ creates a time stamped basename for current job"""
@@ -115,23 +124,34 @@ def create_job_basename():
     basename = stamp + ljdf["JobBaseName"] + "_r_" + ljdf["CurrentJobRound"]
     return basename 
 
+
 def update_local_job_status(status):
     """ updates local job status """
 
     ljdf["JobStatus"] = status
     return 
 
+
 def redirect_optimization_output():
     """ move output of optimization phase in all the right places."""
     return
+
 
 def redirect_production_output():
     """ move output of production_runs to all the right places."""
     return
 
+
 def countdown_timer():
     """ function to adjust countdown timer """
 
+
+def check_if_job_running(JobDir,sim):
+    """ function to check if job already running in directory """ 
+    dir_path = JobDir + "/" + sim
+    ljdf_t = read_local_job_details_file(dir_path, "local_job_details.json") 
+    cjid = ljdf_t["CurrentJobId"]
+    
 
 def monitor_jobs():
     """ -function to monitor jobs status on the cluster """ 
@@ -139,10 +159,7 @@ def monitor_jobs():
     JobDir  = mcf["JobDir"]
     Account = mcf["Account"]
 
-    if os.path.exists(JobDir):
-        jobdirlist = os.walk(JobDir).next()[1]
-
-    jobdirlist.sort()
+    jobdirlist = get_current_joblist(JobDir)
     
     print "JobDirName:   |Progress:| JobId:  |Status:   |Cores: |Walltime: |Job_messages: "
     print "--------------|---------|---------|----------|-------|----------|------------- "
@@ -159,7 +176,7 @@ def monitor_jobs():
         prog = str(ljdf_t["CurrentJobRound"] + ": " + ljdf_t["RunCountDown"] + "/" + ljdf_t["TotalRuns"]) 
 
 
-        print "%-14s  %-s %11s %10s %7s %10s %s" % (jdn[0:11], prog, cjid, qs[0:10], cores, wt, js) 
+        print "%-14s %9s %9s %10s %7s %10s %s" % (jdn[0:11], prog, cjid, qs[0:10], cores, wt, js) 
 
 
 
@@ -173,10 +190,10 @@ def md5sum(filename, blocksize=65536):
         f.close()
     return hash.hexdigest()
 
+
 def getfilesize(filename):
     size = os.path.getsize(filename)
     return size
-
 
 
 def initialize_job_directories():
@@ -227,6 +244,7 @@ def populate_job_directories():
     # copy all files from /Setup_and_Config into each job_directory
     ljdf_t = read_local_job_details_file()        # create template
     mcf    = read_master_config_file()
+
     try:
         JobDir      = mcf["JobDir"]
         Sims    = int(mcf["SimReplicates"])
@@ -273,29 +291,51 @@ def check_job():
     """ -function to check the input of the current job and calculate resources required."""
     print "-- checking job input" 
 
+
 def benchmark():
     """ -function to benchmark job """
     print "-- benchmarking jobs."
 
+
+def get_current_joblist(JobDir):
+    """ -function to return current, sorted, joblist in /JobDir """
+    if os.path.exists(JobDir):
+        jobdirlist = os.walk(JobDir).next()[1]
+    jobdirlist.sort()
+    return jobdirlist
+
+
 def start_all_jobs():
     """ -function to start_all_jobs """
     print "-- starting all jobs."
-    
+    mcf = read_master_config_file()
+    JobDir  = mcf["JobDir"]
 
+    jobdirlist = get_current_joblist(JobDir)
 
+    for i in jobdirlist:    
+        # check current job status
+        cjs = check_if_job_running(JobDir,i)
+        if cjs == "running":
+            print "Job already running in JobDir/{} ".format(i)
+        else:
+            print "submit"            
 
 
 def restart_all_production_jobs():
     """ -function to restart_all_production_jobs """
     print "-- restarting production jobs."
 
+
 def recover_all_jobs():
     """ -function to recover and restore crashed jobs """
     print "-- recovering crashed jobs."
 
+
 def stop_jobs():
     """ -function to stop all jobs, -either immediately or gently."""
     print "-- stopping all jobs"
+
 
 def new_round():
     """ -function to set up a new round of simulations."""
@@ -326,7 +366,6 @@ def erase_all_data():
         print "\nOh the humanity. I sure hope that wasn't anything important."
     else: 
         print "Phew! Nothing erased."
-
 
 
 def clone():
