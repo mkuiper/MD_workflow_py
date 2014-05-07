@@ -9,12 +9,12 @@ import sys
 from collections import OrderedDict
 import json
 import shutil
+import fileinput
 import hashlib
 import time 
 import datetime
 import glob
 
-#
 #
 #
 # ansi color variables for formatting purposes: 
@@ -256,9 +256,9 @@ def initialize_job_directories():
 
 def populate_job_directories():
     """ -function to populate or update job directories with job scripts """
-    # copy all files from /Setup_and_Config into each job_directory
 
-    ljdf_t = read_local_job_details_file()        # create template
+# reading information from master_config_file and local job details template
+    ljdf_t = read_local_job_details_file()
     mcf    = read_master_config_file()
 
     try:
@@ -268,6 +268,16 @@ def populate_job_directories():
         Runs        = mcf["Runs"]
         Round       = mcf["Round"]
         JobBaseName = mcf["JobBaseName"]
+        Account     = mcf["Account"]
+        Nodes       = mcf["nodes"]
+        Ntpn        = mcf["ntpn"]
+        Ppn         = mcf["ppn"]
+        OptScript   = mcf["OptimizeConfScript"]
+        ProdScript  = mcf["ProdConfScript"]
+        ModuleFile  = mcf["ModuleFile"]
+        Walltime    = mcf["Walltime"]
+        sbstart     = mcf["SbatchStartScript"]
+        sbprod      = mcf["SbatchProdScript"]
 
     except:
         print "\n{}Error reading master_config_file variables.{}\n".format(c4,c0)
@@ -276,16 +286,55 @@ def populate_job_directories():
     cwd=os.getcwd()
     TargetJobDir = cwd + "/" +JobDir
     
-    # create staging file from ljdf_template
+# create staging file from ljdf_template
     stagef = ljdf_t           
 
-    # modify elements in staging dictionary file:
+# modify elements in staging dictionary file:
     stagef['TOP_DIR']      = cwd
     stagef['CurrentRound'] = Round
     stagef['TotalRuns']    = Runs
     stagef['JobBaseName']  = JobBaseName
 
+# check to see if there actually are any job directories to fill:
     jobdirlist = get_current_joblist(JobDir)
+    if not jobdirlist: 
+        print "{}No job directories found in {}/{}.{} Have you initialized?".format(c4,cc1,JobDir,c0)
+
+# create and modify temporary sbatch scripts:
+    sb_start_template = "Setup_and_Config/" + sbstart + ".template"
+    if not os.path.exists(sb_start_template):
+        print "{}Can't find {}{}{}.".format(c4,c3,sb_start_template,c0)
+        sys.exit()
+    sb_prod_template = "Setup_and_Config/" + sbprod + ".template"
+    if not os.path.exists(sb_prod_template):
+        print "{}Can't find {}{}{}.".format(c4,c3,sb_prod_template,c0)
+        sys.exit()
+  # new lines:
+    nnodes   = "#SBATCH --nodes="   + Nodes
+    ntime    = "#SBATCH --time="    + Walltime
+    naccount = "#SBATCH --account=" + Account
+    nntpn    = "ntpn=" + Ntpn
+    nppn     = "ppn="  + Ppn
+    nmodule  = "module load " + ModuleFile
+    nopt     = "optimize_script=" + OptScript
+    nprod    = "production_script=" + ProdScript
+
+# make temporary copies of sbatch templates:     
+    shutil.copy(sb_start_template,'sb_start_temp')
+    shutil.copy(sb_prod_template,'sb_prod_temp')
+# make substitutions:
+    for f in ["sb_start_temp","sb_prod_temp"]:
+        for line in fileinput.FileInput(f,inplace=True):
+            line = line.replace('#SBATCH --nodes=X', nnodes)   
+            line = line.replace('#SBATCH --time=X', ntime)   
+            line = line.replace('#SBATCH --account=X', naccount)   
+            line = line.replace('ntpn=X', nntpn)   
+            line = line.replace('ppn=X',  nppn)   
+            line = line.replace('module load X', nmodule)   
+            line = line.replace('optimize_script=X', nopt)   
+            line = line.replace('production_script=X', nprod)   
+            sys.stdout.write(line)   
+
 
     for i in jobdirlist:
         print "{}populating: {}{}/{}".format(c5,c0,JobDir,i)
@@ -296,7 +345,12 @@ def populate_job_directories():
         outfile.close()
 
 # copy across python scripts from /Setup_and_Config:
-        jobdir = JobDir + "/" + i + "/"
+        jobdir   = JobDir + "/" + i + "/"
+        sbs_path = jobdir + "/sbatch_start"
+        sbp_path = jobdir + "/sbatch_production"
+
+        shutil.copy('sb_start_temp',sbs_path)
+        shutil.copy('sb_prod_temp',sbp_path)
 
         for pyfile in glob.glob(r'Setup_and_Config/*.py'):
             try:
@@ -305,6 +359,19 @@ def populate_job_directories():
             except:
                 print "{}Can't copy python scripts from /Setup_and_Config/{} ".format(c4, c0)  
 
+        for conffile in glob.glob(r'Setup_and_Config/*.conf'):
+            try:
+                shutil.copy2(conffile, jobdir)
+                print "   {}copying:{}{} {} ".format(c2,c0,cc1, conffile)
+            except:
+                print "{}Can't copy .conf scripts from /Setup_and_Config/{} ".format(c4, c0)  
+
+
+
+
+# remove tempfiles. 
+    os.remove('sb_start_temp')
+    os.remove('sb_prod_temp')
 
 
 
