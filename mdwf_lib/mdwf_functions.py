@@ -14,6 +14,7 @@ import hashlib
 import time 
 import datetime
 import glob
+import re
 
 #
 #
@@ -64,6 +65,51 @@ def read_local_job_details_file(path="Setup_and_Config",ljdf_target="job_details
     return ljdf
 
 
+def read_job_details(targetfile):
+    """ Extracts simulation details from given namd config file and returns a dictionary. """
+#   assumes files are located in /Setup_and_Config 
+    target=os.getcwd() + "/Setup_and_Config/" + targetfile
+#   job-details dictionary:
+    jdd = {}
+    
+    if os.path.isfile(target):
+        f = open(target,'r')
+        for lline in f:
+            line = lline[0:12]          # strip line to avoid artifacts
+            if 'structure ' in line:
+                nl = re.split(('\s+|/|'),lline)
+                for i in nl:
+                    if '.psf' in i:
+                        jdd["psffile"] = i
+            if 'coordinates ' in line:
+                nl = re.split(('\s+|/|'),lline)
+                for i in nl:
+                    if '.pdb' in i:
+                        jdd["pdbfile"] = i
+            if 'timestep ' in line:
+                nl = re.split(('\s+'),lline)
+                jdd["timestep"] = nl[1]
+            if 'NumberSteps ' in line:
+                nl = re.split(('\s+'),lline)
+                jdd["steps"] = nl[1]
+            if 'dcdfreq ' in line:
+                nl = re.split(('\s+'),lline)
+                jdd["dcdfreq"] = nl[1]
+            if 'run ' in line:
+                nl = re.split(('\s+'),lline)
+                jdd["runsteps"] = nl[1]
+
+        f.close()
+    else: 
+        print "{}{} file not found".format(c5,targetfile)
+ 
+
+    return jdd
+    
+#    search.close()
+
+
+
 def check_for_pausejob():
     """checks for pausejob flag in local job details file"""
     if os.path.isfile("pausejob"):
@@ -72,6 +118,7 @@ def check_for_pausejob():
         update_local_job_status(status)
         sys.exit(error)
     return
+
 
 
 def initialize_job_countdown(equilib = "single"):
@@ -377,7 +424,29 @@ def populate_job_directories():
 
 def check_job():
     """ -function to check the input of the current job and calculate resources required."""
-    print "-- checking job input" 
+    mcf = read_master_config_file()
+    jd_opt  = read_job_details(mcf["OptimizeConfScript"])    
+    jd_prod = read_job_details(mcf["ProdConfScript"])    
+      
+    print "{}\nJob check summary: {}".format(c3,cc1)
+    print "{}--------------------------------------------------------------------------------".format(c5)
+    print "{} Main Job Directory:          {}{}".format(c6,c0,mcf["JobDir"])
+    print "{} Directory basename:          {}{}".format(c6,c0,mcf["BaseDirName"])
+    print "{} Sbatch start template:       {}{}.template".format(c6,c0,mcf["SbatchStartScript"])
+    print "{} Sbatch prouction template:   {}{}.template".format(c6,c0,mcf["SbatchProdScript"])
+    print "{} Optimization script:         {}{}".format(c6,c0,mcf["OptimizeConfScript"])
+    print "{} Production script:           {}{}".format(c6,c0,mcf["ProdConfScript"])
+    print "{} Namd modulefile:             {}{}".format(c6,c0,mcf["ModuleFile"])
+
+    print "{}Estimation of data to be generated from the production run of this simulation:{}".format(c5,c0)
+    print "{}--------------------------------------------------------------------------------".format(c5)
+    print "{} Simulation directories:   {}{}      {}Runs per directory:     {}{}".format(c6,c0,mcf["SimReplicates"],c6,c0,mcf["Runs"])
+
+
+    print jd_opt
+    print jd_prod
+
+#    print "-- checking job input" 
 
 
 def benchmark():

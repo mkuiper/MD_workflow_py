@@ -14,7 +14,7 @@
 
 
 "Comment2"     : "Job Setup Dimensions",
-"SimReplicates": "10",
+"SimReplicates": "20",
 "Runs"         : "10",
 "JobScheme"    : "simple",
 "Round"        : "1",
