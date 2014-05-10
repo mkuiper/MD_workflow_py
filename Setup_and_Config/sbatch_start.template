@@ -1,6 +1,15 @@
 #!/bin/bash
+##  sbatch launching script template                May 2014  MKuiper
+## -A generic script to launch a series of production namd runs
+## on the Avoca bluegene cluster at vlsci. 
+#--------------------------------------------------------------- 
+#         Make all changes in "master_config_file"             #
+#     -you shouldn't have to change anything in here!          #
+#---------------------------------------------------------------
+#-- Sbatch parameters:------------------------------------------
+#-- the X values will be substituted with a values from the master_config_file 
+#-- when you populate job directories with ./mdwf -p 
 
-# sbatch launch script for optimization phase. 
 #SBATCH --nodes=X
 #SBATCH --time=X
 #SBATCH --account=X
@@ -10,18 +19,18 @@ ppn=X         # processors per node       <- not needed for pami version.
 
 optimize_script=X      
 
-module load X   # namd module file
+module load X           # namd module file
 module load python-xl   # python module file
 
 #--------------------------------------------------------------------------------
 # python script to initiate job and setup variables.
-python startjob_initialize.py $SLURM_JOBID
+python prejob_processing.py $SLURM_JOBID
 
 # run optimization job.
 srun  --ntasks-per-node $ntpn  namd2 +ppn $ppn $optimize_script >TempOutputFile.out 2>TempErrorFile.err;
 
 # python script to cleanup and redirect data. 
-python startjob_cleanup.py $SLURM_JOBID
+python postjob_processing.py $SLURM_JOBID
 
 # launch next phase: 
 sbatch sbatch_production

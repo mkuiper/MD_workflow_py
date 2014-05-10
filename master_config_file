@@ -14,8 +14,8 @@
 
 
 "Comment2"     : "Job Setup Dimensions",
-"SimReplicates": "10",
-"Runs"         : "5",
+"SimReplicates": "4",
+"Runs"         : "10",
 "JobScheme"    : "simple",
 "Round"        : "1",
 
@@ -25,12 +25,14 @@
 "JobBaseName"       : "My_Job_",
 
 "OptJobName"        : "optimization_job_",
-"SbatchStartScript" : "sbatch_start.template",
+"SbatchStartScript" : "sbatch_start",
 "OptimizeConfScript": "sim_opt.conf",
+"StartCommand"      : "sbatch sbatch_start_script",
 
 "ProductionJobName" : "production_job_",
-"SbatchProdScript"  : "sbatch_production.template",
+"SbatchProdScript"  : "sbatch_production",
 "ProdConfScript"    : "sim_production.conf",
+"ProductionCommand" : "sbatch sbatch_production_script", 
 
 "custom_script1"    : "custom1.conf",
 "custom_script2"    : "custom2.conf",
