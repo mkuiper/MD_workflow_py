@@ -508,18 +508,21 @@ def check_job():
 
 
 def check_file_exists(target):
-    mesg1 = "{} found {} -ok!{}".format(c4,c5,c0)
-    mesg2 = "{} found {} -ok! - example file?{}".format(c4,c5,c0)
-    mesg3 = "{} not found. {} -Check confifuration file.{}".format(c1,c8,c0) 
+    mesg1 = "{} found {} -ok!{}".format(c6,c5,c0)
+    mesg2 = "{} found {} -ok! - example file?{}".format(c6,c5,c0)
+    mesg3 = "{} not found.{} -Check config file.{}".format(c1,c8,c0) 
 
     ntarget = target[6:]        # strip off ../../
+    if not "../../" in target[0:6]:
+        print "{}unexpected path structure to input files:{}".format(c4,c0)
+ 
     if os.path.exists(ntarget):
         if "example" in target:
-            print "{} %-44s {}".format(cc1,mesg2) %(ntarget)    
+            print "{} %-50s {}".format(cc1,mesg2) %(ntarget)    
         else:
-            print "{} %-44s {}".format(cc1,mesg1) %(ntarget)
+            print "{} %-50s {}".format(cc1,mesg1) %(ntarget)
     else:
-        print "{} %-24s {}".format(cc1,mesg3) %(ntarget)
+        print "{} %-46s {}".format(cc1,mesg3) %(ntarget)
     
     return
 
