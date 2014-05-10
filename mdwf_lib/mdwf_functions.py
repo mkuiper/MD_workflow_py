@@ -20,17 +20,17 @@ import re
 #
 # ansi color variables for formatting purposes: 
 
-c0 = '\033[0m'      # default
-cc1= '\033[2m'      # grey 
-c1 = '\033[31;2m'   # dark red 
-c2 = '\033[32;1m'   # light green
-c3 = '\033[32;2m'   # dark green
-c4 = '\033[33;1m'   # light yellow
-c5 = '\033[33;2m'   # olive green
-c6 = '\033[34;1m'   # light blue
-c7 = '\033[34;2m'   # dark blue
-c8 = '\033[35;1m'   # magenta
-c9 = '\033[36;1m'   # cyan
+c0 = '\033[0m'        # default
+cc1= '\033[2m'        # grey 
+c1 = '\033[31;2m'     # dark red 
+c2 = '\033[32;1m'     # light green
+c3 = '\033[32;2m'     # dark green
+c4 = '\033[33;1m'     # light yellow
+c5 = '\033[38;5;154m' # spring green
+c6 = '\033[34;1m'     # light blue
+c7 = '\033[34;2m'     # dark blue
+c8 = '\033[38;5;220m' # orange 
+c9 = '\033[36;1m'     # cyan
 
 def read_master_config_file():  
     """ Reads parameters from json file: master_config_file """  
@@ -70,44 +70,68 @@ def read_job_details(targetfile):
 #   assumes files are located in /Setup_and_Config 
     target=os.getcwd() + "/Setup_and_Config/" + targetfile
 #   job-details dictionary:
-    jdd = {}
-    
+    jdd = {}        
+    jdpl = []     # job details parameter list. 
     if os.path.isfile(target):
         f = open(target,'r')
         for lline in f:
-            line = lline[0:12]          # strip line to avoid artifacts
-            if 'structure ' in line:
-                nl = re.split(('\s+|/|'),lline)
-                for i in nl:
-                    if '.psf' in i:
-                        jdd["psffile"] = i
-            if 'coordinates ' in line:
-                nl = re.split(('\s+|/|'),lline)
-                for i in nl:
-                    if '.pdb' in i:
-                        jdd["pdbfile"] = i
-            if 'timestep ' in line:
-                nl = re.split(('\s+'),lline)
-                jdd["timestep"] = nl[1]
-            if 'NumberSteps ' in line:
-                nl = re.split(('\s+'),lline)
-                jdd["steps"] = nl[1]
-            if 'dcdfreq ' in line:
-                nl = re.split(('\s+'),lline)
-                jdd["dcdfreq"] = nl[1]
-            if 'run ' in line:
-                nl = re.split(('\s+'),lline)
-                jdd["runsteps"] = nl[1]
-
+            line = lline[0:18]          # strip line to avoid artifacts
+            if not "#" in line[0:2]:    # leave out commented lines
+                if 'structure ' in line:
+                    pl = lline.split()
+                    jdd["psffilepath"] = pl[1]
+                    nl = re.split(('\s+|/|'),lline)
+                    for i in nl:
+                        if '.psf' in i:
+                            jdd["psffile"] = i
+                            natom = estimate_dcd_frame_size(i)        
+                            jdd["natom"] = natom
+                if 'coordinates ' in line:
+                    pl = lline.split()
+                    jdd["pdbfilepath"] = pl[1]
+                    nl = re.split(('\s+|/|'),lline)
+                    for i in nl:
+                        if '.pdb' in i:
+                            jdd["pdbfile"] = i
+                if 'timestep ' in line:
+                    nl = lline.split()
+                    jdd["timestep"] = nl[1]
+                if 'NumberSteps ' in line:
+                    nl = lline.split()
+                    jdd["steps"] = nl[2]
+                if 'dcdfreq ' in line:
+                    nl = lline.split()
+                    jdd["dcdfreq"] = nl[1]
+                if 'run ' in line:
+                    nl = lline.split()
+                    jdd["runsteps"] = nl[1]
+                if 'restartfreq ' in line:
+                    nl = lline.split()
+                    jdd["restartfreq"] = nl[1]
+                if 'parameters ' in line:
+                    nl = lline.split()
+                    jdpl.append(nl[1])
         f.close()
     else: 
         print "{}{} file not found".format(c5,targetfile)
- 
+    return jdd, jdpl
 
-    return jdd
     
-#    search.close()
-
+def estimate_dcd_frame_size(psffile):
+    """ function to estimate dcd frame size of simulation based on the numbers of atoms. """
+#   assumes psf file is in /InputFiles directory. 
+    target=os.getcwd() + "/InputFiles/" + psffile
+    atoms = 0 
+    if os.path.isfile(target):
+        f = open(target,'r')
+        for line in f:
+            if 'NATOM' in line:     # extract number of atoms from !NATOM line
+                nl = line.split()
+                atoms = nl[0]
+    else:
+        print "{}Can't find {}{}{} in /InputFiles directory".format(c3,c4,psffile,c0)
+    f.close()    
+    return atoms
 
 
 def check_for_pausejob():
@@ -118,7 +142,6 @@ def check_for_pausejob():
         update_local_job_status(status)
         sys.exit(error)
     return
-
 
 
 def initialize_job_countdown(equilib = "single"):
@@ -425,29 +448,80 @@ def populate_job_directories():
 def check_job():
     """ -function to check the input of the current job and calculate resources required."""
     mcf = read_master_config_file()
-    jd_opt  = read_job_details(mcf["OptimizeConfScript"])    
-    jd_prod = read_job_details(mcf["ProdConfScript"])    
+    jd_opt,  jd_opt_pl  = read_job_details(mcf["OptimizeConfScript"])    
+    jd_prod, jd_prod_pl = read_job_details(mcf["ProdConfScript"])    
       
-    print "{}\nJob check summary: {}".format(c3,cc1)
+    print "{}\nJob check summary: ".format(c5)
     print "{}--------------------------------------------------------------------------------".format(c5)
     print "{} Main Job Directory:          {}{}".format(c6,c0,mcf["JobDir"])
-    print "{} Directory basename:          {}{}".format(c6,c0,mcf["BaseDirName"])
+    print "{} Simulation basename:         {}{}".format(c6,c0,mcf["BaseDirName"])
     print "{} Sbatch start template:       {}{}.template".format(c6,c0,mcf["SbatchStartScript"])
     print "{} Sbatch prouction template:   {}{}.template".format(c6,c0,mcf["SbatchProdScript"])
     print "{} Optimization script:         {}{}".format(c6,c0,mcf["OptimizeConfScript"])
     print "{} Production script:           {}{}".format(c6,c0,mcf["ProdConfScript"])
     print "{} Namd modulefile:             {}{}".format(c6,c0,mcf["ModuleFile"])
 
-    print "{}Estimation of data to be generated from the production run of this simulation:{}".format(c5,c0)
+# calculating some numbers:
+    sr  = mcf["SimReplicates"]                          # no. of job replicates]
+    run = mcf["Runs"]                                   # no. of runs in each replicate
+    spr = jd_prod["steps"]                              # steps per run
+    dcd = jd_prod["dcdfreq"]                            # dcd write frequency
+    dfs = int(jd_prod["natom"])*12.0/(1024.0*1024.0)    # dcd frame size (based on number of atoms from psf)
+    tdf = int(spr)/int(dcd)*int(run)*int(sr)            # total dcd frames 
+    tpd = tdf*dfs/(1024)                                # total production data 
+    tst = (int(sr)*int(run)*int(jd_prod["timestep"])*int(spr))/1000000.0  # total simulated time
+
+
+    print "{}\nEstimation of data to be generated from the production run of this simulation:{}".format(c5,c0)
     print "{}--------------------------------------------------------------------------------".format(c5)
-    print "{} Simulation directories:   {}{}      {}Runs per directory:     {}{}".format(c6,c0,mcf["SimReplicates"],c6,c0,mcf["Runs"])
+    print "{} Simulation directories:   {}%-8s      {}Runs per directory:   {}%s".format(c6,c0,c6,c0) % (sr,run)
+    print "{} Steps per run:            {}%-8s      {}Dcdfreq in run:       {}%s".format(c6,c0,c6,c0) % (spr,dcd)
+    print "{} Dcd frame size(MB)        {}%-8.3f      {}Total dcd frames:     {}%s".format(c6,c0,c6,c0) % (dfs,tdf)
+
+    print " {}   Total simulated time:{}  %12.2f {}nanoseconds".format(c8,c0,cc1) %(tst)
+    print " {}   Total production data:{} %12.2f {}GB".format(c8,c0,cc1) %(tpd) 
+
+    print "{}\nNode configuration:{}".format(c5,c0)
+    print "{}--------------------------------------------------------------------------------".format(c5)
+    print "{}Sbatch Scripts:     {} %s , %s".format(c6,c5) % (mcf["SbatchStartScript"], mcf["SbatchProdScript"])      
+    print "{}nodes:              {} %-12s    ".format(c6,c0) % (mcf["nodes"])
+    print "{}walltime:           {} %-12s    ".format(c6,c0) % (mcf["Walltime"])
+    print "{}no. tasks per node: {} %-12s    ".format(c6,c0) % (mcf["ntpn"])
+    print "{}processes per node: {} %-12s    ".format(c6,c0) % (mcf["ppn"])
+    print "{}account:            {} %-12s    ".format(c6,c0) % (mcf["Account"])
+
+    print "{}\nChecking configuration input files:{}".format(c5,c0)
+    print "{}--------------------------------------------------------------------------------".format(c5)
+
+# checking if files in configuration exist where they are supposed to be. 
+    print "{}{}:{}".format(c5,mcf["OptimizeConfScript"],c0)
+    check_file_exists(jd_opt["psffilepath"])
+    check_file_exists(jd_opt["pdbfilepath"])
+    for i in jd_opt_pl:
+        check_file_exists(i)
+
+    print "{}{}:{}".format(c5,mcf["ProdConfScript"],c0)
+    check_file_exists(jd_prod["psffilepath"])
+    check_file_exists(jd_prod["pdbfilepath"])
+    for i in jd_prod_pl:
+        check_file_exists(i)
 
 
-    print jd_opt
-    print jd_prod
+def check_file_exists(target):
+    mesg1 = "{} found {} -ok!{}".format(c4,c5,c0)
+    mesg2 = "{} found {} -ok! - example file?{}".format(c4,c5,c0)
+    mesg3 = "{} not found. {} -Check confifuration file.{}".format(c1,c8,c0) 
 
-#    print "-- checking job input" 
-
+    ntarget = target[6:]        # strip off ../../
+    if os.path.exists(ntarget):
+        if "example" in target:
+            print "{} %-44s {}".format(cc1,mesg2) %(ntarget)    
+        else:
+            print "{} %-44s {}".format(cc1,mesg1) %(ntarget)
+    else:
+        print "{} %-24s {}".format(cc1,mesg3) %(ntarget)
+    
+    return
 
 def benchmark():
     """ -function to benchmark job """

@@ -1,0 +1,161 @@
+
+Toppar files for polarizable model based on the classical Drude
+oscillator.
+
+July 2012
+adm jr.
+
+The files in this directory and subdirectories are designed based on
+the implementation of the polarizable Drude oscillator model in
+version c35 of charmm.  The input format for the Drude polarizable
+model changed significantly upon going from C34 to C35.  The changes
+involved placing the majority of the information required to generate
+the information to run the Drude model in the RTF file.  This
+information may be used in conjunction with the "AUTOgenerate Drudes"
+command to create the new polarizable model.  This implementation is
+significantly faster than the previous version and is much more
+transparent to the user.  In association with these changes
+significant alterations in the toppar files to run the Drude
+polarizable modele have been made, as described below.  See
+doc/Drude.src for more details.
+
+toppar_drude_master_jun12_model_cmpd.str: toppar stream files that
+contains the RTF and parameter information required to run the Drude
+polarizable model for the published model compounds.  See references
+below.
+
+test_drude_model.inp: input to run all the residues in the above
+toppar stream file. Note that "drude dmass 0.4" must be included in
+the GENErate statement and "coor sdrude" and "coor shake" commands are
+essential prior to any updates/energies etc.
+
+NOTE: These parameters are developmental and may change in future
+release of the Drude polarizabile force field.
+
+subdirectory positive_drude
+
+This directory contains toppar files based on a positive Drude
+particle.  They are maintained for completeness; however, the negative
+Drude parameters will be the default in the future.
+
+toppar_drude_positive_swm4_ions.str: toppar information for SWM4-DP
+and ions based on a positive Drude.
+
+positive_drude_test_temp.inp: test case for the SWM4-DP and ions. See
+the 00readme file for details.
+
+References
+
+Review
+
+Lopes, P.E.M., B. Roux, R., MacKerell, Jr., A.D. “Molecular modeling
+and dynamics studies with explicit inclusion of electronic
+polarizability. Theory and applications.” Theoretical Chemistry
+Accounts, 124:11-28, 2009, PMC2888514
+
+
+General method
+
+Anisimov, V.M., Lamoureux, G., Vorobyov, I.V., Huang, N.,
+Roux, B. and MacKerell, A.D., Jr. :Determination of Electrostatic
+Parameters for a Polarizable Force Field Based on the Classical Drude
+Oscillator," Journal of Chemical Theory and Computing, 1:153-168,
+2005.
+
+Water model (see POSTIVE DRUDE REFERENCES below)
+
+SWM4-NDP, negative Drude (this will be the default model): Lamoureux,
+G., Harder, E., Vorobyov, I.V., Deng, Y., Roux, B. MacKerell, A.D.,
+Jr., A polarizable model of water for molecular dynamics simulations
+of biomolecules, Chemical Physics Letters, 2006, 418: 245-249.
+
+Alkanes: 
+
+Igor V. Vorobyov, Victor M. Anisimov and Alexander D. MacKerell,
+Jr. "Polarizable Empirical Force Field for Alkanes Based on the
+Classical Drude Oscillator Model," Journal of Physical Chemistry B,
+109: 18988-18999, 2005.
+
+Anisotropic polarizability model:
+
+Harder, E., Anisimov, V.M., Vorobyov, I.V., Lopes, P.E., Noskov, S.,
+MacKerell, Jr., A.D.  and Roux, B. Atomic Level Anisotropy in the
+Electrostatic Modeling of Lone Pairs for a Polarizable Force Field
+based on the Classical Drude Oscillator, Journal of Chemical Theory
+and Computation, 2: 1587-1597, 2006
+
+Ethers:
+
+Vorobyov, I.V., Anisimov, V.M., Greene, S., Venable, R.M., Moser, A.,
+Pastor, R.W. and MacKerell, A.D., Jr., Additive and Classical Drude
+Polarizable Force Fields for Linear and Cyclic Ethers, Journal of
+Chemical Theory and Computation, 3: 1120-1133, 2007.
+
+Baker, C. and MacKerell, Jr. A.D., “Polarizability Rescaling and
+atom-based Thole Scaling in the CHARMM Drude Polarizable Force Field
+for Ethers” Journal of Molecular Modeling, 16: 567-576, 2010,
+PMC2818097
+
+Sulfur containing compounds
+
+Zhu, X. and MacKerell, Jr., A.D. “Polarizable Empirical Force Field
+for Sulfur-Containing Compounds Based on the Classical Drude
+Oscillator Model,” Journal of Computational Chemistry, 12: 2330-2341,
+2010. PMC2923574
+
+Alcohols:
+
+Anisimov, V.M., Vorobyov, I.V., Roux, B., and MacKerell, A.D., Jr.
+Polarizable empirical force field for the primary and secondary
+alcohol series based on the classical Drude model. Journal of Chemical
+Theory and Computation, 3, 1927-1946, 2007.
+
+Amides:
+
+Harder, E., Anisimov, V.M., Whitfield, T., MacKerell, Jr., A.D., Roux,
+B. "Understanding the Dielectric Properties of Liquid Amides from a
+Polarizable Force Field," Journal of Physical Chemistry,
+112:3509-3521. 2008, PMID: 18302362
+
+Aromatics:
+
+Lopes, P., Lamoureux, G., Roux, B., MacKerell, Jr., A.D., "Polarizable
+Empirical Force Field for Aromatic Compounds Based on the Classical
+Drude Oscillator," Journal of Physical Chemistry, B. 111:2873-2885,
+2007
+
+Heterocycles
+
+Lopes, P.E.M., Lamoureux, G., MacKerell, Jr., A.D., “Polarizable
+Empirical Force Field for Nitrogen-containing Heteroaromatic Compounds
+Based on the Classical Drude Oscillator” Journal of Computational
+Chemistry, 30: 1821-1838, 2009, PMC251901
+
+Nucleic Acid Bases
+
+Baker, C.M., Anisimov, V.M., and MacKerell, Jr., A.D., “Development of
+CHARMM Polarizable Force Field for Nucleic Acid Bases Based on the
+Classical Drude Oscillator Model,” Journal of Physical Chemistry,
+B. 115; 580–596, 2011, PMC3166616
+
+Atomic Ions
+
+Yu, H., Whitfield, T.W., Harder, E., Lamoureux, G., Vorobyov, I.,
+Anisimov, V. M., MacKerell, A.D., Jr., and Roux, B. “Simulating
+Monovalent and Divalent Ions in Aqueous Solution Using a Drude
+Polarizable Force Field, “Journal of Chemical Theory and Computation,
+6: 774–786, 2010
+
+POSTIVE DRUDE REFERENCES
+
+SWM4-DP, positive Drude (works with ions of Lamoureux and Roux):
+Lamoureux, G., MacKerell, A.D., Jr., Roux, B. "A simple polarizable
+model of water based on classical Drude oscillators," Journal of
+Chemical Physics, 119: 5185-5197, 2003
+
+Ions
+
+Lamoureux, G.; Roux, B. Absolute Hydration Free Energy Scale for
+Alkali and Halide Ions Established from Simulations with a Polarizable
+Force Field, J. Phys. Chem. B 2006, 110, 3308
+

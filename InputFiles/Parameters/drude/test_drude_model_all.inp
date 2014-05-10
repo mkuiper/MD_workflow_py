@@ -1,0 +1,472 @@
+* DRUDE model compound topology file
+* New format, December 2009
+* Only releases residues tested
+*
+
+set toppar jun12_model_cmpds
+
+! Read topology and parameters first
+stream toppar_drude_master_@toppar.str
+
+ioformat extended
+
+!output energies
+open unit 90 form write name models_drude_all_@toppar_c35b3.ene
+
+!! Non-bonded parameters
+set 3 999.0  ! cutim
+set 4 999.0  ! cutnb
+set 5 995.0  ! ctonnb
+set 6 997.0  ! ctofnb
+set 7 switch
+set 8 atom
+set 9 vatom
+
+set count =  1
+set restotal = 46  !total number of residues
+
+label Big_Loop
+
+!Default for all residues
+set GenerateOption = first none last none setup warn drude dmass 0.4 show
+
+! The first is 0 and is the water
+if count eq 0 then
+  set residue swm4
+  set molec water
+  set sat1 H1
+  set sat2 OH2
+  set sat3 H2
+  set GenerateOptionSWM = Noangle Nodihedral first none last none setup warn drude dmass 0.4 show
+endif
+
+if count eq 1 then
+  set residue deet
+  set molec deet_tt
+  set sat1 C1
+  set sat2 C2
+  set sat3 O3
+endif
+
+if count eq 2 then
+  set residue dme
+  set molec dme_ttt
+  set sat1 C1
+  set sat2 O2
+  set sat3 C3
+endif
+
+if count eq 3 then
+  set residue dmet
+  set molec dmet_c2v
+  set sat1 C1
+  set sat2 O2
+  set sat3 C3
+endif
+
+if count eq 4 then
+  set residue meet
+  set molec meet_t
+  set sat1 C1
+  set sat2 C2
+  set sat3 O3
+endif
+
+if count eq 5 then
+  set residue thf
+  set molec thf_c2
+  set sat1 O1
+  set sat2 C1
+  set sat3 C2
+endif
+
+if count eq 6 then
+  set residue tf2m
+  set molec tf2m_c2
+  set sat1 O1
+  set sat2 C1
+  set sat3 C2
+endif
+
+if count eq 7 then
+  set residue thp
+  set molec thp_chair
+  set sat1 O1
+  set sat2 C1
+  set sat3 C2
+endif
+
+
+if count eq 8 then
+  set residue mpet
+  set molec mpet_tt
+  set sat1 C1
+  set sat2 O2
+  set sat3 C3
+endif
+
+if count eq 9 then
+  set residue mbet
+  set molec mbet_ttt
+  set sat1 C1
+  set sat2 O2
+  set sat3 C3
+endif
+
+if count eq 10 then
+  set residue epet
+  set molec epet_ttt
+  set sat1 C1
+  set sat2 C2
+  set sat3 O3
+endif
+
+!! The rest are alkanes
+!! and cycloalkanes
+
+if count eq 11 then
+  set residue etha 
+  set molec   etha
+  set sat1 H11
+  set sat2 C1
+  set sat3 C2
+endif
+
+if count eq 12 then
+  set residue prop1
+  set molec   prop1
+  set sat1 C1
+  set sat2 C2
+  set sat3 C3
+endif
+
+if count eq 13 then
+  set residue ibut
+  set molec   ibut
+  set sat1 C1
+  set sat2 CT
+  set sat3 C2
+endif
+
+if count eq 14 then
+  set residue buta
+  set molec   buta_t
+  set sat1 C1
+  set sat2 C2
+  set sat3 C3
+endif
+
+if count eq 15 then
+  set residue pent
+  set molec   pent_tt
+  set sat1 C1
+  set sat2 C2
+  set sat3 C3
+endif
+
+if count eq 16 then
+  set residue hexa 
+  set molec hexa_ttt
+  set sat1 C1
+  set sat2 C2
+  set sat3 C3
+endif
+
+if count eq 17 then
+  set residue hept 
+  set molec hept_tttt
+  set sat1 C1
+  set sat2 C2
+  set sat3 C3
+endif
+
+if count eq 18 then
+  set residue cpen
+  set molec cpen_c2
+  set sat1 C1
+  set sat2 C2
+  set sat3 C3
+endif
+
+if count eq 19 then
+  set residue chex
+  set molec chex_chair
+  set sat1 C1
+  set sat2 C2
+  set sat3 C3
+endif
+
+!! alcohols
+
+!meoh
+!etoh
+!pro1
+!buo1
+!pro2
+!buo2
+
+if count eq 20 then
+  set residue meoh
+  set sat1 HO1
+  set sat2 O1
+  set sat3 C1
+endif
+
+if count eq 21 then
+  set residue etoh
+  set sat1 HO1
+  set sat2 O1
+  set sat3 C1
+endif
+
+if count eq 22 then
+  set residue pro1
+  set sat1 HO1
+  set sat2 O1
+  set sat3 C1
+endif
+
+if count eq 23 then
+  set residue buo1
+  set sat1 HO1
+  set sat2 O1
+  set sat3 C1
+endif
+
+if count eq 24 then
+  set residue pro2
+  set sat1 HO2
+  set sat2 O2
+  set sat3 C2
+endif
+
+if count eq 25 then
+  set residue buo2
+  set sat1 HO2
+  set sat2 O2
+  set sat3 C2
+endif
+
+! aromatics
+! benzene
+if count eq 26 then
+  set residue benz
+  set sat1 cg
+  set sat2 cd1
+  set sat3 ce1
+endif
+
+! toluene
+if count eq 27 then
+  set residue tolu
+  set sat1 cg
+  set sat2 cd1
+  set sat3 ce1
+endif
+
+! Amides
+! acetamide
+if count eq 28 then
+  set residue acem
+  set sat1 n 
+  set sat2 c
+  set sat3 cl
+endif
+
+! N-methylacetamide
+if count eq 29 then
+  set residue nma
+  set sat1 n
+  set sat2 c
+  set sat3 cl
+endif
+
+! N,N-dimethylacetamide
+if count eq 30 then
+  set residue dma 
+  set sat1 n 
+  set sat2 c
+  set sat3 cl
+endif
+
+!heteroaromatics
+if count eq 31 then
+  set residue PYR   ! pyridine
+  set sat1 CG  
+  set sat2 CD1
+  set sat3 CE1
+endif
+
+if count eq 32 then
+  set residue PYRM  ! pyrimidine                       
+  set sat1 C4
+  set sat2 C5
+  set sat3 C6
+endif
+
+if count eq 33 then
+  set residue PYRR  ! pyrrole
+  set sat1 N5
+  set sat2 C1
+  set sat3 C2
+endif
+
+if count eq 34 then
+  set residue IMID  ! imidazole 
+  set sat1 ND1
+  set sat2 CG 
+  set sat3 CD2
+endif
+
+if count eq 35 then
+  set residue INDO  ! indole
+  set sat1 CG
+  set sat2 CD1
+  set sat3 NE1
+endif
+
+if count eq 36 then
+  set residue PUR1  ! purine 7-H                   
+  set sat1 C6
+  set sat2 C5
+  set sat3 C4
+endif
+
+if count eq 37 then
+  set residue PUR0 ! purine 9-H
+  set sat1 C6
+  set sat2 C5
+  set sat3 C4
+endif
+
+if count eq 38 then
+  set residue 4MIM  ! 4-methyl-imidazole            
+  set sat1 ND1
+  set sat2 CG
+  set sat3 CB 
+endif
+
+if count eq 39 then
+  set residue MIND  ! methyl-indole
+  set sat1 CG
+  set sat2 CD1
+  set sat3 NE1
+endif
+
+if count eq 40 then
+  set residue phen
+  set sat1 cg
+  set sat2 cd1
+  set sat3 ce1
+endif
+
+if count eq 41 then
+  set residue mesh
+  set sat1 hs1
+  set sat2 s1
+  set sat3 c1
+endif
+
+if count eq 42 then
+  set residue etsh
+  set sat1 hs1
+  set sat2 s1
+  set sat3 c1
+endif
+
+if count eq 43 then
+  set residue prsh
+  set sat1 hs1
+  set sat2 s1
+  set sat3 c1
+endif
+
+if count eq 44 then
+  set residue bush
+  set sat1 hs1
+  set sat2 s1
+  set sat3 c1
+endif
+
+if count eq 45 then
+  set residue dmds
+  set sat1 h11
+  set sat2 c1
+  set sat3 s1
+endif
+
+if count eq 46 then
+  set residue dms
+  set sat1 h21
+  set sat2 c2
+  set sat3 s1
+endif
+
+if count eq 46 then
+  set residue ems
+  set sat1 h31
+  set sat2 c3
+  set sat3 c2
+endif
+
+!.....................................................................................................................................
+! Generate psf and get compound properties here
+
+!reset generation variables for SWM4
+
+if @residue eq swm4 then
+  set GenerateOption = @GenerateOptionSWM
+endif
+
+read sequence card
+* @residue
+*  
+    1
+@residue
+generate @residue @GenerateOption 
+!ic generate
+!stop
+
+print psf
+
+!bomlev -2
+ic param
+ic print
+ic seed 1 @sat1 1 @sat2 1 @sat3
+ic build 
+coor sdrude
+coor shake
+coor print
+
+energy inbfrq -1 ihbfrq 0 @7 @8 @9 vfswitch cutnb @4 ctofnb @6 ctonnb @5
+coor print
+set enetmp ?ener
+
+mini powe nstep 1000 tolgrd 0.0001 nprint 100
+
+!! Calculate dipole moment
+coor orient
+coor dipole oxyz select all end 
+
+ic fill
+ic print
+
+!! Check molecular polarizability
+!VIBRAN
+!diag dscf fini step 0.001
+!END
+
+!write data to check
+write title unit 90
+* @residue @enetmp minimized E: ?ener ?grms ?rdip
+*
+
+!.....................................................................................................................................
+
+drude reset
+delete atom select all end
+
+incr count by 1
+if count le @restotal goto Big_Loop
+
+stop
