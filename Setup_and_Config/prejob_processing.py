@@ -1,16 +1,17 @@
 #!/usr/bin/env python
-# startjob_initialize.py 
 
-import os 
-
+import sys 
+from ../mdwf_lib import mdwf_functions as mdwf
 
 """ A python script to help setup the optimization phase of a MD simulation."""
 
-jobid = argv[2]
+jobid   = argv[2]
+jobtype = argv[3]
 
 def main():
     # read Local Job Details File
     ljdf = read_local_job_details_file()
+    
 
     # check Ok for job to run:
     check_for_pausejob()

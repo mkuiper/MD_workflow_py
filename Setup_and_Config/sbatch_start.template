@@ -24,13 +24,13 @@ module load python-xl   # python module file
 
 #--------------------------------------------------------------------------------
 # python script to initiate job and setup variables.
-python prejob_processing.py $SLURM_JOBID
+python prejob_processing.py $SLURM_JOBID  -optimize
 
 # run optimization job.
 srun  --ntasks-per-node $ntpn  namd2 +ppn $ppn $optimize_script >TempOutputFile.out 2>TempErrorFile.err;
 
 # python script to cleanup and redirect data. 
-python postjob_processing.py $SLURM_JOBID
+python postjob_processing.py $SLURM_JOBID -optimize
 
 # launch next phase: 
 sbatch sbatch_production

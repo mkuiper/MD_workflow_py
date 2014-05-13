@@ -245,8 +245,8 @@ def monitor_jobs():
 
     jobdirlist = get_current_joblist(JobDir)
     
-    print "{}JobDirName: {}|{}Progress:{}| JobId:  |Status:   |Cores: |Walltime: |Job_messages:{}".format(c2,c0,c3,c0,c0)
-    print "------------|---------|---------|----------|-------|----------|------------- "
+    print "JobDirName:   |Progress: |JobId:    |Status:   |Cores:  |Walltime: |Job_messages:"
+    print "--------------|----------|----------|----------|--------|----------|------------------ "
 
     for i in jobdirlist: 
         dir_path = JobDir + "/" + i  
@@ -260,7 +260,7 @@ def monitor_jobs():
         prog = str(ljdf_t["CurrentJobRound"] + ": " + ljdf_t["RunCountDown"] + "/" + ljdf_t["TotalRuns"]) 
 
 
-        print "%s%-12s%s%9s%s%9s %10s %7s %10s %s" % (c2,jdn[0:11], c3, prog,c0, cjid, qs[0:10], cores, wt, js) 
+        print "{}%-16s {}%8s {}%10s {}%10s {}%8s {}%10s {}%s".format(c1,c2,c3,c4,c5,c6,c7) % (jdn[0:11],prog,cjid,qs[0:10],cores,wt,js) 
 
 
 
@@ -407,7 +407,7 @@ def populate_job_directories():
 
 
     for i in jobdirlist:
-        print "{}populating: {}{}/{}".format(c5,c0,JobDir,i)
+        print "{}populating: {}{}/{}".format(c4,c0,JobDir,i)
         stagef['JobDirName'] = i
         ljdfile = JobDir + "/" + i +"/local_job_details.json"
         with open(ljdfile, 'w') as outfile:
@@ -509,7 +509,7 @@ def check_job():
 
 def check_file_exists(target):
     mesg1 = "{} found {} -ok!{}".format(c6,c5,c0)
-    mesg2 = "{} found {} -ok! - example file?{}".format(c6,c5,c0)
+    mesg2 = "{} found {} -ok!{} -example file?{}".format(c6,c5,c4,c0)
     mesg3 = "{} not found.{} -Check config file.{}".format(c1,c8,c0) 
 
     ntarget = target[6:]        # strip off ../../

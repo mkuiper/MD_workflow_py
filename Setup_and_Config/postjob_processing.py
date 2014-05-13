@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-# startjob_initialize.py 
 
+import sys
 import os 
 
 """ A python script to post-process data of a MD simulation."""
-
 jobid = argv[2]
+
 
 def optimization_cleanup():
     # read Local Job Details File
