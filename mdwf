@@ -19,9 +19,9 @@ Options:
   -c --checkjob     Checks job input before running simulations.
   -b --benchmark    Setup benchmarking runs for job optimization. 
   -s --start        Start all jobs in the /Main_Job_Dir.
-  -r --production   Restart all production jobs in /Main_Job_Dir.
+  -r --restart      Restart all production jobs in /Main_Job_Dir.
   --recover         Recover and cleanup stopped jobs. 
-  --stop_all_jobs   Stops all running jobs. 
+  --stop_jobs       Stops all running jobs. 
   --init_new_round  Initializes new Job round.  
   --erase_all_data  Erases all job data. Use with caution!
   --new_job_dir     Create new job directory.

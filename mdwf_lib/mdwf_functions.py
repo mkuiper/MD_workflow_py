@@ -5,6 +5,7 @@
 """
 
 import os
+import subprocess
 import sys 
 from collections import OrderedDict
 import json
@@ -128,16 +129,18 @@ def estimate_dcd_frame_size(psffile):
             if 'NATOM' in line:     # extract number of atoms from !NATOM line
                 nl = line.split()
                 atoms = nl[0]
+        f.close()    
     else:
-        print "{}Can't find {}{}{} in /InputFiles directory".format(c3,c4,psffile,c0)
-    f.close()    
+        print "{}Can't find {}{}{} in /InputFiles directory".format(c3,c1,psffile,c0)
     return atoms
 
 
 def check_for_pausejob():
     """checks for pausejob flag in local job details file"""
-    if os.path.isfile("pausejob"):
-        error = "\npausejob flag present. Stopping job.\n" 
+    pjf = ljdf["PauseJobFlag"]
+
+    if not (pjf=="0"):
+        error = "\nPausejob flag present. Stopping job.\n" 
         status = "Stopped: Pausejob flag present"
         update_local_job_status(status)
         sys.exit(error)
@@ -152,13 +155,37 @@ def initialize_job_countdown(equilib = "single"):
     return
         
 
-def check_disk_quota():
+def check_disk_quota(account,diskcutoff):
     """ function for checking that there is enough diskspace on the system before starting job"""
+# run a local systems script "mydisk"  and extract the information    
+    try:
+        disk = subprocess.check_output('mydisk')
+        dline = disk.split("\n")
+        for i in dline:
+            if account in i:               # looks for the line with the matching account number
+                usage = i.split()[-1][:-1] # extracts last 'word' of matching line cutting of '%'
+        a = int(usage)
+        b = int(diskcutoff)
+        if (a>b):
+            print "Warning: Account {} disk space quota low. Usage: {} % ".format(account,a)          
+            status = "Stopped: Disk quota too low."
+            error = "\nDiskspace too low. usage: {}%  disk limit set to: {}%\n".format(a,b) 
+            ljdf["PauseJobFlag"] = "1"
+            update_local_job_status(status)
+            sys.exit(error)
+    except:
+        print "Can't run 'mydisk' on system. Can't check disk quota for account {}.".format(account) 
+    
+    
     return
 
 
 def log_job_details(jobid):
     """logging cluster job details"""
+# update job details
+    ljdf["CurrentJobId"] = jobid
+    record_start_time()    
+
     return
 
 
@@ -191,6 +218,7 @@ def check_job_fail():
     if runtime < cutoff: 
         error = "Job ran shorter than expected. Possible crash." 
         status = "Short run time: crash? Stopped Job"
+        ljdf["PauseJobFlag"] = "1"
         update_local_job_status(status)
         sys.exit(error) 
     return 
@@ -200,7 +228,6 @@ def log_job_timing():
     """ log length of job in human readable format """
     return
 
-
 def create_job_basename():
     """ creates a time stamped basename for current job"""
     ts = time.time()
@@ -208,18 +235,14 @@ def create_job_basename():
     basename = stamp + ljdf["JobBaseName"] + "_r_" + ljdf["CurrentJobRound"]
     return basename 
 
-
 def update_local_job_status(status):
     """ updates local job status """
-
     ljdf["JobStatus"] = status
     return 
-
 
 def redirect_optimization_output():
     """ move output of optimization phase in all the right places."""
     return
-
 
 def redirect_production_output():
     """ move output of production_runs to all the right places."""
@@ -327,7 +350,7 @@ def initialize_job_directories():
 def populate_job_directories():
     """ -function to populate or update job directories with job scripts """
 
-# reading information from master_config_file and local job details template
+# reading information from master_config_file and local job details t/emplate
     ljdf_t = read_local_job_details_file()
     mcf    = read_master_config_file()
 
@@ -348,6 +371,8 @@ def populate_job_directories():
         Walltime    = mcf["Walltime"]
         sbstart     = mcf["SbatchStartScript"]
         sbprod      = mcf["SbatchProdScript"]
+        dsco        = mcf["DiskSpaceCutOff"]
+        jft         = mcf["JobFailTime"]
 
     except:
         print "\n{}Error reading master_config_file variables.{}\n".format(c4,c0)
@@ -360,10 +385,12 @@ def populate_job_directories():
     stagef = ljdf_t           
 
 # modify elements in staging dictionary file:
-    stagef['TOP_DIR']      = cwd
-    stagef['CurrentRound'] = Round
-    stagef['TotalRuns']    = Runs
-    stagef['JobBaseName']  = JobBaseName
+    stagef['TOP_DIR']          = cwd
+    stagef['CurrentRound']     = Round
+    stagef['TotalRuns']        = Runs
+    stagef['JobBaseName']      = JobBaseName
+    stagef['JobFailTime']      = jft
+    stagef['DiskSpaceCutOff']  = dsco
 
 # check to see if there actually are any job directories to fill:
     jobdirlist = get_current_joblist(JobDir)
@@ -405,7 +432,6 @@ def populate_job_directories():
             line = line.replace('production_script=X', nprod)   
             sys.stdout.write(line)   
 
-
     for i in jobdirlist:
         print "{}populating: {}{}/{}".format(c4,c0,JobDir,i)
         stagef['JobDirName'] = i
@@ -436,13 +462,9 @@ def populate_job_directories():
             except:
                 print "{}Can't copy .conf scripts from /Setup_and_Config/{} ".format(c4, c0)  
 
-
-
-
 # remove tempfiles. 
     os.remove('sb_start_temp')
     os.remove('sb_prod_temp')
-
 
 
 def check_job():
@@ -471,7 +493,6 @@ def check_job():
     tpd = tdf*dfs/(1024)                                # total production data 
     tst = (int(sr)*int(run)*int(jd_prod["timestep"])*int(spr))/1000000.0  # total simulated time
 
-
     print "{}\nEstimation of data to be generated from the production run of this simulation:{}".format(c5,c0)
     print "{}--------------------------------------------------------------------------------".format(c5)
     print "{} Simulation directories:   {}%-8s      {}Runs per directory:   {}%s".format(c6,c0,c6,c0) % (sr,run)
@@ -479,8 +500,10 @@ def check_job():
     print "{} Dcd frame size(MB)        {}%-8.3f      {}Total dcd frames:     {}%s".format(c6,c0,c6,c0) % (dfs,tdf)
 
     print " {}   Total simulated time:{}  %12.2f {}nanoseconds".format(c8,c0,cc1) %(tst)
-    print " {}   Total production data:{} %12.2f {}GB".format(c8,c0,cc1) %(tpd) 
-
+    if not (tpd==0):
+        print " {}   Total production data:{} %12.2f {}GB".format(c8,c0,cc1) %(tpd) 
+    else:
+        print " {}   Total production data:{} %12.2f {}GB {} - error in calculating frame size. No psf file?".format(c8,c1,cc1,c0) %(tpd) 
     print "{}\nNode configuration:{}".format(c5,c0)
     print "{}--------------------------------------------------------------------------------".format(c5)
     print "{}Sbatch Scripts:     {} %s , %s".format(c6,c5) % (mcf["SbatchStartScript"], mcf["SbatchProdScript"])      
@@ -488,7 +511,10 @@ def check_job():
     print "{}walltime:           {} %-12s    ".format(c6,c0) % (mcf["Walltime"])
     print "{}no. tasks per node: {} %-12s    ".format(c6,c0) % (mcf["ntpn"])
     print "{}processes per node: {} %-12s    ".format(c6,c0) % (mcf["ppn"])
-    print "{}account:            {} %-12s    ".format(c6,c0) % (mcf["Account"])
+    if not mcf["Account"] == "VR0000":
+        print "{}account:            {} %-12s    ".format(c6,c0) % (mcf["Account"])
+    else:
+        print "{}account:            {} %-12s{}-have you set your account?{} ".format(c6,c1,c8,c0) % (mcf["Account"])
 
     print "{}\nChecking configuration input files:{}".format(c5,c0)
     print "{}--------------------------------------------------------------------------------".format(c5)
@@ -512,7 +538,7 @@ def check_file_exists(target):
     mesg2 = "{} found {} -ok!{} -example file?{}".format(c6,c5,c4,c0)
     mesg3 = "{} not found.{} -Check config file.{}".format(c1,c8,c0) 
 
-    ntarget = target[6:]        # strip off ../../
+    ntarget = target[6:]        # strip off "../../"
     if not "../../" in target[0:6]:
         print "{}unexpected path structure to input files:{}".format(c4,c0)
  
@@ -528,7 +554,29 @@ def check_file_exists(target):
 
 def benchmark():
     """ -function to benchmark job """
-    print "-- benchmarking jobs."
+# read job details:        
+    mcf = read_master_config_file()
+    jd_opt,  jd_opt_pl  = read_job_details(mcf["OptimizeConfScript"])    
+    print "{} Setting up jobs for benchmarking based on job config files.".format(c0)
+# create temporary files/ figure out job size. 
+        
+
+# move files to /Setup_and_Config/Benchmarking / create dictionary/ json file.
+
+
+# optimize job/ create sbatch_files. 
+
+
+# start benchmarking jobs: 
+
+
+# extract results 
+
+
+# plot results. 
+
+
+
 
 
 def get_current_joblist(JobDir):
