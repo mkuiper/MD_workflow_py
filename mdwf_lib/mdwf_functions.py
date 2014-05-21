@@ -251,7 +251,7 @@ def redirect_production_output():
 
 def countdown_timer():
     """ function to adjust countdown timer """
-
+    
 
 def check_if_job_running(JobDir,sim):
     """ function to check if job already running in directory """ 
@@ -259,6 +259,7 @@ def check_if_job_running(JobDir,sim):
     ljdf_t = read_local_job_details_file(dir_path, "local_job_details.json") 
     cjid = ljdf_t["CurrentJobId"]
     
+    return status
 
 def monitor_jobs():
     """ -function to monitor jobs status on the cluster """ 
@@ -591,8 +592,9 @@ def start_all_jobs():
     """ -function to start_all_jobs """
     print "-- starting all jobs."
     mcf = read_master_config_file()
-    JobDir  = mcf["JobDir"]
-
+    JobDir       = mcf["JobDir"]
+    StartCommand = mcf["SbatchStartScript"]
+    cwd = os.getcwd()
     jobdirlist = get_current_joblist(JobDir)
 
     for i in jobdirlist:    
@@ -601,12 +603,36 @@ def start_all_jobs():
         if cjs == "running":
             print "Job already running in JobDir/{} ".format(i)
         else:
-            print "submit"            
-
+            path = JobDir + '/' + i 
+            os.chdir(path)
+            try:
+                subprocess.Popen(['sbatch', StartCommand])
+            except:
+                print "can't launch:  sbatch {} ".format(StartCommand)
+            os.chdir(cwd)
 
 def restart_all_production_jobs():
     """ -function to restart_all_production_jobs """
     print "-- restarting production jobs."
+    mcf = read_master_config_file()
+    JobDir       = mcf["JobDir"]
+    ProdCommand = mcf["SbatchProdScript"]
+    cwd = os.getcwd()
+    jobdirlist = get_current_joblist(JobDir)
+
+    for i in jobdirlist:    
+        # check current job status
+        cjs = check_if_job_running(JobDir,i)
+        if cjs == "running":
+            print "Job already running in JobDir/{} ".format(i)
+        else:
+            path = JobDir + '/' + i 
+            os.chdir(path)
+            try:
+                subprocess.Popen(['sbatch', ProdCommand])
+            except:
+                print "can't launch:  sbatch {} ".format(ProdCommand)
+            os.chdir(cwd)
 
 
 def recover_all_jobs():

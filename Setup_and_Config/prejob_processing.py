@@ -9,17 +9,16 @@ jobid   = argv[2]
 jobtype = argv[3]
 
 def main():
-    # read Local Job Details File
+    # read Local Job Details File and master_config file
     ljdf = read_local_job_details_file()
     
-
     # check Ok for job to run:
+    check_disk_quota(ljdf["Account"],ljdf["DiskSpaceCutoff"])
     check_for_pausejob()
-    check_disk_quota()
 
     # record job details:
-    log_job_details()
-    record_start_time()
+    log_job_details(jobid)
+#    record_start_time()
     update_job_status("ready")
     
 if __name__ = "__main__":

@@ -76,7 +76,7 @@ def process(action):
         print "starting jobs:".format(cc1) 
         mdwf.start_all_jobs()
 
-    if action == '--production':
+    if action == '--restart':
         print "restarting production jobs:".format(cc1) 
         mdwf.restart_all_production_jobs()
 
