@@ -6,11 +6,13 @@
 "JobDirName"     : "unassigned",
 "JobDirNumber"   : "unassigned",
 "JobBaseName"    : "unassigned",
+"Account"        : "unassigned",
 
 "CurrentJobId"   : "0",
 "QueueStatus"    : "NotStarted",
 "JobStatus"      : "NotStarted",
 "ErrorsMessages" : "0",
+"Nodes"          : "0",
 "Cores"          : "0",
 "WallTime"       : "0",
 
@@ -18,12 +20,14 @@
 "RunCountDown"   : "0",
 "TotalRuns"      : "0",
 
-"PauseFlag"      : "0",
+"PauseJobFlag"   : "0",
 "LastTimingValue": "0",
 "OldSlurmFileID" : "0",
 "LastJobId"      : "0",
 "JobStartTime"   : "0",
 "JobFinishTime"  : "0",
+"JobFailTime"    : "0",
+"DiskSpaceCutoff": "0",
 
 "CustomFlag1"    : "0",
 "CustomFlag2"    : "0",

@@ -10,8 +10,8 @@ dynamics jobs run on a cluster based on a customisable directory structure.
 
 \033[22mUsage: mdwf (options) [<dir>] 
        mdwf -h |--help 
-\033[2m
-Options:
+\033[34;1m
+Options: \033[0m
   -h --help         Show this screen. 
   -m --monitor      Monitor Job status on cluster. 
   -i --initialize   Initialize jobs directories in /Main_Job_Dir. 
@@ -19,9 +19,9 @@ Options:
   -c --checkjob     Checks job input before running simulations.
   -b --benchmark    Setup benchmarking runs for job optimization. 
   -s --start        Start all jobs in the /Main_Job_Dir.
-  -r --production   Restart all production jobs in /Main_Job_Dir.
+  -r --restart      Restart all production jobs in /Main_Job_Dir.
   --recover         Recover and cleanup stopped jobs. 
-  --stop_all_jobs   Stops all running jobs. 
+  --stop_jobs       Stops all running jobs. 
   --init_new_round  Initializes new Job round.  
   --erase_all_data  Erases all job data. Use with caution!
   --new_job_dir     Create new job directory.
@@ -76,7 +76,7 @@ def process(action):
         print "starting jobs:".format(cc1) 
         mdwf.start_all_jobs()
 
-    if action == '--production':
+    if action == '--restart':
         print "restarting production jobs:".format(cc1) 
         mdwf.restart_all_production_jobs()
 

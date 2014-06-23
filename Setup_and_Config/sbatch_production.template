@@ -19,8 +19,8 @@ ppn=X          # processors per node:
 
 production_script=X
 
-module load X           # module file:
-module load python-xl   # python module file
+module load X                # module file:
+module load python-fe/2.7.3  # python module file
 
 #--------------------------------------------------------------------------------
 # python script to initiate job and setup variables.

@@ -1,47 +1,25 @@
 #!/usr/bin/env python
-# startjob_initialize.py 
 
-import os 
+#!/usr/bin/env python
 
-""" A python script to post-process data of a MD simulation."""
+import sys
+from ../mdwf_lib import mdwf_functions as mdwf
 
-jobid = argv[2]
+""" A python script to post process data files after a MD simulation."""
 
-def optimization_cleanup():
-    # read Local Job Details File
-    ljdf = read_local_job_details_file()
+jobid   = argv[2]
+jobtype = argv[3]
 
-    # check that job ran as expected:
-    record_finish_time()
-    check_job_fail()
-    log_job_timing()
+def main():
 
-    update_job_status("ok")
-    redirect_optimization_output()
-
-
-def production_cleanup():
-    # series of functions to perform a typical data post-processing
-    # read Local Job Details File
-    ljdf = read_local_job_details_file()
-
-    # check that job ran as expected:
-    record_finish_time()
-    check_job_fail()
-    log_job_timing()
-
-    # redirect data
-    update_job_status("ok")
-    check_md5sum(filename)
-    redirect_production_output()
+    check_job_runtime()
+    check_for_clean_exit()
     
-    # adjust countdown timer:       
-    countdown_timer()
-    check_for_pausejob()
-    update_job_status("ok:postjob cleanup")
+    redirect_output()
     
-    # ready to relaunch. 
     
+
+
+
 if __name__ = "__main__":
-    production_cleanup()
-
+    main()
