@@ -10,8 +10,8 @@ dynamics jobs run on a cluster based on a customisable directory structure.
 
 \033[22mUsage: mdwf (options) [<dir>] 
        mdwf -h |--help 
-\033[2m
-Options:
+\033[34;1m
+Options: \033[0m
   -h --help         Show this screen. 
   -m --monitor      Monitor Job status on cluster. 
   -i --initialize   Initialize jobs directories in /Main_Job_Dir. 

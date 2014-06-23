@@ -49,22 +49,33 @@ def read_master_config_file():
     return mcf
         
 
-def read_local_job_details_file(path="Setup_and_Config",ljdf_target="job_details_template.json"):  
+def read_local_job_details_file(path="Setup_and_Config", ljdf_target="job_details_template.json"):  
     """ Reads parameters from json file: Setup_and_Config/job_details_template.json """  
 
-    target=os.getcwd() + "/" + path + "/" + ljdf_target
+    target = os.getcwd() + "/" + path + "/" + ljdf_target
     if os.path.isfile(target):
-        local_json = open(target)
-        try: 
+	try:
+            local_json = open(target)
             ljdf = json.load(local_json,object_pairs_hook=OrderedDict)
             local_json.close()
-        except:
-            print "\n{}Possible json format errors of {}'master_config_file'{}\n".format(c3,c3,c0)
+	except:
+	    print "\n{}Possible json format errors of {}'{}'{}\n".format(c3,c3,ljdf_target,c0)
     else:
-        error = "\nCan't see '{}' in directory:{}/{}/ ".format(ljdf_target,os.getcwd(),path) 
-        sys.exit(error)
+        print"\nCan't see {}'{}'{} in directory:{}/{}/ ".format(c5,ljdf_target,c0,os.getcwd(),path) 
+        print"-have you populated the directories? "
+        sys.exit()
+
     return ljdf
 
+def update_ljdf(key,value):
+    """ function to update a local job details file. """ 
+    with open('local_job_details.json', 'r+') as f:
+        data = json.load(f,object_pairs_hook=OrderedDict)
+	data[key] = value	
+	f.seek(0)
+	json.dump(data, f, indent=2)
+	f.close()
+    return
 
 def read_job_details(targetfile):
     """ Extracts simulation details from given namd config file and returns a dictionary. """
@@ -188,7 +199,7 @@ def log_job_details(jobid):
         jobdetails = subprocess.check_output(["scontrol", "show", "job", str(jobid)])
         jdsplit = re.split(' |\n', jobdetails)  
 # add details to local job details file:
-        for i in jdsplit:
+    	for i in jdsplit:
             if "JobState=" in i:
                 ljdf["JobStatus"] = i.split("=")[1]
             if "NumNodes=" in i:
@@ -200,8 +211,8 @@ def log_job_details(jobid):
             if "TimeLimit=" in i:
                 ljdf["WallTime"] = i.split("=")[1]
     except:
-        print" "
-
+        print "Can't check jobstatus"
+ 
     return
 
 def record_start_time():
@@ -273,10 +284,8 @@ def check_if_job_running(JobDir,sim):
     dir_path = JobDir + "/" + sim
     ljdf_t = read_local_job_details_file(dir_path, "local_job_details.json") 
     cjid = ljdf_t["CurrentJobId"]
-            
-    status = "not_running"
- 
-    return status
+    
+    return 
 
 def monitor_jobs():
     """ -function to monitor jobs status on the cluster """ 
@@ -291,7 +300,8 @@ def monitor_jobs():
 
     for i in jobdirlist: 
         dir_path = JobDir + "/" + i  
-        ljdf_t = read_local_job_details_file(dir_path, "local_job_details.json") 
+	ljdf_t = read_local_job_details_file(dir_path, "local_job_details.json") 
+
         jdn  = ljdf_t["JobDirName"]
         qs   = ljdf_t["QueueStatus"]
         js   = ljdf_t["JobStatus"]
@@ -301,7 +311,7 @@ def monitor_jobs():
         prog = str(ljdf_t["CurrentJobRound"] + ": " + ljdf_t["RunCountDown"] + "/" + ljdf_t["TotalRuns"]) 
 
 
-        print "{}%-16s {}%8s {}%10s {}%10s {}%8s {}%10s {}%s".format(c1,c2,c3,c4,c5,c6,c7) % (jdn[0:11],prog,cjid,qs[0:10],cores,wt,js) 
+        print "{}%-16s {}%8s {}%10s {}%10s {}%8s {}%10s {}%s{}".format(c1,c2,c3,c4,c5,c6,c7,c0) % (jdn[0:11],prog,cjid,qs[0:10],cores,wt,js) 
 
 
 
@@ -368,7 +378,7 @@ def initialize_job_directories():
 def populate_job_directories():
     """ -function to populate or update job directories with job scripts """
 
-# reading information from master_config_file and local job details t/emplate
+# reading information from master_config_file and local job details template
     ljdf_t = read_local_job_details_file()
     mcf    = read_master_config_file()
 
@@ -437,6 +447,7 @@ def populate_job_directories():
 # make temporary copies of sbatch templates:     
     shutil.copy(sb_start_template,'sb_start_temp')
     shutil.copy(sb_prod_template,'sb_prod_temp')
+
 # make substitutions:
     for f in ["sb_start_temp","sb_prod_temp"]:
         for line in fileinput.FileInput(f,inplace=True):
@@ -476,15 +487,15 @@ def populate_job_directories():
         for conffile in glob.glob(r'Setup_and_Config/*.conf'):
             try:
                 shutil.copy2(conffile, jobdir)
-                print "   {}copying:{}{} {} ".format(c2,c0,cc1, conffile)
+                print "   {}copying:{}{} {}{}".format(c2,c0,cc1, conffile,c0)
             except:
                 print "{}Can't copy .conf scripts from /Setup_and_Config/{} ".format(c4, c0)  
 
 # remove tempfiles. 
     os.remove('sb_start_temp')
     os.remove('sb_prod_temp')
-
-
+    return
+	
 def check_job():
     """ -function to check the input of the current job and calculate resources required."""
     mcf = read_master_config_file()
@@ -624,9 +635,12 @@ def start_all_jobs():
             os.chdir(path)
             try:
                 subprocess.Popen(['sbatch', StartCommand])
+    		time.sleep(0.5)
             except:
                 print "can't launch:  sbatch {} ".format(StartCommand)
             os.chdir(cwd)
+    print "Done.\n"	    
+    return	
 
 def restart_all_production_jobs():
     """ -function to restart_all_production_jobs """
@@ -650,17 +664,17 @@ def restart_all_production_jobs():
             except:
                 print "can't launch:  sbatch {} ".format(ProdCommand)
             os.chdir(cwd)
-
+    return
 
 def recover_all_jobs():
     """ -function to recover and restore crashed jobs """
     print "-- recovering crashed jobs."
-
+    return	
 
 def stop_jobs():
     """ -function to stop all jobs, -either immediately or gently."""
     print "-- stopping all jobs"
-
+    return
 
 def new_round():
     """ -function to set up a new round of simulations."""
@@ -668,6 +682,8 @@ def new_round():
 
 def erase_all_data():
     """ -function to erase all data for a clean start.  Use with caution!"""
+
+    print "-- cloning data directory!!" 
     mcf = read_master_config_file()
     cwd = os.getcwd()
     print "\nWe are about to erase all data in this directory, which can be useful" 
@@ -693,7 +709,8 @@ def erase_all_data():
     else: 
         print "Phew! Nothing erased."
 
-
+    return
+	
 def clone():
     """ -function to clone directory without data, but preseving input files."""
     print "-- cloning data directory!!" 

@@ -20,7 +20,7 @@ ppn=X         # processors per node       <- not needed for pami version.
 optimize_script=X      
 
 module load X           # namd module file
-module load python-xl   # python module file
+module load python-fe/2.7.3   # python module file
 
 #--------------------------------------------------------------------------------
 # python script to initiate job and setup variables.
@@ -34,5 +34,4 @@ python postjob_processing.py $SLURM_JOBID -optimize
 
 # launch next phase: 
 sbatch sbatch_production
-
 #--------------------------------------------------------------------------------

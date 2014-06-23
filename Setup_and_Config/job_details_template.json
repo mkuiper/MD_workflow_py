@@ -12,6 +12,7 @@
 "QueueStatus"    : "NotStarted",
 "JobStatus"      : "NotStarted",
 "ErrorsMessages" : "0",
+"Nodes"          : "0",
 "Cores"          : "0",
 "WallTime"       : "0",
 
