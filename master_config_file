@@ -1,6 +1,6 @@
 {
 "Comment0"     : "Master_Config_File v0.1",
-"Account"      : "VR0000",
+"Account"      : "VR0021",
 
 "Comment1"     : "BlueGene/Q Namd Job parameters:",
 "nodes"        : "2",

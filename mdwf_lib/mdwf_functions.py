@@ -302,8 +302,7 @@ def monitor_jobs():
 
 
         print "{}%-16s {}%8s {}%10s {}%10s {}%8s {}%10s {}%s".format(c1,c2,c3,c4,c5,c6,c7) % (jdn[0:11],prog,cjid,qs[0:10],cores,wt,js) 
-
-
+    print "{}done.".format(c0)
 
 
 def md5sum(filename, blocksize=65536):
@@ -483,7 +482,7 @@ def populate_job_directories():
 # remove tempfiles. 
     os.remove('sb_start_temp')
     os.remove('sb_prod_temp')
-
+    print "{}done populating directories".format(c0)
 
 def check_job():
     """ -function to check the input of the current job and calculate resources required."""
@@ -613,6 +612,7 @@ def start_all_jobs():
     StartCommand = mcf["SbatchStartScript"]
     cwd = os.getcwd()
     jobdirlist = get_current_joblist(JobDir)
+    time.sleep(1)       # introduce small delay. 
 
     for i in jobdirlist:    
         # check current job status
@@ -626,6 +626,7 @@ def start_all_jobs():
                 subprocess.Popen(['sbatch', StartCommand])
             except:
                 print "can't launch:  sbatch {} ".format(StartCommand)
+            time.sleep(0.2)   
             os.chdir(cwd)
 
 def restart_all_production_jobs():
