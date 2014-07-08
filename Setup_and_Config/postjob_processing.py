@@ -1,25 +1,37 @@
 #!/usr/bin/env python
 
-#!/usr/bin/env python
+import os
+import sys 
+import json
+from collections import OrderedDict
 
-import sys
-from ../mdwf_lib import mdwf_functions as mdwf
+lib_path = os.path.abspath('../../mdwf_lib')
+sys.path.append(lib_path)
+import mdwf_functions as mdwf
 
-""" A python script to post process data files after a MD simulation."""
+""" A python script to help with postprocessing of data of a MD simulation."""
 
-jobid   = argv[2]
-jobtype = argv[3]
+jobid   = sys.argv[1]
+jobtype = sys.argv[2]
 
 def main():
+    # open and modify local job details file. 
+    ljdf_t = mdwf.read_local_job_details_file(".", "local_job_details.json")
+    ljdf_t['CurrentJobId'] = jobid
+    ljdf_t['JobStatus'] = 'finished'
+    if "opt" in jobtype:
+        ljdf_t["RunCountDown"] = ljdf_t["TotalRuns"]
 
-    check_job_runtime()
-    check_for_clean_exit()
+
+    with open("local_job_details.json", 'w') as outfile:
+        json.dump(ljdf_t, outfile, indent=2)
+    outfile.close()
+
+#  move around data. 
+ 
     
-    redirect_output()
-    
-    
-
-
-
-if __name__ = "__main__":
+if __name__ == "__main__":
     main()
+
+
+

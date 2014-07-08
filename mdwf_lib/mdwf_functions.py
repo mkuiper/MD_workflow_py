@@ -679,11 +679,11 @@ def erase_all_data():
     print "{}/JobLog/                         {}- Job logs.{}".format(c2,cc1,c0) 
     print "{}/Setup_and_Config/Benchmarking/  {}- Benchmarking data.{}".format(c2,cc1,c0) 
     
-    print("\nPress 'enter' to quit or type: '{}erase all my data{}':").format(c1,c0)
+    print("\nPress 'enter' to quit or type: '{}erase all my data{}':").format(c4,c0)
     str = raw_input("")
     if str == "erase all my data": 
         print "Ok, well if you say so...."
-        for j in ["/Main_Job_Dir/","/JobLog/","/Setup_and_Config/Benchmarking/"]:
+        for j in ["/Main_Job_Dir/"]:
 	    DIR = cwd + j 
             print "erasing all files in:{}".format(DIR)
             DIR_list = os.listdir(DIR)

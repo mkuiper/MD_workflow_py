@@ -33,7 +33,7 @@ srun  --ntasks-per-node $ntpn  namd2 +ppn $ppn $production_script >temporary_out
 python postjob_processing.py
 
 # launch next phase: 
-sbatch sbatch_production
+# sbatch sbatch_production  <--- leave off for now. 
 
 
 
