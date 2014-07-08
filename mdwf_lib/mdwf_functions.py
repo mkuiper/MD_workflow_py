@@ -689,7 +689,9 @@ def erase_all_data():
             DIR_list = os.listdir(DIR)
             for i in DIR_list:
                 DIRx = DIR + i
-                shutil.rmtree(DIRx)
+		if os.path.isdir(DIRx):
+		    shutil.rmtree(DIRx)
+
         print "\nOh the humanity. I sure hope that wasn't anything important."
     else: 
         print "Phew! Nothing erased."
