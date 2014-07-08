@@ -137,13 +137,19 @@ def estimate_dcd_frame_size(psffile):
 
 def check_for_pausejob():
     """checks for pausejob flag in local job details file"""
-    pjf = ljdf["PauseJobFlag"]
+    #pjf = ljdf["PauseJobFlag"]
 
-    if not (pjf=="0"):
+    if os.path.isfile('pausejob'):
         error = "\nPausejob flag present. Stopping job.\n" 
         status = "Stopped: Pausejob flag present"
         update_local_job_status(status)
         sys.exit(error)
+
+    #if not (pjf=="0"):
+    #    error = "\nPausejob flag present. Stopping job.\n" 
+    #    status = "Stopped: Pausejob flag present"
+    #    update_local_job_status(status)
+    #    sys.exit(error)
     return
 
 
