@@ -26,6 +26,11 @@ module load python-fe/2.7.3  # python module file
 # python script to initiate job and setup variables.
 python prejob_processing.py $SLURM_JOBID
 
+# prevent job from running if pausejob is present
+if [ -f pausejob ]; then
+ exit
+fi
+
 # run optimization job.
 srun  --ntasks-per-node $ntpn  namd2 +ppn $ppn $production_script >temporary_outputfile.out 2>temporary_errorsfile.err;
 
