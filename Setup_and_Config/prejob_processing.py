@@ -31,8 +31,11 @@ def main():
 
     # check Ok for job to run:
 #    mdwf.check_disk_quota(ljdf["Account"],ljdf["DiskSpaceCutoff"])
-    mdwf.check_for_pausejob()
-    
+    pauseflag = mdwf.check_for_pausejob()
+    if pauseflag:
+        print     
+
+
     # initialize job counter if optimize flag set.  
     
 if __name__ == "__main__":
