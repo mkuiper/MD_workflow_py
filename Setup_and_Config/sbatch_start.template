@@ -19,12 +19,17 @@ ppn=X         # processors per node       <- not needed for pami version.
 
 optimize_script=X      
 
-module load X           # namd module file
-module load python-fe/2.7.3   # python module file
+module load X			# namd module file
+module load python-fe/2.7.3	# python module file
 
 #--------------------------------------------------------------------------------
 # python script to initiate job and setup variables.
 python prejob_processing.py $SLURM_JOBID  -optimize
+
+# prevent job from running if pausejob is present
+if [ -f pausejob ]; then
+ exit
+fi
 
 # run optimization job.
 srun  --ntasks-per-node $ntpn  namd2 +ppn $ppn $optimize_script >TempOutputFile.out 2>TempErrorFile.err;
