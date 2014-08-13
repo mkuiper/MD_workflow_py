@@ -3,6 +3,7 @@
 import os
 import sys 
 import json
+import time
 from collections import OrderedDict
 
 lib_path = os.path.abspath('../../mdwf_lib')
@@ -19,6 +20,7 @@ def main():
     ljdf_t = mdwf.read_local_job_details_file(".", "local_job_details.json")
     ljdf_t['CurrentJobId'] = jobid
     ljdf_t['JobStatus'] = 'submitted'
+    ljdf_t['JobStartTime'] = time.time()
     if "opt" in jobtype:
         ljdf_t["RunCountDown"] = ljdf_t["TotalRuns"]
 
