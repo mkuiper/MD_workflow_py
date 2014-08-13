@@ -21,6 +21,13 @@ def main():
     ljdf_t['CurrentJobId'] = jobid
     ljdf_t['JobStatus'] = 'finished'
     ljdf_t['JobFinishTime'] = time.time()
+    
+    #create pausejob flag if the simulation has crashed
+    start = int(ljdf_t['JobStartTime'])
+    finish = int(ljdf_t['JobFinishTime'])
+    limit = int(ljdf_t['JobFailTime'])
+    mdwf.check_job_fail(start,finish,limit)
+
     if "opt" in jobtype:
         ljdf_t["RunCountDown"] = ljdf_t["TotalRuns"]
 
@@ -28,8 +35,6 @@ def main():
     with open("local_job_details.json", 'w') as outfile:
         json.dump(ljdf_t, outfile, indent=2)
     outfile.close()
-
-    mdwf.check_job_fail() #create pausejob flag if job has crashed
 
 #  move around data. 
  
