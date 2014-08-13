@@ -239,7 +239,7 @@ def record_finish_time():
     return 
 
 
-def check_job_fail():
+def check_job_fail(start,finish,limit):
     """ check for job failure """
     runtime = finish - start
     if runtime < limit:
