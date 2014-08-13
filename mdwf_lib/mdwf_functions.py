@@ -153,6 +153,15 @@ def check_for_pausejob():
     return
 
 
+def create_pausejob_flag(error):
+    """create pausejob flag to initiate a soft stop - mitch"""
+    ts = time.time()
+    timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y_%h_%d_%H:%M')
+    with open('pausejob', 'w+') as pausejob:
+        pausejob.write(timestamp + "\n" + (error) + "\nBe sure to delete pausejob before continuing your simulation.")
+    pausejob.close()
+
+
 def initialize_job_countdown(equilib = "single"):
     """intializes rounds and countdown timers of local details file based on master_config_file"""
     # equilib represents equilibration strategy:
@@ -232,6 +241,16 @@ def record_finish_time():
 
 def check_job_fail():
     """ check for job failure """
+    runtime = finish - start
+    if runtime < limit:
+        error = "Job ran shorter than expected. Possible crash."
+        status = "Short run time: crash? Stopped Job"
+        #update_local_job_status(status) -this function needs some work
+        create_pausejob_flag(error)
+        sys.exit(error)
+    return
+
+    """ old code commented out below
     sta = ljdf["JobStartTime"]
     fin = ljdf["JobFinishTime"]
     cutoff = mcf["JobFailTime"]
@@ -242,7 +261,8 @@ def check_job_fail():
         ljdf["PauseJobFlag"] = "1"
         update_local_job_status(status)
         sys.exit(error) 
-    return 
+    return
+    """ 
 
 
 def log_job_timing():
