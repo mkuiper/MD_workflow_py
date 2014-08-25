@@ -17,6 +17,7 @@
 "WallTime"       : "0",
 
 "CurrentJobRound": "0", 
+"RunCount"       : "0",
 "RunCountDown"   : "0",
 "TotalRuns"      : "0",
 

@@ -20,23 +20,33 @@ def main():
     ljdf_t = mdwf.read_local_job_details_file(".", "local_job_details.json")
     ljdf_t['CurrentJobId'] = jobid
     ljdf_t['JobStatus'] = 'finished'
-    ljdf_t['JobFinishTime'] = time.time()
-    
-    #create pausejob flag if the simulation has crashed
-    start = int(ljdf_t['JobStartTime'])
-    finish = int(ljdf_t['JobFinishTime'])
-    limit = int(ljdf_t['JobFailTime'])
-    mdwf.check_job_fail(start,finish,limit)
-
-    if "opt" in jobtype:
-        ljdf_t["RunCountDown"] = ljdf_t["TotalRuns"]
-
+    ljdf_t['JobFinishTime'] = str(time.time())
 
     with open("local_job_details.json", 'w') as outfile:
         json.dump(ljdf_t, outfile, indent=2)
     outfile.close()
 
-#  move around data. 
+    #check the runtime of the job
+    start = float(ljdf_t['JobStartTime'])
+    finish = float(ljdf_t['JobFinishTime'])
+    limit = int(ljdf_t['JobFailTime'])
+    walltime = int(ljdf_t['WallTime'])
+    mdwf.check_job_fail(start,finish,limit)
+    #mdwf.check_walltime(start,finish,walltime)
+
+    #move around and rename files 
+    name = ljdf_t['JobBaseName']
+    run = str(ljdf_t['RunCount'])
+    if "opt" in jobtype:
+        mdwf.redirect_optimization_output(name, run)
+    else:
+        mdwf.redirect_production_output(name, run)
+
+    #create pauseflag if all runs completed
+    current =  int(ljdf_t['RunCount'])
+    total = int(ljdf_t['TotalRuns'])
+    mdwf.check_round(current, total)
+
  
     
 if __name__ == "__main__":
