@@ -264,31 +264,83 @@ def check_job_fail(start,finish,limit):
     return
     """ 
 
+def check_round(current,total):
+    """ end simulation at the completion of final run """
+    if total - current <= 0:
+        error = "All rounds completed"
+        status = "All rounds completed"
+        create_pausejob_flag(error)
+        #final_run_cleanup
+        sys.exit(error)
+    return
+
+def final_run_cleanup():
+    """ job directory will be cleaned following the final run """
+    return
 
 def log_job_timing():
     """ log length of job in human readable format """
     return
 
-def create_job_basename():
+def create_job_basename(name, run):
     """ creates a time stamped basename for current job"""
     ts = time.time()
     stamp = datetime.datetime.fromtimestamp(ts).strftime('%Y_%h_%d_%H%S_')
-    basename = stamp + ljdf["JobBaseName"] + "_r_" + ljdf["CurrentJobRound"]
-    return basename 
+    basename = stamp + name + "_r_" + run
+    return basename
+
+#old code hashed out - mitch
+#def create_job_basename():
+    """ creates a time stamped basename for current job"""
+    #ts = time.time()
+    #stamp = datetime.datetime.fromtimestamp(ts).strftime('%Y_%h_%d_%H%S_')
+    #basename = stamp + ljdf["JobBaseName"] + "_r_" + ljdf["CurrentJobRound"]
+    #return basename 
 
 def update_local_job_status(status):
     """ updates local job status """
     ljdf["JobStatus"] = status
     return 
 
-def redirect_optimization_output():
+def redirect_optimization_output(name, run):
     """ move output of optimization phase in all the right places."""
+    basename = create_job_basename(name, run)
+    #prepare generic_optimization.restart for next round
+    os.rename ('generic_optimization.restart.coor', 'generic_restartfile.coor')
+    os.rename ('generic_optimization.restart.vel', 'generic_restartfile.vel')
+    os.rename ('generic_optimization.restart.xsc', 'generic_restartfile.xsc')
+    #copy generic_restart to LastRestart
+    shutil.copy ('generic_restartfile.coor', 'LastRestart/generic_restartfile.coor')
+    shutil.copy ('generic_restartfile.vel', 'LastRestart/generic_restartfile.vel')
+    shutil.copy ('generic_restartfile.xsc', 'LastRestart/generic_restartfile.xsc')
+    #rename and move generic_optimization files 
+    os.rename ('generic_optimization.dcd', 'OutputFiles/opt.'+basename+'.dcd.x')
+    os.rename ('generic_optimization.coor', 'RestartFiles/opt.'+basename+'.coor')
+    os.rename ('generic_optimization.vel', 'RestartFiles/opt.'+basename+'.vel')
+    os.rename ('generic_optimization.xst', 'RestartFiles/opt.'+basename+'.xst')
+    os.rename ('generic_optimization.xsc', 'RestartFiles/opt.'+basename+'.xsc')
+    #post_job_clean
     return
 
-def redirect_production_output():
+def redirect_production_output(name, run):
     """ move output of production_runs to all the right places."""
+    basename = create_job_basename(name, run)
+    #copy generic_restart to LastRestart                                
+    shutil.copy ('generic_restartfile.coor', 'LastRestart/generic_restartfile.coor')
+    shutil.copy ('generic_restartfile.vel', 'LastRestart/generic_restartfile.vel')
+    shutil.copy ('generic_restartfile.xsc', 'LastRestart/generic_restartfile.xsc')
+    shutil.copy ('generic_restartfile.xst', 'LastRestart/generic_restartfile.xst')
+    #rename and move generic_optimization files                         
+    shutil.copy ('generic_restartfile.dcd', 'OutputFiles/'+basename+'.dcd')
+    shutil.copy ('generic_restartfile.coor', 'RestartFiles/'+basename+'.coor')
+    shutil.copy ('generic_restartfile.vel', 'RestartFiles/'+basename+'.vel')
+    shutil.copy ('generic_restartfile.xst', 'RestartFiles/'+basename+'.xst')
+    shutil.copy ('generic_restartfile.xsc', 'RestartFiles/'+basename+'.xsc')
+    #post_job_clean
     return
 
+def post_job_clean():
+    """ remove unwanted error, backup files etc """
 
 def countdown_timer():
     """ function to adjust countdown timer """
