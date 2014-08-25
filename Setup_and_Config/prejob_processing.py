@@ -20,23 +20,21 @@ def main():
     ljdf_t = mdwf.read_local_job_details_file(".", "local_job_details.json")
     ljdf_t['CurrentJobId'] = jobid
     ljdf_t['JobStatus'] = 'submitted'
-    ljdf_t['JobStartTime'] = time.time()
+    ljdf_t['JobStartTime'] = str(time.time())
+
+    # add +1 to RunCount in ljdf, set round to 0 if opt job
+    run = int(ljdf_t["RunCount"])
     if "opt" in jobtype:
-        ljdf_t["RunCountDown"] = ljdf_t["TotalRuns"]
-
-
+        ljdf_t["RunCount"] = "000"
+    else:
+        ljdf_t["RunCount"] = str(run + 1)
 
     with open("local_job_details.json", 'w') as outfile:
         json.dump(ljdf_t, outfile, indent=2)
     outfile.close()
 
-
     # check Ok for job to run:
-#    mdwf.check_disk_quota(ljdf["Account"],ljdf["DiskSpaceCutoff"])
-    pauseflag = mdwf.check_for_pausejob()
-    if pauseflag:
-        print     
-
+    # mdwf.check_disk_quota(ljdf["Account"],ljdf["DiskSpaceCutoff"])
 
     # initialize job counter if optimize flag set.  
     
