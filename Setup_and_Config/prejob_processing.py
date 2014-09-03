@@ -27,7 +27,7 @@ def main():
     if "opt" in jobtype:
         ljdf_t["RunCount"] = "000"
     else:
-        ljdf_t["RunCount"] = str(run + 1)
+        ljdf_t["RunCount"] = '%03d'% (run + 1)
 
     with open("local_job_details.json", 'w') as outfile:
         json.dump(ljdf_t, outfile, indent=2)
