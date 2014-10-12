@@ -245,7 +245,7 @@ def check_job_fail(start,finish,limit):
     if runtime < limit:
         error = "Job ran shorter than expected. Possible crash."
         status = "Short run time: crash? Stopped Job"
-        #update_local_job_status(status) -this function needs some work
+        update_local_job_status(status)
         create_pausejob_flag(error)
         sys.exit(error)
     return
@@ -270,12 +270,22 @@ def check_round(current,total):
         error = "All rounds completed"
         status = "All rounds completed"
         create_pausejob_flag(error)
-        #final_run_cleanup
+        final_run_cleanup()
         sys.exit(error)
     return
 
 def final_run_cleanup():
     """ job directory will be cleaned following the final run """
+    for file in glob.glob("FFTW*"):
+        shutil.move(file, "OutputText/")
+    for file in glob.glob("*.BAK"):
+        os.remove(file)
+    for file in glob.glob("generic_restartfile*"):
+        os.remove(file)
+    for file in glob.glob("temporary*"):
+        os.remove(file)
+    for file in glob.glob("Temp*"):
+        os.remove(file)    
     return
 
 def log_job_timing():
@@ -299,8 +309,12 @@ def create_job_basename(name, run):
 
 def update_local_job_status(status):
     """ updates local job status """
-    ljdf["JobStatus"] = status
-    return 
+    ljdf_t = read_local_job_details_file(".", "local_job_details.json")
+    ljdf_t["JobStatus"] = status
+    with open("local_job_details.json", 'w') as outfile:
+        json.dump(ljdf_t, outfile, indent=2)
+    outfile.close()
+    return
 
 def redirect_optimization_output(name, run):
     """ move output of optimization phase in all the right places."""
@@ -319,7 +333,7 @@ def redirect_optimization_output(name, run):
     os.rename ('generic_optimization.vel', 'RestartFiles/opt.'+basename+'.vel')
     os.rename ('generic_optimization.xst', 'RestartFiles/opt.'+basename+'.xst')
     os.rename ('generic_optimization.xsc', 'RestartFiles/opt.'+basename+'.xsc')
-    #post_job_clean
+    post_job_clean()
     return
 
 def redirect_production_output(name, run):
@@ -336,11 +350,16 @@ def redirect_production_output(name, run):
     shutil.copy ('generic_restartfile.vel', 'RestartFiles/'+basename+'.vel')
     shutil.copy ('generic_restartfile.xst', 'RestartFiles/'+basename+'.xst')
     shutil.copy ('generic_restartfile.xsc', 'RestartFiles/'+basename+'.xsc')
-    #post_job_clean
+    post_job_clean()
     return
 
 def post_job_clean():
     """ remove unwanted error, backup files etc """
+    for file in glob.glob("slurm*"):
+        shutil.move(file, "JobLog/")
+    for file in glob.glob("core*"):
+        shutil.move(file, "Errors/")
+    return
 
 def countdown_timer():
     """ function to adjust countdown timer """
