@@ -265,7 +265,7 @@ def check_job_fail(start,finish,limit):
     """ 
 
 def check_run_count(current,total):
-    """ end simulation at the completion of final run """
+    """ fail safe to prevent excessive unwanted simulations from occurring """
     if total - current < 0:
         error = "I'm sorry, Dave. I'm afraid I can't do that."
         status = "An error has occured and an unwanted number of jobs are being created"
