@@ -4,7 +4,7 @@
 #
 
 """
-mmdwf (md workflow) \033[2m
+mdwf (md workflow) \033[2m
 mdwf is a python program used to help setup, run and monitor multiple molecular 
 dynamics jobs run on a cluster based on a customisable directory structure. 
 
