@@ -7,7 +7,7 @@
 import os
 import subprocess
 import sys 
-from collections import OrderedDict
+from   collections import OrderedDict
 import json
 import shutil
 import fileinput
@@ -45,6 +45,7 @@ def read_master_config_file():
             print "\n{}Possible json format errors of {}'master_config_file'{}\n".format(c3,c3,c0)
     else:
         print "{}Can't see {}'master_config_file'{} in directory:{} {}\n".format(c3,c4,c3,cwd,c0) 
+        print "Have you populated the directory? (./mdwf -p) \n" 
         sys.exit()
     return mcf
         
@@ -61,8 +62,11 @@ def read_local_job_details_file(path="Setup_and_Config",ljdf_target="job_details
         except:
             print "\n{}Possible json format errors of {}'master_config_file'{}\n".format(c3,c3,c0)
     else:
-        error = "\nCan't see '{}' in directory:{}/{}/ ".format(ljdf_target,os.getcwd(),path) 
-        sys.exit(error)
+        #error = "\nCan't see '{}' in directory:{}/{}/ ".format(ljdf_target,os.getcwd(),path) 
+        print "\nCan't see '{}' in directory:{}/{}/ ".format(ljdf_target,os.getcwd(),path) 
+        print "Have you populated the directory? (./mdwf -p) \n" 
+        sys.exit()
+
     return ljdf
 
 
