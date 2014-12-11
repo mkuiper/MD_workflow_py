@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # MD workflow functions.   mdwf 
 """ mdwf functions.                    version 0.1
-    Most of the mwdf functions are maintained here
 """
 
 import os
@@ -17,7 +16,6 @@ import datetime
 import glob
 import re
 
-#
 #
 # ansi color variables for formatting purposes: 
 
@@ -158,9 +156,10 @@ def check_for_pausejob():
 
 
 def create_pausejob_flag(error):
-    """create pausejob flag to initiate a soft stop - mitch"""
+    """create pausejob flag to initiate a soft stop """
     ts = time.time()
     timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y_%h_%d_%H:%M')
+
     with open('pausejob', 'w+') as pausejob:
         pausejob.write(timestamp + "\n" + (error) + "\nBe sure to delete pausejob before continuing your simulation.")
     pausejob.close()
