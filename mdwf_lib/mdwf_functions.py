@@ -31,6 +31,7 @@ c7 = '\033[34;2m'     # dark blue
 c8 = '\033[38;5;220m' # orange 
 c9 = '\033[36;1m'     # cyan
 
+#Testing individual functions started 12/12/2014 EB
 def read_master_config_file():  
     """ Reads parameters from json file: master_config_file """  
     cwd=os.getcwd()
