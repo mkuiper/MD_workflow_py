@@ -20,7 +20,7 @@ import re
 # ansi color variables for formatting purposes: 
 
 c0 = '\033[0m'        # default
-cc1= '\033[2m'        # grey 
+c10= '\033[2m'        # grey 
 c1 = '\033[31;2m'     # dark red 
 c2 = '\033[32;1m'     # light green
 c3 = '\033[32;2m'     # dark green
@@ -430,7 +430,8 @@ def getfilesize(filename):
 
 
 def initialize_job_directories():
-    """ -function to setup job directories """
+    """ -function to setup job directories for replicates. """
+
     mcf = read_master_config_file()
     try:
         JobDir      = mcf["JobDir"]
@@ -453,6 +454,7 @@ def initialize_job_directories():
     print "{}Making Job directory replicates in /{}\n".format(c0,JobDir)
 
     TemplatePath = cwd + "/Setup_and_Config/JobTemplate"
+
     # check existance of JobTemplate directory:
     if not os.path.exists(TemplatePath):
         print "\n{} Can't see /Setup_and_Config/JobTemplate. exiting.{}".format(c4,c0)
