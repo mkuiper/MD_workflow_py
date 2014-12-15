@@ -267,14 +267,22 @@ def check_job_fail(start,finish,limit):
     return
     """ 
 
-def check_round(current,total):
+def check_run_count(current,total):
+    """ fail safe to prevent excessive unwanted simulations from occurring """
+    if total - current < 0:
+        error = "I'm sorry, Dave. I'm afraid I can't do that."
+        status = "An error has occured and an unwanted number of jobs are being created"
+        create_pausejob_flag(status)
+        sys.exit(error)
+    return
+
+def check_final_run(current,total):
     """ end simulation at the completion of final run """
     if total - current <= 0:
-        error = "All rounds completed"
-        status = "All rounds completed"
+        error = "All runs completed"
+        status = "All runs completed"
         create_pausejob_flag(error)
         final_run_cleanup()
-        sys.exit(error)
     return
 
 def final_run_cleanup():
