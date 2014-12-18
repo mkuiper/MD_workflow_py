@@ -328,45 +328,50 @@ def update_local_job_status(status):
     outfile.close()
     return
 
-def redirect_optimization_output(name, run):
-    """ move output of optimization phase in all the right places."""
-    basename = create_job_basename(name, run)
-    #prepare generic_optimization.restart for next round
-    os.rename ('generic_optimization.restart.coor', 'generic_restartfile.coor')
-    os.rename ('generic_optimization.restart.vel', 'generic_restartfile.vel')
-    os.rename ('generic_optimization.restart.xsc', 'generic_restartfile.xsc')
-    #copy generic_restart to LastRestart
-    shutil.copy ('generic_restartfile.coor', 'LastRestart/generic_restartfile.coor')
-    shutil.copy ('generic_restartfile.vel', 'LastRestart/generic_restartfile.vel')
-    shutil.copy ('generic_restartfile.xsc', 'LastRestart/generic_restartfile.xsc')
-    #rename and move generic_optimization files 
-    os.rename ('generic_optimization.dcd', 'OutputFiles/opt.'+basename+'.dcd.x')
-    os.rename ('generic_optimization.coor', 'RestartFiles/opt.'+basename+'.coor')
-    os.rename ('generic_optimization.vel', 'RestartFiles/opt.'+basename+'.vel')
-    os.rename ('generic_optimization.xst', 'RestartFiles/opt.'+basename+'.xst')
-    os.rename ('generic_optimization.xsc', 'RestartFiles/opt.'+basename+'.xsc')
-    post_job_clean()
-    return
+def redirect_output(name, run, CurrentWorkingFile="current_MD_run_files"):
+    """ A function to redirect NAMD output to various locations."""
 
-def redirect_production_output(name, run):
-    """ move output of production_runs to all the right places."""
-    basename = create_job_basename(name, run)
-    #copy generic_restart to LastRestart                                
-    shutil.copy ('generic_restartfile.coor', 'LastRestart/generic_restartfile.coor')
-    shutil.copy ('generic_restartfile.vel', 'LastRestart/generic_restartfile.vel')
-    shutil.copy ('generic_restartfile.xsc', 'LastRestart/generic_restartfile.xsc')
-    shutil.copy ('generic_restartfile.xst', 'LastRestart/generic_restartfile.xst')
-    #rename and move generic_optimization files                         
-    shutil.copy ('generic_restartfile.dcd', 'OutputFiles/'+basename+'.dcd')
-    shutil.copy ('generic_restartfile.coor', 'RestartFiles/'+basename+'.coor')
-    shutil.copy ('generic_restartfile.vel', 'RestartFiles/'+basename+'.vel')
-    shutil.copy ('generic_restartfile.xst', 'RestartFiles/'+basename+'.xst')
-    shutil.copy ('generic_restartfile.xsc', 'RestartFiles/'+basename+'.xsc')
+  # create a base name based on passed arguments name and run.
+    try:
+    	basename = create_job_basename(name, run)
+    except:
+	 error = "\nError making basename. (In redirect_output function) "
+            sys.exit(error)
+
+ # make shorthand of current working files
+    cwf_coor = CurrentWorkingFile + ".coor"
+    cwf_vel  = CurrentWorkingFile + ".vel"
+    cwf_xsc  = CurrentWorkingFile + ".xsc"
+    cwf_xst  = CurrentWorkingFile + ".xst"
+    cwf_dcd  = CurrentWorkingFile + ".dcd"
+
+ # copy CurrentWorking (restart) files to LastRestart/ directory 
+    try:
+    	shutil.copy (cwf_coor, 'LastRestart/' + cwf_coor)
+    	shutil.copy (cwf_vel,  'LastRestart/' + cwf_vel)
+    	shutil.copy (cwf_xsc,  'LastRestart/' + cwf_xsc)
+    except:	
+	error = "\nError moving restart files to /LastRestart (In redirect_output function) "
+        sys.exit(error)
+	  
+ # rename and move current working files
+    try: 
+        os.rename (cwf_dcd,  'OutputFiles/' + basename + cwf_dcd)
+        os.rename (cwf_vel,  'OutputFiles/' + basename + cwf_vel)
+        os.rename (cwf_xsc,  'OutputFiles/' + basename + cwf_xsc)
+        os.rename (cwf_xst,  'OutputFiles/' + basename + cwf_xst)
+        os.rename (cwf_coor, 'OutputFiles/' + basename + cwf_coor)
+    except:	
+	error = "\nError moving files to /OutputFiles (In redirect_output function) "
+        sys.exit(error)
+    
+ # clean up remaining files
     post_job_clean()
+
     return
 
 def post_job_clean():
-    """ remove unwanted error, backup files etc """
+    """ remove unwanted error, backup files, etc """
     for file in glob.glob("slurm*"):
         shutil.move(file, "JobLog/")
     for file in glob.glob("core*"):
