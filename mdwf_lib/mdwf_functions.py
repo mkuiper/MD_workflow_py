@@ -43,7 +43,7 @@ def read_master_config_file():
             print "\n{}Possible json format errors of {}'master_config_file'{}\n".format(c3,c3,c0)
     else:
         print "{}Can't see {}'master_config_file'{} in directory:{} {}\n".format(c3,c4,c3,cwd,c0) 
-        print "Have you populated the directory? (./mdwf -p) \n" 
+        print "{}Have you populated the directory? (./mdwf -p){} \n".format(c3,c0) 
         sys.exit()
     return mcf
         
