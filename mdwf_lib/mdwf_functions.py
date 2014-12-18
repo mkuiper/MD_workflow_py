@@ -20,7 +20,7 @@ import re
 # ansi color variables for formatting purposes: 
 
 c0 = '\033[0m'        # default
-cc1= '\033[2m'        # grey 
+c10= '\033[2m'        # grey 
 c1 = '\033[31;2m'     # dark red 
 c2 = '\033[32;1m'     # light green
 c3 = '\033[32;2m'     # dark green
@@ -31,6 +31,7 @@ c7 = '\033[34;2m'     # dark blue
 c8 = '\033[38;5;220m' # orange 
 c9 = '\033[36;1m'     # cyan
 
+#Testing individual functions started 12/12/2014 EB branch file
 def read_master_config_file():  
     """ Reads parameters from json file: master_config_file """  
     cwd=os.getcwd()
@@ -267,14 +268,22 @@ def check_job_fail(start,finish,limit):
     return
     """ 
 
-def check_round(current,total):
+def check_run_count(current,total):
+    """ fail safe to prevent excessive unwanted simulations from occurring """
+    if total - current < 0:
+        error = "I'm sorry, Dave. I'm afraid I can't do that."
+        status = "An error has occured and an unwanted number of jobs are being created"
+        create_pausejob_flag(status)
+        sys.exit(error)
+    return
+
+def check_final_run(current,total):
     """ end simulation at the completion of final run """
     if total - current <= 0:
-        error = "All rounds completed"
-        status = "All rounds completed"
+        error = "All runs completed"
+        status = "All runs completed"
         create_pausejob_flag(error)
         final_run_cleanup()
-        sys.exit(error)
     return
 
 def final_run_cleanup():
@@ -421,7 +430,8 @@ def getfilesize(filename):
 
 
 def initialize_job_directories():
-    """ -function to setup job directories """
+    """ -function to setup job directories for replicates. """
+
     mcf = read_master_config_file()
     try:
         JobDir      = mcf["JobDir"]
@@ -444,6 +454,7 @@ def initialize_job_directories():
     print "{}Making Job directory replicates in /{}\n".format(c0,JobDir)
 
     TemplatePath = cwd + "/Setup_and_Config/JobTemplate"
+
     # check existance of JobTemplate directory:
     if not os.path.exists(TemplatePath):
         print "\n{} Can't see /Setup_and_Config/JobTemplate. exiting.{}".format(c4,c0)
