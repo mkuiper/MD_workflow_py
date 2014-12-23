@@ -336,7 +336,7 @@ def redirect_output(name, run, CurrentWorkingFile="current_MD_run_files"):
     	basename = create_job_basename(name, run)
     except:
 	 error = "\nError making basename. (In redirect_output function) "
-            sys.exit(error)
+         sys.exit(error)
 
  # make shorthand of current working files
     cwf_coor = CurrentWorkingFile + ".coor"
