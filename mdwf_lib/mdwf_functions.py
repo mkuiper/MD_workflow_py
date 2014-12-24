@@ -436,61 +436,67 @@ def getfilesize(filename):
 
 
 def initialize_job_directories():
-    """ -function to setup job directories for replicates. """
-
+    """ -function to setup job directories as defined in the master_config_file"""
+    cwd=os.getcwd()
+# copy job detail lists from master config file: 
     mcf = read_master_config_file()
-    try:
+    try:                  
         JobStreams   = mcf["JobStreams"]
         Replicates   = mcf["JobReplicates"] 
         BaseDirNames = mcf["BaseDirNames"]     
+        JobBaseNames = mcf["JobBaseNames"]     
+        Runs         = mcf["Runs"]     
     except: 
-        sys.exit("\nError reading master_config_file variables.\n")
+        error = "Error reading master_config_file variables while initializing job directories."
+        sys.exit(error)
 
-    cwd=os.getcwd()
-    numberJobStreams   = int(len(JobStreams)) 
-    numberJobReplicate = int(len(Replicates))
-    numberBaseNames    = int(len(BaseDirNames))
+# check that job details lists are the same length in master_config_file: 
+    try:
+        nJobStreams   = int(len(JobStreams)) 
+        nReplicates   = int(len(Replicates))
+        nBaseNames    = int(len(BaseDirNames))
+        nJobBaseNames = int(len(JobBaseNames))
+        nRuns         = int(len(Runs))
+    except:
+        error = "Error reading Job Details Section in master_config_file."
+        sys.exit(error) 
+    if not nJobStreams==nReplicates==nBaseNames==nJobBaseNames==nRuns:
+        error = "Job Details Section lists do not appear to be the same length in master_config_file." 
+        sys.exit(error) 
 
-  # check that the length of the JobStream details are the same
-  # ie) we define the replicates and base names for each job stream.  
-      # maybe if len =1 then use default name for each Job Stream.??
-
-    for i in range(0, numberJobStreams):
+# create job stream structure:  /JobStreams/JobReplicates
+    for i in range(0, nJobStreams):
         TargetJobDir = cwd + "/" + JobStreams[i]
     	if not os.path.exists(TargetJobDir):
-        	print "{} Job directory /{} does not exist. Making new directory.{}".format(c3,TargetJobDir,c0)
-        	try:
-           	    os.makedirs(JobStreams[i]) 
-                except:
-            	    error = "\n{}Error making directory in /{}.{}".format(c3,cwd,c0)
-                    sys.exit(error) 
+            print "Job Stream directory /{} does not exist. Making new directory.".format(TargetJobDir)
+            try:
+                os.makedirs(JobStreams[i]) 
+            except:
+                error = "Error making directory in /{}.".format(cwd)
+                sys.exit(error) 
 
-    # Copy directory structure from /Setup_and Config/JobTemplate
-        print "{}Making Job directory replicates in /{}".format(c0,dir)
-
+# Copy directory structure from /Setup_and Config/JobTemplate
+        print "Making job replicates in /{}".format(JobStreams[i])
         TemplatePath = cwd + "/Setup_and_Config/JobTemplate"
 
-    # check existance of JobTemplate directory:
+  # check existance of JobTemplate directory:
         if not os.path.exists(TemplatePath):
-            print "\n{} Can't see /Setup_and_Config/JobTemplate. exiting.{}".format(c4,c0)
-            sys.exit() 
+            error = "Can't find the /Setup_and_Config/JobTemplate directory. Exiting."
+            sys.exit(error) 
     
         replicates = int(Replicates[i])
-
         zf = len(str(replicates)) + 1    
         for j in range(1,replicates+1):
             suffix = str(j).zfill(zf)
             NewDirName = JobStreams[i] + "/" + BaseDirNames[i] + suffix          
             if os.path.exists(NewDirName):
-                print "{}Directory {} already exists! -Skipping.{}".format(c5,NewDirName,c0) 
+                print "Replicate job directory {} already exists! -Skipping.".format(NewDirName) 
             else:
                 try: 
                     shutil.copytree(TemplatePath, NewDirName)
-                    print "{}Creating:{}{}".format(c5,c0,NewDirName)             
+                    print "Creating:{}".format(NewDirName)             
                 except: 
-                    print "{}Error in copying directories.{}".format(c4,c0)
-            print c0
-
+                    print "Error in creating replicate directory."
 
 def populate_job_directories():
     """ -function to populate or update job directories with job scripts """

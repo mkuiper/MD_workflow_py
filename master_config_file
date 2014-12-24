@@ -1,31 +1,31 @@
 {
-"Comment0"     : "Master_Config_File v0.1",
+"Comment0"     : "Master_Config_File v0.2",
 "Account"      : "VR0021",
+"Flavour"      : "Namd",
 
 "Comment1"     : "BlueGene/Q Namd Job parameters:",
 "nodes"        : "2",
 "ntpn"         : "8",
 "ppn"          : "8",
 "Walltime"     : "24:0:0",
+
 "ModuleFile"   : "namd-xl-pami-smp/2.9",
 "PsfFileName"  : "ChangeMe.psf",
 "PdbFileName"  : "ChangeMe.pdb",
-"Temperature"  : "310",
 
 
-"Comment2"          : "Job Stream Details",
-"JobStreams"        : ["Vacuum","Water","Octanol"],
-"JobReplicates"     : ["21","10","5"],
-"BaseDirNames"      : ["VacSim_","WaterSim_1","Octanol_1"],
-"JobBaseName"       : "My_Job_",
+"Comment2"      : "Job Details Section",
+"JobStreams"    : ["Main1","Main2"],
+"JobReplicates" : ["10",10],
+"BaseDirNames"  : ["Sim1_","Sim2_"],
+"JobBaseNames"  : ["Myjob_","myJob2_"],
+"Runs"          : ["5","10"],
 
-"Comment3"     : "Job Setup Dimensions",
-"Runs"         : ["10","5","4"],
-"JobScheme"    : "simple",
-"Round"        : "1",
+"JobScheme"     : "simple",
 
 
 "OptJobName"        : "optimization_job_",
+
 "SbatchStartScript" : "sbatch_start",
 "OptimizeConfScript": "sim_opt.conf",
 
