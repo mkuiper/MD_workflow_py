@@ -16,13 +16,13 @@
 
 "Comment2"      : "Job Details Section",
 "JobStreams"    : ["Main1","Main2"],
-"JobReplicates" : ["10",10],
+"JobReplicates" : ["10","10"],
 "BaseDirNames"  : ["Sim1_","Sim2_"],
 "JobBaseNames"  : ["Myjob_","myJob2_"],
 "Runs"          : ["5","10"],
 
 "JobScheme"     : "simple",
-
+"Round"         : 1,
 
 "OptJobName"        : "optimization_job_",
 

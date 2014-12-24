@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # MD workflow functions.   mdwf 
-""" mdwf functions.                    version 0.1
+""" mdwf functions.                    version 0.2
 """
 
 import os
@@ -16,9 +16,7 @@ import datetime
 import glob
 import re
 
-#
 # ansi color variables for formatting purposes: 
-
 c0 = '\033[0m'        # default
 cc1 = '\033[0m'        # default
 c10= '\033[2m'        # grey 
@@ -49,8 +47,7 @@ def read_master_config_file():
         sys.exit()
     return mcf
         
-
-def read_local_job_details_file(path="Setup_and_Config",ljdf_target="job_details_template.json"):  
+def read_local_job_details_file(path="Setup_and_Config",ljdf_target="local_job_details_template.json"):  
     """ Reads parameters from json file: Setup_and_Config/job_details_template.json """  
 
     target=os.getcwd() + "/" + path + "/" + ljdf_target
@@ -60,12 +57,11 @@ def read_local_job_details_file(path="Setup_and_Config",ljdf_target="job_details
             ljdf = json.load(local_json,object_pairs_hook=OrderedDict)
             local_json.close()
         except:
-            print "\n{}Possible json format errors of {}'master_config_file'{}\n".format(c3,c3,c0)
+            error = "Possible json format errors of {}/{}".format(path,ljdf_target)
+            sys.exit(error)
     else:
-        #error = "\nCan't see '{}' in directory:{}/{}/ ".format(ljdf_target,os.getcwd(),path) 
-        print "\nCan't see '{}' in directory:{}/{}/ ".format(ljdf_target,os.getcwd(),path) 
-        print "Have you populated the directory? (./mdwf -p) \n" 
-        sys.exit()
+        error = "Can't see {} in {}. ".format(ljdf_target,path) 
+        sys.exit(error)
 
     return ljdf
 
@@ -434,12 +430,9 @@ def getfilesize(filename):
     size = os.path.getsize(filename)
     return size
 
-
-def initialize_job_directories():
-    """ -function to setup job directories as defined in the master_config_file"""
-    cwd=os.getcwd()
-# copy job detail lists from master config file: 
-    mcf = read_master_config_file()
+def check_job_structure():
+    """ Function to check Job Structure in Master_Config_File """
+    mcf    = read_master_config_file()
     try:                  
         JobStreams   = mcf["JobStreams"]
         Replicates   = mcf["JobReplicates"] 
@@ -463,6 +456,17 @@ def initialize_job_directories():
     if not nJobStreams==nReplicates==nBaseNames==nJobBaseNames==nRuns:
         error = "Job Details Section lists do not appear to be the same length in master_config_file." 
         sys.exit(error) 
+
+    return JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams, nReplicates, nBaseNames
+
+def initialize_job_directories():
+    """ Function to setup job directories as defined in the master_config_file"""
+    cwd=os.getcwd()
+    try:
+        JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams, nReplicates, nBaseNames = check_job_structure() 
+    except: 
+        error = "Trouble passing job structure variables."
+        sys.exit(error)
 
 # create job stream structure:  /JobStreams/JobReplicates
     for i in range(0, nJobStreams):
@@ -501,122 +505,141 @@ def initialize_job_directories():
 def populate_job_directories():
     """ -function to populate or update job directories with job scripts """
 
-# reading information from master_config_file and local job details t/emplate
-    ljdf_t = read_local_job_details_file()
-    mcf    = read_master_config_file()
-
+# checking job structure:
     try:
-        JobDir      = mcf["JobDir"]
-        Sims        = int(mcf["SimReplicates"])
-        BaseDirName = mcf["BaseDirName"]
-        Runs        = mcf["Runs"]
-        Round       = mcf["Round"]
-        JobBaseName = mcf["JobBaseName"]
-        Account     = mcf["Account"]
-        Nodes       = mcf["nodes"]
-        Ntpn        = mcf["ntpn"]
-        Ppn         = mcf["ppn"]
-        OptScript   = mcf["OptimizeConfScript"]
-        ProdScript  = mcf["ProdConfScript"]
-        ModuleFile  = mcf["ModuleFile"]
-        Walltime    = mcf["Walltime"]
-        sbstart     = mcf["SbatchStartScript"]
-        sbprod      = mcf["SbatchProdScript"]
-        dsco        = mcf["DiskSpaceCutOff"]
-        jft         = mcf["JobFailTime"]
+        JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams, nReplicates, nBaseNames = check_job_structure() 
+    except: 
+        error = "Trouble passing job structure variables."
+        sys.exit(error)
 
-    except:
-        print "\n{}Error reading master_config_file variables.{}\n".format(c4,c0)
-        sys.exit()
-
+# reading information from master_config_file and local job details template:
+    mcf    = read_master_config_file()
+    ljdf_t = read_local_job_details_file()
     cwd=os.getcwd()
-    TargetJobDir = cwd + "/" +JobDir
-    
-# create staging file from ljdf_template
+    try:
+        Flavour      = mcf["Flavour"]
+        Round        = mcf["Round"]
+        Account      = mcf["Account"]
+        Nodes        = mcf["nodes"]
+        Ntpn         = mcf["ntpn"]
+        Ppn          = mcf["ppn"]
+        OptScript    = mcf["OptimizeConfScript"]
+        ProdScript   = mcf["ProdConfScript"]
+        ModuleFile   = mcf["ModuleFile"]
+        Walltime     = mcf["Walltime"]
+        sbstart      = mcf["SbatchStartScript"]
+        sbprod       = mcf["SbatchProdScript"]
+        dsco         = mcf["DiskSpaceCutOff"]
+        jft          = mcf["JobFailTime"]
+    except:
+        error = "Error reading master_config_file variables during populate routine"
+        sys.exit(error)
+
+# create local job detalis staging file from ljdf_template
     stagef = ljdf_t           
 
-# modify elements in staging dictionary file:
+# modify common elements in staging dictionary file:
     stagef['TOP_DIR']          = cwd
     stagef['CurrentRound']     = Round
-    stagef['TotalRuns']        = Runs
-    stagef['JobBaseName']      = JobBaseName
     stagef['JobFailTime']      = jft
     stagef['DiskSpaceCutOff']  = dsco
 
+# decend through job structure and populate job directories:
+    for i in range(0, nJobStreams):
+        TargetJobDir = cwd + "/" + JobStreams[i]
+    	if not os.path.exists(TargetJobDir):
+            error = "JobStream directory {} not found. Have you initialized?".format(TargetJobDir)
+            sys.exit(error)
+
 # check to see if there actually are any job directories to fill:
-    jobdirlist = get_current_joblist(JobDir)
-    if not jobdirlist: 
-        print "{}No job directories found in {}/{}.{} Have you initialized?".format(c4,cc1,JobDir,c0)
+        jobdirlist = get_current_joblist(JobStreams[i])
+
+# modify replicate elements in staging dictionary file:
+        stagef['BASE_DIR']         = cwd
+        stagef['JOB_STREAM_DIR']   = JobStreams[i]
+        stagef['CurrentRound']     = Round
+        stagef['Account']          = Account
+        stagef['Nodes']            = Nodes
+        stagef['ntpn']             = Ntpn
+        stagef['ppn']              = Ppn
+        stagef['Walltime']         = Walltime
+        stagef['CurrentRun']       = Runs[i]
+        stagef['TotalRuns']        = Runs[i]
+        stagef['JobBaseName']      = JobBaseNames[i]
+        stagef['JobFailTime']      = jft
+        stagef['DiskSpaceCutOff']  = dsco
+
 
 # create and modify temporary sbatch scripts:
-    sb_start_template = "Setup_and_Config/" + sbstart + ".template"
-    if not os.path.exists(sb_start_template):
-        print "{}Can't find {}{}{}.".format(c4,c3,sb_start_template,c0)
-        sys.exit()
-    sb_prod_template = "Setup_and_Config/" + sbprod + ".template"
-    if not os.path.exists(sb_prod_template):
-        print "{}Can't find {}{}{}.".format(c4,c3,sb_prod_template,c0)
-        sys.exit()
-  # new lines:
-    nnodes   = "#SBATCH --nodes="   + Nodes
-    ntime    = "#SBATCH --time="    + Walltime
-    naccount = "#SBATCH --account=" + Account
-    nntpn    = "ntpn=" + Ntpn
-    nppn     = "ppn="  + Ppn
-    nmodule  = "module load " + ModuleFile
-    nopt     = "optimize_script=" + OptScript
-    nprod    = "production_script=" + ProdScript
-
+        sb_start_template = "Setup_and_Config/" + sbstart + ".template"
+        if not os.path.exists(sb_start_template):
+            error = "Can't find {} in /Setup_and_Config. Exiting.".format(sb_start_template)
+            sys.exit(error)
+        sb_prod_template = "Setup_and_Config/" + sbprod + ".template"
+        if not os.path.exists(sb_prod_template):
+            print "Can't find {} in /Setup_and_Config.".format(sb_prod_template)
+            sys.exit(error)
+# new lines for sbatch scripts:
+        nnodes   = "#SBATCH --nodes="   + Nodes
+        ntime    = "#SBATCH --time="    + Walltime
+        naccount = "#SBATCH --account=" + Account
+        nntpn    = "ntpn=" + Ntpn
+        nppn     = "ppn="  + Ppn
+        nmodule  = "module load " + ModuleFile
+        nopt     = "optimize_script=" + OptScript
+        nprod    = "production_script=" + ProdScript
 # make temporary copies of sbatch templates:     
-    shutil.copy(sb_start_template,'sb_start_temp')
-    shutil.copy(sb_prod_template,'sb_prod_temp')
-# make substitutions:
-    for f in ["sb_start_temp","sb_prod_temp"]:
-        for line in fileinput.FileInput(f,inplace=True):
-            line = line.replace('#SBATCH --nodes=X', nnodes)   
-            line = line.replace('#SBATCH --time=X', ntime)   
-            line = line.replace('#SBATCH --account=X', naccount)   
-            line = line.replace('ntpn=X', nntpn)   
-            line = line.replace('ppn=X',  nppn)   
-            line = line.replace('module load X', nmodule)   
-            line = line.replace('optimize_script=X', nopt)   
-            line = line.replace('production_script=X', nprod)   
-            sys.stdout.write(line)   
+        shutil.copy(sb_start_template,'sb_start_temp')
+        shutil.copy(sb_prod_template,'sb_prod_temp')
+# replace lines in sbatch files:
+        for f in ["sb_start_temp","sb_prod_temp"]:
+            for line in fileinput.FileInput(f,inplace=True):
+                line = line.replace('#SBATCH --nodes=X', nnodes)   
+                line = line.replace('#SBATCH --time=X', ntime)   
+                line = line.replace('#SBATCH --account=X', naccount)   
+                line = line.replace('ntpn=X', nntpn)   
+                line = line.replace('ppn=X',  nppn)   
+                line = line.replace('module load X', nmodule)   
+                line = line.replace('optimize_script=X', nopt)   
+                line = line.replace('production_script=X', nprod)   
+                sys.stdout.write(line)   
 
-    for i in jobdirlist:
-        print "{}populating: {}{}/{}".format(c4,c0,JobDir,i)
-        stagef['JobDirName'] = i
-        ljdfile = JobDir + "/" + i +"/local_job_details.json"
-        with open(ljdfile, 'w') as outfile:
-            json.dump(stagef, outfile, indent=2)
-        outfile.close()
+        for j in jobdirlist:
+            print "populating: {}/{}".format(JobStreams[i],j)
+# update local job details file:
+            stagef['JobDirName'] = j
+
+            ljdfile = JobStreams[i] + "/" + j +"/local_job_details.json"
+            with open(ljdfile, 'w') as outfile:
+                json.dump(stagef, outfile, indent=2)
+            outfile.close()
 
 # copy across python scripts from /Setup_and_Config:
-        jobdir   = JobDir + "/" + i + "/"
-        sbs_path = jobdir + "/sbatch_start"
-        sbp_path = jobdir + "/sbatch_production"
+            jobpath   = JobStreams[i] + "/" + j + "/"
+            sbs_path = jobpath + "/sbatch_start"
+            sbp_path = jobpath + "/sbatch_production"
 
-        shutil.copy('sb_start_temp',sbs_path)
-        shutil.copy('sb_prod_temp',sbp_path)
+            shutil.copy('sb_start_temp',sbs_path)
+            shutil.copy('sb_prod_temp',sbp_path)
 
-        for pyfile in glob.glob(r'Setup_and_Config/*.py'):
-            try:
-                shutil.copy2(pyfile, jobdir)
-                print "   {}copying:{}{} {} ".format(c2,c0,cc1, pyfile)
-            except:
-                print "{}Can't copy python scripts from /Setup_and_Config/{} ".format(c4, c0)  
+            for pyfile in glob.glob(r'Setup_and_Config/*.py'):
+                try:
+                    shutil.copy2(pyfile, jobpath)
+                    print " copying: {} ".format(pyfile)
+                except:
+                    print "Can't copy python scripts from /Setup_and_Config/"  
 
-        for conffile in glob.glob(r'Setup_and_Config/*.conf'):
-            try:
-                shutil.copy2(conffile, jobdir)
-                print "   {}copying:{}{} {} ".format(c2,c0,cc1, conffile)
-            except:
-                print "{}Can't copy .conf scripts from /Setup_and_Config/{} ".format(c4, c0)  
+            for conffile in glob.glob(r'Setup_and_Config/*.conf'):
+                try:
+                    shutil.copy2(conffile, jobpath)
+                    print " copying: {} ".format(conffile)
+                except:
+                    print "Can't copy .conf scripts from /Setup_and_Config/"  
 
 # remove tempfiles. 
     os.remove('sb_start_temp')
     os.remove('sb_prod_temp')
-    print "{}done populating directories".format(c0)
+    print "done populating directories"
 
 def check_job():
     """ -function to check the input of the current job and calculate resources required."""
@@ -734,9 +757,10 @@ def get_current_joblist(JobDir):
     """ -function to return current, sorted, joblist in /JobDir """
     if os.path.exists(JobDir):
         jobdirlist = os.walk(JobDir).next()[1]
+    else:
+	print "Can't see Job Directories in {}. Have you initialiized?".format(JobDir)
     jobdirlist.sort()
     return jobdirlist
-
 
 def start_all_jobs():
     """ -function to start_all_jobs """
@@ -804,12 +828,13 @@ def new_round():
 def erase_all_data():
     """ -function to erase all data for a clean start.  Use with caution!"""
     mcf = read_master_config_file()
+    JobStreams   = mcf["JobStreams"]
     cwd = os.getcwd()
     print "\nWe are about to erase all data in this directory, which can be useful" 
     print "for making a clean start, but disasterous if this is the wrong folder!"
     print "{}Proceed with caution!{}".format(c4,c0)
     print "This operation will delete all data in the folders:\n"
-    print "{}/Main_Job_Dir/                   {}- main job directory.{}".format(c2,cc1,c0) 
+    print "{}/{}                   {}- main job directory.{}".format(c2,JobStreams,cc1,c0) 
     print "{}/JobLog/                         {}- Job logs.{}".format(c2,cc1,c0) 
     print "{}/Setup_and_Config/Benchmarking/  {}- Benchmarking data.{}".format(c2,cc1,c0) 
     
@@ -817,15 +842,13 @@ def erase_all_data():
     str = raw_input("")
     if str == "erase all my data": 
         print "Ok, well if you say so...."
-        for j in ["/Main_Job_Dir/"]:
-	    DIR = cwd + j 
-            print "erasing all files in:{}".format(DIR)
-            DIR_list = os.listdir(DIR)
-            for i in DIR_list:
-                DIRx = DIR + i
-		if os.path.isdir(DIRx):
-		    shutil.rmtree(DIRx)
-
+        for j in JobStreams:
+	    TargetDir = cwd + "/" + j 
+            print " Erasing all files in:{}".format(TargetDir)
+  	    if os.path.isdir(TargetDir):
+	        shutil.rmtree(TargetDir)
+            else:
+                print " Couldn't see {}".format(DIR)  
         print "\nOh the humanity. I sure hope that wasn't anything important."
     else: 
         print "Phew! Nothing erased."
