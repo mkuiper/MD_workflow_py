@@ -13,16 +13,17 @@
 "Temperature"  : "310",
 
 
-"Comment2"     : "Job Setup Dimensions",
-"SimReplicates": "4",
-"Runs"         : "10",
+"Comment2"          : "Job Stream Details",
+"JobStreams"        : ["Vacuum","Water","Octanol"],
+"JobReplicates"     : ["21","10","5"],
+"BaseDirNames"      : ["VacSim_","WaterSim_1","Octanol_1"],
+"JobBaseName"       : "My_Job_",
+
+"Comment3"     : "Job Setup Dimensions",
+"Runs"         : ["10","5","4"],
 "JobScheme"    : "simple",
 "Round"        : "1",
 
-"Comment3"          : "Job Input Details",
-"JobDir"            : "Main_Job_Dir",
-"BaseDirName"       : "My_Sim_",
-"JobBaseName"       : "My_Job_",
 
 "OptJobName"        : "optimization_job_",
 "SbatchStartScript" : "sbatch_start",
