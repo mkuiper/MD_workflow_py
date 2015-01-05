@@ -646,8 +646,8 @@ def check_job():
     mcf = read_master_config_file()
     jd_opt,  jd_opt_pl  = read_job_details(mcf["OptimizeConfScript"])    
     jd_prod, jd_prod_pl = read_job_details(mcf["ProdConfScript"])    
-    sr = 0
-    run = 0 
+    sr = 0             # Initalise no. of job repliates
+    run = 0            # Initalise no. of runs in each replicate
     print "{}\nJob check summary: ".format(c5)
     print "{}--------------------------------------------------------------------------------".format(c5)
     print "{} Main Job Directory:          {}{}".format(c6,c0,mcf["JobStreams"])
@@ -667,11 +667,11 @@ def check_job():
     except:
         error = "Error reading master_config_file variables."
         sys.exit(error)
-#calculating some numbers:
+# calculating some numbers:
     for i in range(0, nReplicates):
-        sr += int(Replicates[i])                        # no. of job replicate
+        sr += int(Replicates[i])                        # total no. of job replicate
     for j in range(0, nRuns):
-        run += int(Runs[j])                             # no. of runs in each replicate
+        run += int(Runs[j])                             # total no. of runs in each replicate
     spr = jd_prod["steps"]                              # steps per run
     dcd = jd_prod["dcdfreq"]                            # dcd write frequency
     dfs = int(jd_prod["natom"])*12.0/(1024.0*1024.0)    # dcd frame size (based on number of atoms from psf)
