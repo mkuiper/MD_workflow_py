@@ -646,22 +646,36 @@ def check_job():
     mcf = read_master_config_file()
     jd_opt,  jd_opt_pl  = read_job_details(mcf["OptimizeConfScript"])    
     jd_prod, jd_prod_pl = read_job_details(mcf["ProdConfScript"])    
-      
+    sr = 0             # Initalise no. of job repliates
+    run = 0            # Initalise no. of runs in each replicate
     print "{}\nJob check summary: ".format(c5)
     print "{}--------------------------------------------------------------------------------".format(c5)
-    print "{} Main Job Directory:          {}{}".format(c6,c0,mcf["JobDir"])
-    print "{} Simulation basename:         {}{}".format(c6,c0,mcf["BaseDirName"])
+    print "{} Main Job Directory:          {}{}".format(c6,c0,mcf["JobStreams"])
+    print "{} Simulation basename:         {}{}".format(c6,c0,mcf["BaseDirNames"])
     print "{} Sbatch start template:       {}{}.template".format(c6,c0,mcf["SbatchStartScript"])
     print "{} Sbatch prouction template:   {}{}.template".format(c6,c0,mcf["SbatchProdScript"])
     print "{} Optimization script:         {}{}".format(c6,c0,mcf["OptimizeConfScript"])
     print "{} Production script:           {}{}".format(c6,c0,mcf["ProdConfScript"])
     print "{} Namd modulefile:             {}{}".format(c6,c0,mcf["ModuleFile"])
 
+# checking the list in master config file for all replicate folders and runs(more than one replicate and run can be declared):
+    try:
+        Replicates   = mcf["JobReplicates"]
+        Runs         = mcf["Runs"]
+        nReplicates  = int(len(Replicates))
+        nRuns        = int(len(Runs))
+    except:
+        error = "Error reading master_config_file variables."
+        sys.exit(error)
 # calculating some numbers:
-    sr  = mcf["SimReplicates"]                          # no. of job replicates]
-    run = mcf["Runs"]                                   # no. of runs in each replicate
+    for i in range(0, nReplicates):
+        sr += int(Replicates[i])                        # total no. of job replicate
+    for j in range(0, nRuns):
+        run += int(Runs[j])                             # total no. of runs in each replicate
     spr = jd_prod["steps"]                              # steps per run
     dcd = jd_prod["dcdfreq"]                            # dcd write frequency
+    dfs = int(jd_prod["natom"])*12.0/(1024.0*1024.0)    # dcd frame size (based on number of atoms from psf)
+    tdf = int(spr)/int(dcd)*int(run)*int(sr)            # total dcd frames 
     dfs = int(jd_prod["natom"])*12.0/(1024.0*1024.0)    # dcd frame size (based on number of atoms from psf)
     tdf = int(spr)/int(dcd)*int(run)*int(sr)            # total dcd frames 
     tpd = tdf*dfs/(1024)                                # total production data 
@@ -766,7 +780,7 @@ def start_all_jobs():
     """ -function to start_all_jobs """
     print "-- starting all jobs."
     mcf = read_master_config_file()
-    JobDir       = mcf["JobDir"]
+    JobDir       = mcf["JobStreams"]
     StartCommand = mcf["SbatchStartScript"]
     cwd = os.getcwd()
     jobdirlist = get_current_joblist(JobDir)
@@ -791,7 +805,7 @@ def restart_all_production_jobs():
     """ -function to restart_all_production_jobs """
     print "-- restarting production jobs."
     mcf = read_master_config_file()
-    JobDir       = mcf["JobDir"]
+    JobDir       = mcf["JobStreams"]
     ProdCommand = mcf["SbatchProdScript"]
     cwd = os.getcwd()
     jobdirlist = get_current_joblist(JobDir)
@@ -828,13 +842,13 @@ def new_round():
 def erase_all_data():
     """ -function to erase all data for a clean start.  Use with caution!"""
     mcf = read_master_config_file()
-    JobStreams   = mcf["JobStreams"]
+    JobDir = mcf["JobStreams"]
     cwd = os.getcwd()
     print "\nWe are about to erase all data in this directory, which can be useful" 
     print "for making a clean start, but disasterous if this is the wrong folder!"
     print "{}Proceed with caution!{}".format(c4,c0)
     print "This operation will delete all data in the folders:\n"
-    print "{}/{}                   {}- main job directory.{}".format(c2,JobStreams,cc1,c0) 
+    print "{}/{}                   {}- main job directory.{}".format(c2,JobDir,cc1,c0) 
     print "{}/JobLog/                         {}- Job logs.{}".format(c2,cc1,c0) 
     print "{}/Setup_and_Config/Benchmarking/  {}- Benchmarking data.{}".format(c2,cc1,c0) 
     
@@ -842,13 +856,13 @@ def erase_all_data():
     str = raw_input("")
     if str == "erase all my data": 
         print "Ok, well if you say so...."
-        for j in JobStreams:
+        for j in JobDir:
 	    TargetDir = cwd + "/" + j 
             print " Erasing all files in:{}".format(TargetDir)
   	    if os.path.isdir(TargetDir):
 	        shutil.rmtree(TargetDir)
             else:
-                print " Couldn't see {}".format(DIR)  
+                print " Couldn't see {}".format(DIR)
         print "\nOh the humanity. I sure hope that wasn't anything important."
     else: 
         print "Phew! Nothing erased."
