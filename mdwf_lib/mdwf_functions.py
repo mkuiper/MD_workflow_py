@@ -46,7 +46,7 @@ def read_master_config_file():
         print "{}Have you populated the directory? (./mdwf -p){} \n".format(c3,c0) 
         sys.exit()
     return mcf
-        
+
 def read_local_job_details_file(path="Setup_and_Config",ljdf_target="local_job_details_template.json"):  
     """ Reads parameters from json file: Setup_and_Config/job_details_template.json """  
 
@@ -117,7 +117,7 @@ def read_job_details(targetfile):
         print "{}{} file not found".format(c5,targetfile)
     return jdd, jdpl
 
-    
+
 def estimate_dcd_frame_size(psffile):
     """ function to estimate dcd frame size of simulation based on the numbers of atoms. """
 #   assumes psf file is in /InputFiles directory. 
@@ -169,7 +169,7 @@ def initialize_job_countdown(equilib = "single"):
     # "single" for one equilibration that is then passed to all other job directories. 
     # or "multiple" for each job directory starting its own unique equilibration phase.
     return
-        
+
 
 def check_disk_quota(account,diskcutoff):
     """ function for checking that there is enough diskspace on the system before starting job"""
@@ -191,8 +191,8 @@ def check_disk_quota(account,diskcutoff):
             sys.exit(error)
     except:
         print "Can't run 'mydisk' on system. Can't check disk quota for account {}.".format(account) 
-    
-    
+
+
     return
 
 
@@ -251,7 +251,7 @@ def check_job_fail(start,finish,limit):
         sys.exit(error)
     return
 
-    """ old code commented out below
+""" old code commented out below
     sta = ljdf["JobStartTime"]
     fin = ljdf["JobFinishTime"]
     cutoff = mcf["JobFailTime"]
@@ -330,10 +330,10 @@ def redirect_output(name, run, CurrentWorkingFile="current_MD_run_files"):
 
   # create a base name based on passed arguments name and run.
     try:
-    	basename = create_job_basename(name, run)
+        basename = create_job_basename(name, run)
     except:
-	 error = "\nError making basename. (In redirect_output function) "
-         sys.exit(error)
+        error = "\nError making basename. (In redirect_output function) "
+        sys.exit(error)
 
  # make shorthand of current working files
     cwf_coor = CurrentWorkingFile + ".coor"
@@ -344,13 +344,13 @@ def redirect_output(name, run, CurrentWorkingFile="current_MD_run_files"):
 
  # copy CurrentWorking (restart) files to LastRestart/ directory 
     try:
-    	shutil.copy (cwf_coor, 'LastRestart/' + cwf_coor)
-    	shutil.copy (cwf_vel,  'LastRestart/' + cwf_vel)
-    	shutil.copy (cwf_xsc,  'LastRestart/' + cwf_xsc)
+        shutil.copy (cwf_coor, 'LastRestart/' + cwf_coor)
+        shutil.copy (cwf_vel,  'LastRestart/' + cwf_vel)
+        shutil.copy (cwf_xsc,  'LastRestart/' + cwf_xsc)
     except:	
-	error = "\nError moving restart files to /LastRestart (In redirect_output function) "
+        error = "\nError moving restart files to /LastRestart (In redirect_output function) "
         sys.exit(error)
-	  
+
  # rename and move current working files
     try: 
         os.rename (cwf_dcd,  'OutputFiles/' + basename + cwf_dcd)
@@ -359,9 +359,9 @@ def redirect_output(name, run, CurrentWorkingFile="current_MD_run_files"):
         os.rename (cwf_xst,  'OutputFiles/' + basename + cwf_xst)
         os.rename (cwf_coor, 'OutputFiles/' + basename + cwf_coor)
     except:	
-	error = "\nError moving files to /OutputFiles (In redirect_output function) "
+        error = "\nError moving files to /OutputFiles (In redirect_output function) "
         sys.exit(error)
-    
+
  # clean up remaining files
     post_job_clean()
 
@@ -377,16 +377,16 @@ def post_job_clean():
 
 def countdown_timer():
     """ function to adjust countdown timer """
-    
+
 
 def check_if_job_running(JobDir,sim):
     """ function to check if job already running in directory """ 
     dir_path = JobDir + "/" + sim
     ljdf_t = read_local_job_details_file(dir_path, "local_job_details.json") 
     cjid = ljdf_t["CurrentJobId"]
-            
+
     status = "not_running"
- 
+
     return status
 
 def monitor_jobs():
@@ -395,8 +395,8 @@ def monitor_jobs():
     JobDir  = mcf["JobDir"]
     Account = mcf["Account"]
 
-    jobdirlist = get_current_joblist(JobDir)
-    
+    jobdirlist = get_curr_job_list(JobDir)
+
     print "JobDirName:   |Progress: |JobId:    |Status:   |Cores:  |Walltime: |Job_messages:"
     print "--------------|----------|----------|----------|--------|----------|------------------ "
 
@@ -471,7 +471,7 @@ def initialize_job_directories():
 # create job stream structure:  /JobStreams/JobReplicates
     for i in range(0, nJobStreams):
         TargetJobDir = cwd + "/" + JobStreams[i]
-    	if not os.path.exists(TargetJobDir):
+        if not os.path.exists(TargetJobDir):
             print "Job Stream directory /{} does not exist. Making new directory.".format(TargetJobDir)
             try:
                 os.makedirs(JobStreams[i]) 
@@ -487,7 +487,7 @@ def initialize_job_directories():
         if not os.path.exists(TemplatePath):
             error = "Can't find the /Setup_and_Config/JobTemplate directory. Exiting."
             sys.exit(error) 
-    
+
         replicates = int(Replicates[i])
         zf = len(str(replicates)) + 1    
         for j in range(1,replicates+1):
@@ -547,12 +547,12 @@ def populate_job_directories():
 # decend through job structure and populate job directories:
     for i in range(0, nJobStreams):
         TargetJobDir = cwd + "/" + JobStreams[i]
-    	if not os.path.exists(TargetJobDir):
+        if not os.path.exists(TargetJobDir):
             error = "JobStream directory {} not found. Have you initialized?".format(TargetJobDir)
             sys.exit(error)
 
 # check to see if there actually are any job directories to fill:
-        jobdirlist = get_current_joblist(JobStreams[i])
+        jobdirlist = get_curr_job_list(JobStreams[i])
 
 # modify replicate elements in staging dictionary file:
         stagef['BASE_DIR']         = cwd
@@ -729,7 +729,7 @@ def check_file_exists(target):
     ntarget = target[6:]        # strip off "../../"
     if not "../../" in target[0:6]:
         print "{}unexpected path structure to input files:{}".format(c4,c0)
- 
+
     if os.path.exists(ntarget):
         if "example" in target:
             print "{} %-50s {}".format(cc1,mesg2) %(ntarget)    
@@ -737,7 +737,7 @@ def check_file_exists(target):
             print "{} %-50s {}".format(cc1,mesg1) %(ntarget)
     else:
         print "{} %-46s {}".format(cc1,mesg3) %(ntarget)
-    
+
     return
 
 def benchmark():
@@ -747,7 +747,7 @@ def benchmark():
     jd_opt,  jd_opt_pl  = read_job_details(mcf["OptimizeConfScript"])    
     print "{} Setting up jobs for benchmarking based on job config files.".format(c0)
 # create temporary files/ figure out job size. 
-        
+
 
 # move files to /Setup_and_Config/Benchmarking / create dictionary/ json file.
 
@@ -764,17 +764,46 @@ def benchmark():
 # plot results. 
 
 
+def get_curr_job_list(job_dir):
+    """<high-level description of the function here>
 
+    Argument(s):
+        job_dir -- path to the job directory.
 
+    Notes:
+        <notes of interest, e.g. bugs, caveats etc.>
 
-def get_current_joblist(JobDir):
-    """ -function to return current, sorted, joblist in /JobDir """
-    if os.path.exists(JobDir):
-        jobdirlist = os.walk(JobDir).next()[1]
+    Returns:
+        <description of the return value>
+
+    """
+
+    # are you after a list of jobs or a list of files?
+    file_list = []
+
+    if os.path.isdir(job_dir):
+        # build a list of every file in the `job_dir` directory tree. 
+        # you may want to ignore files such as '.gitkeep' etc.
+        for root, _, fns in os.walk(job_dir):
+            for fn in fns:
+                file_path = os.path.join(root, fn)
+                if os.path.isfile(file_path):
+                    file_list.append(file_path)
+
+        #
+        # insert code to manipulate `file_list` here.
+        #
+        
+        file_list.sort()
     else:
-	print "Can't see Job Directories in {}. Have you initialiized?".format(JobDir)
-    jobdirlist.sort()
-    return jobdirlist
+        # NOTE: to developers, it is good practise to write error messages to
+        # `stderr` rather than to stdout (i.e. avoid using`print` to display
+        # error messages).
+        sys.stderr.write("{} doesn't exist, it needs to be initialised.{}"
+                .format(job_dir, os.linesep))
+
+    return file_list
+
 
 def start_all_jobs():
     """ -function to start_all_jobs """
@@ -783,7 +812,7 @@ def start_all_jobs():
     JobDir       = mcf["JobStreams"]
     StartCommand = mcf["SbatchStartScript"]
     cwd = os.getcwd()
-    jobdirlist = get_current_joblist(JobDir)
+    jobdirlist = get_curr_job_list(JobDir)
     time.sleep(1)       # introduce small delay. 
 
     for i in jobdirlist:    
@@ -808,7 +837,7 @@ def restart_all_production_jobs():
     JobDir       = mcf["JobStreams"]
     ProdCommand = mcf["SbatchProdScript"]
     cwd = os.getcwd()
-    jobdirlist = get_current_joblist(JobDir)
+    jobdirlist = get_curr_job_list(JobDir)
 
     for i in jobdirlist:    
         # check current job status
@@ -851,18 +880,18 @@ def erase_all_data():
     print "{}/{}                   {}- main job directory.{}".format(c2,JobDir,cc1,c0) 
     print "{}/JobLog/                         {}- Job logs.{}".format(c2,cc1,c0) 
     print "{}/Setup_and_Config/Benchmarking/  {}- Benchmarking data.{}".format(c2,cc1,c0) 
-    
+
     print("\nPress 'enter' to quit or type: '{}erase all my data{}':").format(c4,c0)
     str = raw_input("")
     if str == "erase all my data": 
         print "Ok, well if you say so...."
         for j in JobDir:
-	    TargetDir = cwd + "/" + j 
+            TargetDir = cwd + "/" + j 
             print " Erasing all files in:{}".format(TargetDir)
-  	    if os.path.isdir(TargetDir):
-	        shutil.rmtree(TargetDir)
-            else:
-                print " Couldn't see {}".format(DIR)
+        if os.path.isdir(TargetDir):
+            shutil.rmtree(TargetDir)
+        else:
+            print " Couldn't see {}".format(DIR)
         print "\nOh the humanity. I sure hope that wasn't anything important."
     else: 
         print "Phew! Nothing erased."
