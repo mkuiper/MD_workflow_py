@@ -1,0 +1,45 @@
+#! /bin/bash
+#                                                              mk Jan 2013 
+# This script is used to generate a setup local vmd script that can conveniently
+# load in all production dcd files listed in this current directory.
+#  Typically one would run this from the local job directory
+
+# 
+
+
+# Can edit the following variables to select the input frames:
+
+first_frame=0
+last_frame=-1
+step_size=1
+
+ 
+# Assuming script runs in /MainJob_dir/Jobxxx
+# grab local directory name:
+
+# cdir=`pwd`
+# jobdir=`basename $cdir`
+basename=local_dcd_file_loader
+
+# 
+# cd OutputFiles
+
+# - create dcd list from exisiting dcd files
+ls *.dcd > dcd_list.txt
+
+# create local dcd list for vmd setup file: 
+echo "" >$basename.vmd
+
+for dcdline in $(cat dcd_list.txt);
+do 
+ printf "mol addfile OutputFiles/%s type dcd first %s last %s step %s filebonds 1 autobonds 1 waitfor all\n"  $dcdline $first_frame $last_frame  $step_size >>$basename.vmd
+done 
+
+#-- cleanup: 
+if [ -f dcd_list.txt ]; 
+ then 
+ rm dcd_list.txt
+fi
+
+cd ../
+

@@ -15,11 +15,11 @@
 
 
 "Comment2"      : "Job Details Section",
-"JobStreams"    : ["Main1","Main2"],
-"JobReplicates" : ["10","10"],
-"BaseDirNames"  : ["Sim1_","Sim2_"],
-"JobBaseNames"  : ["Myjob_","myJob2_"],
-"Runs"          : ["5","10"],
+"JobStreams"    : ["Main_Job_dir"],
+"JobReplicates" : ["10"],
+"BaseDirNames"  : ["Sim1_"],
+"JobBaseNames"  : ["Myjob_"],
+"Runs"          : ["5"],
 
 "JobScheme"     : "simple",
 "Round"         : 1,

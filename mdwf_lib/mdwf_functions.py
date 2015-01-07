@@ -24,7 +24,7 @@ c1 = '\033[31;2m'     # dark red
 c2 = '\033[32;1m'     # light green
 c3 = '\033[32;2m'     # dark green
 c4 = '\033[33;1m'     # light yellow
-c5 = '\033[38;5;154m' # spring green
+c5 = '\033[0m'           # spring green
 c6 = '\033[34;1m'     # light blue
 c7 = '\033[34;2m'     # dark blue
 c8 = '\033[38;5;220m' # orange 
@@ -508,6 +508,8 @@ def populate_job_directories():
 # checking job structure:
     try:
         JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams, nReplicates, nBaseNames = check_job_structure() 
+        print JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams, nReplicates, nBaseNames 
+
     except: 
         error = "Trouble passing job structure variables."
         sys.exit(error)
@@ -552,7 +554,7 @@ def populate_job_directories():
             sys.exit(error)
 
 # check to see if there actually are any job directories to fill:
-        jobdirlist = get_curr_job_list(JobStreams[i])
+        jobdirlist = get_current_dir_list(JobStreams[i])
 
 # modify replicate elements in staging dictionary file:
         stagef['BASE_DIR']         = cwd
@@ -648,15 +650,15 @@ def check_job():
     jd_prod, jd_prod_pl = read_job_details(mcf["ProdConfScript"])    
     sr = 0             # Initalise no. of job repliates
     run = 0            # Initalise no. of runs in each replicate
-    print "{}\nJob check summary: ".format(c5)
+    print "{}\nJob check summary: ".format(c1)
     print "{}--------------------------------------------------------------------------------".format(c5)
-    print "{} Main Job Directory:          {}{}".format(c6,c0,mcf["JobStreams"])
-    print "{} Simulation basename:         {}{}".format(c6,c0,mcf["BaseDirNames"])
-    print "{} Sbatch start template:       {}{}.template".format(c6,c0,mcf["SbatchStartScript"])
-    print "{} Sbatch prouction template:   {}{}.template".format(c6,c0,mcf["SbatchProdScript"])
-    print "{} Optimization script:         {}{}".format(c6,c0,mcf["OptimizeConfScript"])
-    print "{} Production script:           {}{}".format(c6,c0,mcf["ProdConfScript"])
-    print "{} Namd modulefile:             {}{}".format(c6,c0,mcf["ModuleFile"])
+    print "{} Main Job Directory:          {}{}".format(c1,c0,mcf["JobStreams"])
+    print "{} Simulation basename:         {}{}".format(c1,c0,mcf["BaseDirNames"])
+    print "{} Sbatch start template:       {}{}.template".format(c1,c0,mcf["SbatchStartScript"])
+    print "{} Sbatch prouction template:   {}{}.template".format(c1,c0,mcf["SbatchProdScript"])
+    print "{} Optimization script:         {}{}".format(c1,c0,mcf["OptimizeConfScript"])
+    print "{} Production script:           {}{}".format(c1,c0,mcf["ProdConfScript"])
+    print "{} Namd modulefile:             {}{}".format(c1,c0,mcf["ModuleFile"])
 
 # checking the list in master config file for all replicate folders and runs(more than one replicate and run can be declared):
     try:
@@ -681,30 +683,30 @@ def check_job():
     tpd = tdf*dfs/(1024)                                # total production data 
     tst = (int(sr)*int(run)*int(jd_prod["timestep"])*int(spr))/1000000.0  # total simulated time
 
-    print "{}\nEstimation of data to be generated from the production run of this simulation:{}".format(c5,c0)
-    print "{}--------------------------------------------------------------------------------".format(c5)
-    print "{} Simulation directories:   {}%-8s      {}Runs per directory:   {}%s".format(c6,c0,c6,c0) % (sr,run)
-    print "{} Steps per run:            {}%-8s      {}Dcdfreq in run:       {}%s".format(c6,c0,c6,c0) % (spr,dcd)
-    print "{} Dcd frame size(MB)        {}%-8.3f      {}Total dcd frames:     {}%s".format(c6,c0,c6,c0) % (dfs,tdf)
+    print "{}\nEstimation of data to be generated from the production run of this simulation:{}".format(c1,c0)
+    print "{}--------------------------------------------------------------------------------".format(c1)
+    print "{} Simulation directories:   {}%-8s      {}Runs per directory:   {}%s".format(c1,c0,c1,c0) % (sr,run)
+    print "{} Steps per run:            {}%-8s      {}Dcdfreq in run:       {}%s".format(c1,c0,c1,c0) % (spr,dcd)
+    print "{} Dcd frame size(MB)        {}%-8.3f      {}Total dcd frames:     {}%s".format(c1,c0,c1,c0) % (dfs,tdf)
 
-    print " {}   Total simulated time:{}  %12.2f {}nanoseconds".format(c8,c0,cc1) %(tst)
+    print " {}   Total simulated time:{}  %12.2f {}nanoseconds".format(c1,c0,cc1) %(tst)
     if not (tpd==0):
-        print " {}   Total production data:{} %12.2f {}GB".format(c8,c0,cc1) %(tpd) 
+        print " {}   Total production data:{} %12.2f {}GB".format(c1,c0,c1) %(tpd) 
     else:
-        print " {}   Total production data:{} %12.2f {}GB {} - error in calculating frame size. No psf file?".format(c8,c1,cc1,c0) %(tpd) 
-    print "{}\nNode configuration:{}".format(c5,c0)
+        print " {}   Total production data:{} %12.2f {}GB {} - error in calculating frame size. No psf file?".format(c1,c1,c1,c0) %(tpd) 
+    print "{}\nNode configuration:{}".format(c1,c0)
     print "{}--------------------------------------------------------------------------------".format(c5)
-    print "{}Sbatch Scripts:     {} %s , %s".format(c6,c5) % (mcf["SbatchStartScript"], mcf["SbatchProdScript"])      
-    print "{}nodes:              {} %-12s    ".format(c6,c0) % (mcf["nodes"])
-    print "{}walltime:           {} %-12s    ".format(c6,c0) % (mcf["Walltime"])
-    print "{}no. tasks per node: {} %-12s    ".format(c6,c0) % (mcf["ntpn"])
-    print "{}processes per node: {} %-12s    ".format(c6,c0) % (mcf["ppn"])
+    print "{}Sbatch Scripts:     {} %s , %s".format(c1,c0) % (mcf["SbatchStartScript"], mcf["SbatchProdScript"])      
+    print "{}nodes:              {} %-12s    ".format(c1,c0) % (mcf["nodes"])
+    print "{}walltime:           {} %-12s    ".format(c1,c0) % (mcf["Walltime"])
+    print "{}no. tasks per node: {} %-12s    ".format(c1,c0) % (mcf["ntpn"])
+    print "{}processes per node: {} %-12s    ".format(c1,c0) % (mcf["ppn"])
     if not mcf["Account"] == "VR0000":
-        print "{}account:            {} %-12s    ".format(c6,c0) % (mcf["Account"])
+        print "{}account:            {} %-12s    ".format(c1,c0) % (mcf["Account"])
     else:
-        print "{}account:            {} %-12s{}-have you set your account?{} ".format(c6,c1,c8,c0) % (mcf["Account"])
+        print "{}account:            {} %-12s{}-have you set your account?{} ".format(c1,c1,c1,c0) % (mcf["Account"])
 
-    print "{}\nChecking configuration input files:{}".format(c5,c0)
+    print "{}\nChecking configuration input files:{}".format(c1,c0)
     print "{}--------------------------------------------------------------------------------".format(c5)
 
 # checking if files in configuration exist where they are supposed to be. 
@@ -723,12 +725,12 @@ def check_job():
 
 def check_file_exists(target):
     mesg1 = "{} found {} -ok!{}".format(c6,c5,c0)
-    mesg2 = "{} found {} -ok!{} -example file?{}".format(c6,c5,c4,c0)
-    mesg3 = "{} not found.{} -Check config file.{}".format(c1,c8,c0) 
+    mesg2 = "{} found {} -ok!{} -example file?{}".format(c1,c1,c1,c0)
+    mesg3 = "{} not found.{} -Check config file.{}".format(c1,c1,c0) 
 
     ntarget = target[6:]        # strip off "../../"
     if not "../../" in target[0:6]:
-        print "{}unexpected path structure to input files:{}".format(c4,c0)
+        print "{}unexpected path structure to input files:{}".format(c1,c0)
 
     if os.path.exists(ntarget):
         if "example" in target:
@@ -762,6 +764,19 @@ def benchmark():
 
 
 # plot results. 
+
+
+def get_current_dir_list(job_dir):
+    """ Simple function to return a list of directories for a given path
+    """
+    file_list = []
+    if os.path.isdir(job_dir):
+       file_list =  os.listdir(job_dir)
+    else:
+        sys.stderr.write("No directories found in {}. Have you initiased?".format(job_dir))
+ 
+    return file_list
+
 
 
 def get_curr_job_list(job_dir):
