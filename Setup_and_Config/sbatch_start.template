@@ -43,5 +43,5 @@ if [ -f pausejob ]; then
 fi
 
 # launch next phase: 
-sbatch sbatch_production
+# sbatch sbatch_production
 #--------------------------------------------------------------------------------
