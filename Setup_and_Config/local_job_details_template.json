@@ -11,7 +11,7 @@
 
 "CurrentJobId"   : "0",
 "QueueStatus"    : "NotStarted",
-"JobStatus"      : "NotStarted",
+"JobStatus"      : "Ready",
 "JobMessage"     : "NotStarted",
 "ErrorsMessages" : "0",
 "Nodes"          : "0",
