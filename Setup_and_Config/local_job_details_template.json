@@ -12,6 +12,7 @@
 "CurrentJobId"   : "0",
 "QueueStatus"    : "NotStarted",
 "JobStatus"      : "NotStarted",
+"JobMessage"     : "NotStarted",
 "ErrorsMessages" : "0",
 "Nodes"          : "0",
 "ntpn"           : "0",

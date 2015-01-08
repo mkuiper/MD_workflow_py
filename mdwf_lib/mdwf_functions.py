@@ -18,9 +18,9 @@ import re
 
 # ansi color variables for formatting purposes: 
 c0 = '\033[0m'        # default
+c1 = '\033[31;2m'     # dark red 
 cc1 = '\033[0m'        # default
 c10= '\033[2m'        # grey 
-c1 = '\033[31;2m'     # dark red 
 c2 = '\033[32;1m'     # light green
 c3 = '\033[32;2m'     # dark green
 c4 = '\033[33;1m'     # light yellow
@@ -31,48 +31,47 @@ c8 = '\033[38;5;220m' # orange
 c9 = '\033[36;1m'     # cyan
 
 #Testing individual functions started 12/12/2014 EB branch file
+
 def read_master_config_file():  
-    """ Reads parameters from json file: master_config_file """  
-    cwd=os.getcwd()
-    if os.path.isfile('master_config_file'):
-        master_json = open('master_config_file')
+    """ Reads parameters from 'master_config_file'  """  
+    if os.path.isfile( 'master_config_file' ):
+        master_json = open( 'master_config_file' )
         try: 
             mcf = json.load(master_json,object_pairs_hook=OrderedDict)
             master_json.close()
         except:
-            print "\n{}Possible json format errors of {}'master_config_file'{}\n".format(c3,c3,c0)
+            print "\nPossible .json format errors of {}'master_config_file'{}\n".format(c1,c0)
     else:
-        print "{}Can't see {}'master_config_file'{} in directory:{} {}\n".format(c3,c4,c3,cwd,c0) 
-        print "{}Have you populated the directory? (./mdwf -p){} \n".format(c3,c0) 
+        print "{}Can't see 'master_config_file' in directory:{} {}\n".format(c1,cwd,c0) 
+        print "{}Have you populated the directory? (./mdwf -p){} \n".format(c1,c0) 
         sys.exit()
     return mcf
 
 def read_local_job_details_file(path="Setup_and_Config",ljdf_target="local_job_details_template.json"):  
-    """ Reads parameters from json file: Setup_and_Config/job_details_template.json """  
-
-    target=os.getcwd() + "/" + path + "/" + ljdf_target
+    """ Reads parameters from local job details file """  
+    # default target  /Setup_and_Config/local_job_details_template.json"
+    target = path + "/" + ljdf_target
     if os.path.isfile(target):
         local_json = open(target)
         try: 
             ljdf = json.load(local_json,object_pairs_hook=OrderedDict)
             local_json.close()
         except:
-            error = "Possible json format errors of {}/{}".format(path,ljdf_target)
+            error = "\nPossible .json format errors of {}".format(target)
             sys.exit(error)
     else:
-        error = "Can't see {} in {}. ".format(ljdf_target,path) 
+        error = "Can't see {} ".format(target) 
         sys.exit(error)
-
+  
     return ljdf
 
-
-def read_job_details(targetfile):
+def read_namd_job_details(targetfile):
     """ Extracts simulation details from given namd config file and returns a dictionary. """
-#   assumes files are located in /Setup_and_Config 
-    target=os.getcwd() + "/Setup_and_Config/" + targetfile
-#   job-details dictionary:
-    jdd = {}        
-    jdpl = []     # job details parameter list. 
+    # assumes files are located in /Setup_and_Config 
+    target = os.getcwd() + "/Setup_and_Config/" + targetfile
+    jdd = {}      # job-details dictionary  
+    jdpl = []     # job details parameter list
+
     if os.path.isfile(target):
         f = open(target,'r')
         for lline in f:
@@ -87,6 +86,7 @@ def read_job_details(targetfile):
                             jdd["psffile"] = i
                             natom = estimate_dcd_frame_size(i)        
                             jdd["natom"] = natom
+
                 if 'coordinates ' in line:
                     pl = lline.split()
                     jdd["pdbfilepath"] = pl[1]
@@ -94,29 +94,34 @@ def read_job_details(targetfile):
                     for i in nl:
                         if '.pdb' in i:
                             jdd["pdbfile"] = i
+
                 if 'timestep ' in line:
                     nl = lline.split()
                     jdd["timestep"] = nl[1]
+
                 if 'NumberSteps ' in line:
                     nl = lline.split()
                     jdd["steps"] = nl[2]
+
                 if 'dcdfreq ' in line:
                     nl = lline.split()
                     jdd["dcdfreq"] = nl[1]
+
                 if 'run ' in line:
                     nl = lline.split()
                     jdd["runsteps"] = nl[1]
+
                 if 'restartfreq ' in line:
                     nl = lline.split()
                     jdd["restartfreq"] = nl[1]
+
                 if 'parameters ' in line:
                     nl = lline.split()
                     jdpl.append(nl[1])
         f.close()
     else: 
-        print "{}{} file not found".format(c5,targetfile)
+        print "{} {} file not found.{}".format(c1,targetfile,c0)
     return jdd, jdpl
-
 
 def estimate_dcd_frame_size(psffile):
     """ function to estimate dcd frame size of simulation based on the numbers of atoms. """
@@ -131,37 +136,28 @@ def estimate_dcd_frame_size(psffile):
                 atoms = nl[0]
         f.close()    
     else:
-        print "{}Can't find {}{}{} in /InputFiles directory".format(c3,c1,psffile,c0)
+        print "{}Can't find {} in /InputFiles directory {}".format(c1,psffile,c0)
     return atoms
-
 
 def check_for_pausejob():
     """checks for pausejob flag in local job details file"""
-    #pjf = ljdf["PauseJobFlag"]
-
+    status = "go"
     if os.path.isfile('pausejob'):
         error = "\nPausejob flag present. Stopping job.\n" 
         status = "Stopped: Pausejob flag present"
-        update_local_job_status(status)
+        key    = "JobStatus"
+        update_local_job_details( key, status )
         sys.exit(error)
-
-    #if not (pjf=="0"):
-    #    error = "\nPausejob flag present. Stopping job.\n" 
-    #    status = "Stopped: Pausejob flag present"
-    #    update_local_job_status(status)
-    #    sys.exit(error)
-    return
-
+    return status
 
 def create_pausejob_flag(error):
-    """create pausejob flag to initiate a soft stop """
+    """create pausejob flag to initiate a soft job stop """
     ts = time.time()
     timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y_%h_%d_%H:%M')
 
     with open('pausejob', 'w+') as pausejob:
         pausejob.write(timestamp + "\n" + (error) + "\nBe sure to delete pausejob before continuing your simulation.")
     pausejob.close()
-
 
 def initialize_job_countdown(equilib = "single"):
     """intializes rounds and countdown timers of local details file based on master_config_file"""
@@ -184,17 +180,21 @@ def check_disk_quota(account,diskcutoff):
         b = int(diskcutoff)
         if (a>b):
             print "Warning: Account {} disk space quota low. Usage: {} % ".format(account,a)          
-            status = "Stopped: Disk quota too low."
             error = "\nDiskspace too low. usage: {}%  disk limit set to: {}%\n".format(a,b) 
             ljdf["PauseJobFlag"] = "1"
-            update_local_job_status(status)
+            status = "Stopped: Disk quota too low."
+            key = "JobStatus"
+            update_local_job_details( key, status )
+            status = "Stopped: Disk quota too low."
+            key = "JobMessage"
+            update_local_job_details( key, status )
+
+
             sys.exit(error)
     except:
         print "Can't run 'mydisk' on system. Can't check disk quota for account {}.".format(account) 
 
-
     return
-
 
 def log_job_details(jobid):
     """logging cluster job details"""
@@ -218,7 +218,6 @@ def log_job_details(jobid):
     except:
         print" "
 
-    return
 
 def record_start_time():
     """ to log start time in unix time to local details"""
@@ -227,8 +226,6 @@ def record_start_time():
         ljdf["JobStartTime"] = starttime
     except:
         print "\ncan't write start time to local job detail file.\n"
-    return 
-
 
 def record_finish_time():
     """ to log start time in unix time to local details"""
@@ -237,8 +234,6 @@ def record_finish_time():
         ljdf["JobFinishTime"] = finishtime
     except:
         print "\ncan't write finish time to local job detail file.\n"
-    return 
-
 
 def check_job_fail(start,finish,limit):
     """ check for job failure """
@@ -246,24 +241,10 @@ def check_job_fail(start,finish,limit):
     if runtime < limit:
         error = "Job ran shorter than expected. Possible crash."
         status = "Short run time: crash? Stopped Job"
-        update_local_job_status(status)
+        key = "JobStatus"
+        update_local_job_details( key, status )
         create_pausejob_flag(error)
         sys.exit(error)
-    return
-
-""" old code commented out below
-    sta = ljdf["JobStartTime"]
-    fin = ljdf["JobFinishTime"]
-    cutoff = mcf["JobFailTime"]
-    runtime = fin - sta
-    if runtime < cutoff: 
-        error = "Job ran shorter than expected. Possible crash." 
-        status = "Short run time: crash? Stopped Job"
-        ljdf["PauseJobFlag"] = "1"
-        update_local_job_status(status)
-        sys.exit(error) 
-    return
-    """ 
 
 def check_run_count(current,total):
     """ fail safe to prevent excessive unwanted simulations from occurring """
@@ -272,7 +253,6 @@ def check_run_count(current,total):
         status = "An error has occured and an unwanted number of jobs are being created"
         create_pausejob_flag(status)
         sys.exit(error)
-    return
 
 def check_final_run(current,total):
     """ end simulation at the completion of final run """
@@ -281,7 +261,6 @@ def check_final_run(current,total):
         status = "All runs completed"
         create_pausejob_flag(error)
         final_run_cleanup()
-    return
 
 def final_run_cleanup():
     """ job directory will be cleaned following the final run """
@@ -295,11 +274,11 @@ def final_run_cleanup():
         os.remove(file)
     for file in glob.glob("Temp*"):
         os.remove(file)    
-    return
 
 def log_job_timing():
     """ log length of job in human readable format """
-    return
+#  still to do
+
 
 def create_job_basename(name, run):
     """ creates a time stamped basename for current job"""
@@ -308,22 +287,16 @@ def create_job_basename(name, run):
     basename = stamp + name + "_r_" + run
     return basename
 
-#old code hashed out - mitch
-#def create_job_basename():
-    """ creates a time stamped basename for current job"""
-    #ts = time.time()
-    #stamp = datetime.datetime.fromtimestamp(ts).strftime('%Y_%h_%d_%H%S_')
-    #basename = stamp + ljdf["JobBaseName"] + "_r_" + ljdf["CurrentJobRound"]
-    #return basename 
-
-def update_local_job_status(status):
-    """ updates local job status """
+def update_local_job_details(key, status):
+    """ updates local job details of 'local job details file' """
     ljdf_t = read_local_job_details_file(".", "local_job_details.json")
-    ljdf_t["JobStatus"] = status
-    with open("local_job_details.json", 'w') as outfile:
-        json.dump(ljdf_t, outfile, indent=2)
-    outfile.close()
-    return
+    try:
+        ljdf_t[key] = status
+        with open("local_job_details.json", 'w') as outfile:
+            json.dump(ljdf_t, outfile, indent=2)
+        outfile.close()
+    except:
+        print "Can't update local job details file."
 
 def redirect_output(name, run, CurrentWorkingFile="current_MD_run_files"):
     """ A function to redirect NAMD output to various locations."""
@@ -377,44 +350,52 @@ def post_job_clean():
 
 def countdown_timer():
     """ function to adjust countdown timer """
+## still to do 
 
-
-def check_if_job_running(JobDir,sim):
-    """ function to check if job already running in directory """ 
-    dir_path = JobDir + "/" + sim
+def check_if_job_running():
+    """ function to check if job already running in current working directory """ 
+    dir_path = os.getcwd()
+    # read status from local job details file
     ljdf_t = read_local_job_details_file(dir_path, "local_job_details.json") 
-    cjid = ljdf_t["CurrentJobId"]
-
-    status = "not_running"
-
-    return status
+    current_jobid     = ljdf_t["CurrentJobId"]
+    current_jobstatus = ljdf_t["JobStatus"]
+## needs efficient way to check queue
+    return current_jobstatus, current_jobid
 
 def monitor_jobs():
     """ -function to monitor jobs status on the cluster """ 
     mcf = read_master_config_file()
-    JobDir  = mcf["JobDir"]
+    cwd = os.getcwd()
+    try:
+        JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams, nReplicates, nBaseNames = check_job_structure() 
+    except: 
+        sys.stderr.write("Trouble reading job structure from 'master_config_file' ")
     Account = mcf["Account"]
 
-    jobdirlist = get_curr_job_list(JobDir)
+    #jobdirlist = get_curr_job_list(JobDir)
 
-    print "JobDirName:   |Progress: |JobId:    |Status:   |Cores:  |Walltime: |Job_messages:"
-    print "--------------|----------|----------|----------|--------|----------|------------------ "
+    print "Job Name:      |Progress: |JobId:    |Status:   |Nodes:  |Walltime: |Job_messages:"
+    print "---------------|----------|----------|----------|--------|----------|------------------ "
 
-    for i in jobdirlist: 
-        dir_path = JobDir + "/" + i  
-        ljdf_t = read_local_job_details_file(dir_path, "local_job_details.json") 
-        jdn  = ljdf_t["JobDirName"]
-        qs   = ljdf_t["QueueStatus"]
-        js   = ljdf_t["JobStatus"]
-        cores= ljdf_t["Cores"]
-        wt   = ljdf_t["WallTime"]
-        cjid = str(ljdf_t["CurrentJobId"])
-        prog = str(ljdf_t["CurrentJobRound"] + ": " + ljdf_t["RunCountDown"] + "/" + ljdf_t["TotalRuns"]) 
+    for i in range(0,nJobStreams): 
+        JobDir = JobStreams[i]
+        jobdirlist = get_current_dir_list(JobDir) 
+        print c2 + JobDir + ":"+ c0
+        for j in jobdirlist:  
+	    dir_path = JobDir + "/" + j  
+            ljdf_t = read_local_job_details_file(dir_path, "local_job_details.json") 
+            jdn  = ljdf_t["JobDirName"]
+            qs   = ljdf_t["QueueStatus"]
+            js   = ljdf_t["JobStatus"]
+            jm   = ljdf_t["JobMessage"]
+            nodes= ljdf_t["Nodes"]
+            wt   = ljdf_t["Walltime"]
+            cjid = str(ljdf_t["CurrentJobId"])
+            #prog = str(ljdf_t["CurrentJobRound"] + ": " + ljdf_t["RunCountDown"] + "/" + ljdf_t["TotalRuns"]) 
+            prog =  ljdf_t["CurrentRun"] + "/" + ljdf_t["TotalRuns"] 
+            print "%-16s %8s %10s %10s %8s %10s %12s" % (jdn[0:11], prog, cjid, js, nodes, wt, jm) 
 
-
-        print "{}%-16s {}%8s {}%10s {}%10s {}%8s {}%10s {}%s".format(c1,c2,c3,c4,c5,c6,c7) % (jdn[0:11],prog,cjid,qs[0:10],cores,wt,js) 
     print "{}done.".format(c0)
-
 
 def md5sum(filename, blocksize=65536):
     """function for returning md5 checksum"""
@@ -425,14 +406,14 @@ def md5sum(filename, blocksize=65536):
         f.close()
     return hash.hexdigest()
 
-
 def getfilesize(filename):
     size = os.path.getsize(filename)
     return size
 
 def check_job_structure():
-    """ Function to check Job Structure in Master_Config_File """
-    mcf    = read_master_config_file()
+    """ Function to check job structure in 'master_config_file' """
+    # This reads the job structure file, check consistency. 
+    mcf = read_master_config_file()
     try:                  
         JobStreams   = mcf["JobStreams"]
         Replicates   = mcf["JobReplicates"] 
@@ -443,7 +424,7 @@ def check_job_structure():
         error = "Error reading master_config_file variables while initializing job directories."
         sys.exit(error)
 
-# check that job details lists are the same length in master_config_file: 
+    # check that job details lists are the same length in master_config_file: 
     try:
         nJobStreams   = int(len(JobStreams)) 
         nReplicates   = int(len(Replicates))
@@ -456,11 +437,10 @@ def check_job_structure():
     if not nJobStreams==nReplicates==nBaseNames==nJobBaseNames==nRuns:
         error = "Job Details Section lists do not appear to be the same length in master_config_file." 
         sys.exit(error) 
-
     return JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams, nReplicates, nBaseNames
 
 def initialize_job_directories():
-    """ Function to setup job directories as defined in the master_config_file"""
+    """ Function to setup job structure directories as defined in the 'master_config_file'"""
     cwd=os.getcwd()
     try:
         JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams, nReplicates, nBaseNames = check_job_structure() 
@@ -468,7 +448,7 @@ def initialize_job_directories():
         error = "Trouble passing job structure variables."
         sys.exit(error)
 
-# create job stream structure:  /JobStreams/JobReplicates
+    # create job stream structure:  /JobStreams/JobReplicates
     for i in range(0, nJobStreams):
         TargetJobDir = cwd + "/" + JobStreams[i]
         if not os.path.exists(TargetJobDir):
@@ -479,20 +459,22 @@ def initialize_job_directories():
                 error = "Error making directory in /{}.".format(cwd)
                 sys.exit(error) 
 
-# Copy directory structure from /Setup_and Config/JobTemplate
+        # Copy directory structure from /Setup_and Config/JobTemplate
         print "Making job replicates in /{}".format(JobStreams[i])
         TemplatePath = cwd + "/Setup_and_Config/JobTemplate"
 
-  # check existance of JobTemplate directory:
+        # check existance of JobTemplate directory:
         if not os.path.exists(TemplatePath):
             error = "Can't find the /Setup_and_Config/JobTemplate directory. Exiting."
             sys.exit(error) 
 
         replicates = int(Replicates[i])
-        zf = len(str(replicates)) + 1    
+        zf = len(str(replicates)) + 1     # z fill for numbering replicate directories 
+
         for j in range(1,replicates+1):
             suffix = str(j).zfill(zf)
-            NewDirName = JobStreams[i] + "/" + BaseDirNames[i] + suffix          
+            NewDirName = JobStreams[i] + "/" + BaseDirNames[i] + suffix 
+         
             if os.path.exists(NewDirName):
                 print "Replicate job directory {} already exists! -Skipping.".format(NewDirName) 
             else:
@@ -503,60 +485,58 @@ def initialize_job_directories():
                     print "Error in creating replicate directory."
 
 def populate_job_directories():
-    """ -function to populate or update job directories with job scripts """
-
-# checking job structure:
+    """ -function to populate or update job directory tree with job scripts """
+#   # checking job structure as defined in 'master_config_file':
     try:
         JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams, nReplicates, nBaseNames = check_job_structure() 
-        print JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams, nReplicates, nBaseNames 
-
     except: 
         error = "Trouble passing job structure variables."
         sys.exit(error)
 
-# reading information from master_config_file and local job details template:
+#   # reading information from master_config_file and local job details template:
     mcf    = read_master_config_file()
     ljdf_t = read_local_job_details_file()
     cwd=os.getcwd()
+
     try:
-        Flavour      = mcf["Flavour"]
-        Round        = mcf["Round"]
-        Account      = mcf["Account"]
-        Nodes        = mcf["nodes"]
-        Ntpn         = mcf["ntpn"]
-        Ppn          = mcf["ppn"]
-        OptScript    = mcf["OptimizeConfScript"]
-        ProdScript   = mcf["ProdConfScript"]
-        ModuleFile   = mcf["ModuleFile"]
-        Walltime     = mcf["Walltime"]
-        sbstart      = mcf["SbatchStartScript"]
-        sbprod       = mcf["SbatchProdScript"]
-        dsco         = mcf["DiskSpaceCutOff"]
-        jft          = mcf["JobFailTime"]
+        Flavour          = mcf["Flavour"]
+        Round            = mcf["Round"]
+        Account          = mcf["Account"]
+        Nodes            = mcf["nodes"]
+        Ntpn             = mcf["ntpn"]
+        Ppn              = mcf["ppn"]
+        OptScript        = mcf["OptimizeConfScript"]
+        ProdScript       = mcf["ProdConfScript"]
+        ModuleFile       = mcf["ModuleFile"]
+        Walltime         = mcf["Walltime"]
+        startscript      = mcf["SbatchStartScript"]
+        productionscript = mcf["SbatchProdScript"]
+        dsco             = mcf["DiskSpaceCutOff"]
+        jft              = mcf["JobFailTime"]
     except:
         error = "Error reading master_config_file variables during populate routine"
         sys.exit(error)
 
-# create local job detalis staging file from ljdf_template
+#   # create local job detalis staging file from ljdf_template
     stagef = ljdf_t           
 
-# modify common elements in staging dictionary file:
+#   # modify common elements in staging dictionary file:
     stagef['TOP_DIR']          = cwd
     stagef['CurrentRound']     = Round
     stagef['JobFailTime']      = jft
     stagef['DiskSpaceCutOff']  = dsco
 
-# decend through job structure and populate job directories:
+#   # decend through job structure and populate job directories:
     for i in range(0, nJobStreams):
         TargetJobDir = cwd + "/" + JobStreams[i]
         if not os.path.exists(TargetJobDir):
-            error = "JobStream directory {} not found. Have you initialized?".format(TargetJobDir)
+            error = "Job directory {} not found. Have you initialized?".format(TargetJobDir)
             sys.exit(error)
 
-# check to see if there actually are any job directories to fill:
+#       # check to see if there actually are any job directories to fill:
         jobdirlist = get_current_dir_list(JobStreams[i])
 
-# modify replicate elements in staging dictionary file:
+#       # modify replicate elements in staging dictionary file:
         stagef['BASE_DIR']         = cwd
         stagef['JOB_STREAM_DIR']   = JobStreams[i]
         stagef['CurrentRound']     = Round
@@ -571,17 +551,17 @@ def populate_job_directories():
         stagef['JobFailTime']      = jft
         stagef['DiskSpaceCutOff']  = dsco
 
-
-# create and modify temporary sbatch scripts:
-        sb_start_template = "Setup_and_Config/" + sbstart + ".template"
+#       # create and modify temporary sbatch scripts:
+        sb_start_template = "Setup_and_Config/" + startscript + ".template"
         if not os.path.exists(sb_start_template):
             error = "Can't find {} in /Setup_and_Config. Exiting.".format(sb_start_template)
             sys.exit(error)
-        sb_prod_template = "Setup_and_Config/" + sbprod + ".template"
+        sb_prod_template = "Setup_and_Config/" + productionscript + ".template"
         if not os.path.exists(sb_prod_template):
             print "Can't find {} in /Setup_and_Config.".format(sb_prod_template)
             sys.exit(error)
-# new lines for sbatch scripts:
+
+#       # new lines for sbatch scripts:
         nnodes   = "#SBATCH --nodes="   + Nodes
         ntime    = "#SBATCH --time="    + Walltime
         naccount = "#SBATCH --account=" + Account
@@ -590,10 +570,12 @@ def populate_job_directories():
         nmodule  = "module load " + ModuleFile
         nopt     = "optimize_script=" + OptScript
         nprod    = "production_script=" + ProdScript
-# make temporary copies of sbatch templates:     
+
+#       # make temporary copies of sbatch templates:     
         shutil.copy(sb_start_template,'sb_start_temp')
         shutil.copy(sb_prod_template,'sb_prod_temp')
-# replace lines in sbatch files:
+
+#       # replace lines in sbatch files:
         for f in ["sb_start_temp","sb_prod_temp"]:
             for line in fileinput.FileInput(f,inplace=True):
                 line = line.replace('#SBATCH --nodes=X', nnodes)   
@@ -608,7 +590,8 @@ def populate_job_directories():
 
         for j in jobdirlist:
             print "populating: {}/{}".format(JobStreams[i],j)
-# update local job details file:
+
+#           # update local job details file:
             stagef['JobDirName'] = j
 
             ljdfile = JobStreams[i] + "/" + j +"/local_job_details.json"
@@ -616,7 +599,7 @@ def populate_job_directories():
                 json.dump(stagef, outfile, indent=2)
             outfile.close()
 
-# copy across python scripts from /Setup_and_Config:
+ #          # copy across python scripts from /Setup_and_Config:
             jobpath   = JobStreams[i] + "/" + j + "/"
             sbs_path = jobpath + "/sbatch_start"
             sbp_path = jobpath + "/sbatch_production"
@@ -638,7 +621,7 @@ def populate_job_directories():
                 except:
                     print "Can't copy .conf scripts from /Setup_and_Config/"  
 
-# remove tempfiles. 
+#   # remove tempfiles. 
     os.remove('sb_start_temp')
     os.remove('sb_prod_temp')
     print "done populating directories"
@@ -646,8 +629,8 @@ def populate_job_directories():
 def check_job():
     """ -function to check the input of the current job and calculate resources required."""
     mcf = read_master_config_file()
-    jd_opt,  jd_opt_pl  = read_job_details(mcf["OptimizeConfScript"])    
-    jd_prod, jd_prod_pl = read_job_details(mcf["ProdConfScript"])    
+    jd_opt,  jd_opt_pl  = read_namd_job_details(mcf["OptimizeConfScript"])    
+    jd_prod, jd_prod_pl = read_namd_job_details(mcf["ProdConfScript"])    
     sr = 0             # Initalise no. of job repliates
     run = 0            # Initalise no. of runs in each replicate
     print "{}\nJob check summary: ".format(c1)
@@ -660,7 +643,7 @@ def check_job():
     print "{} Production script:           {}{}".format(c1,c0,mcf["ProdConfScript"])
     print "{} Namd modulefile:             {}{}".format(c1,c0,mcf["ModuleFile"])
 
-# checking the list in master config file for all replicate folders and runs(more than one replicate and run can be declared):
+#   # checking the list in master config file for all replicate folders and runs(more than one replicate and run can be declared):
     try:
         Replicates   = mcf["JobReplicates"]
         Runs         = mcf["Runs"]
@@ -669,7 +652,7 @@ def check_job():
     except:
         error = "Error reading master_config_file variables."
         sys.exit(error)
-# calculating some numbers:
+#   # calculating some numbers:
     for i in range(0, nReplicates):
         sr += int(Replicates[i])                        # total no. of job replicate
     for j in range(0, nRuns):
@@ -709,7 +692,7 @@ def check_job():
     print "{}\nChecking configuration input files:{}".format(c1,c0)
     print "{}--------------------------------------------------------------------------------".format(c5)
 
-# checking if files in configuration exist where they are supposed to be. 
+#   # checking if files in configuration exist where they are supposed to be. 
     print "{}{}:{}".format(c5,mcf["OptimizeConfScript"],c0)
     check_file_exists(jd_opt["psffilepath"])
     check_file_exists(jd_opt["pdbfilepath"])
@@ -740,40 +723,32 @@ def check_file_exists(target):
     else:
         print "{} %-46s {}".format(cc1,mesg3) %(ntarget)
 
-    return
-
 def benchmark():
     """ -function to benchmark job """
 # read job details:        
     mcf = read_master_config_file()
-    jd_opt,  jd_opt_pl  = read_job_details(mcf["OptimizeConfScript"])    
+    jd_opt,  jd_opt_pl  = read_namd_job_details(mcf["OptimizeConfScript"])    
     print "{} Setting up jobs for benchmarking based on job config files.".format(c0)
 # create temporary files/ figure out job size. 
 
-
 # move files to /Setup_and_Config/Benchmarking / create dictionary/ json file.
-
 
 # optimize job/ create sbatch_files. 
 
-
 # start benchmarking jobs: 
 
-
 # extract results 
-
 
 # plot results. 
 
 
 def get_current_dir_list(job_dir):
-    """ Simple function to return a list of directories for a given path
-    """
+    """ Simple function to return a list of directories in a given path """
     file_list = []
     if os.path.isdir(job_dir):
        file_list =  os.listdir(job_dir)
     else:
-        sys.stderr.write("No directories found in {}. Have you initiased?".format(job_dir))
+        sys.stderr.write("No directories found in {}. Have you initialized?".format(job_dir))
  
     return file_list
 
@@ -820,30 +795,70 @@ def get_curr_job_list(job_dir):
     return file_list
 
 
-def start_all_jobs():
-    """ -function to start_all_jobs """
-    print "-- starting all jobs."
-    mcf = read_master_config_file()
-    JobDir       = mcf["JobStreams"]
-    StartCommand = mcf["SbatchStartScript"]
+def execute_function_in_job_tree( func, *args ):
+    """ -a generic function to execute a given function throughout the entire job tree """
     cwd = os.getcwd()
-    jobdirlist = get_curr_job_list(JobDir)
-    time.sleep(1)       # introduce small delay. 
+#   # read job structure tree as given in the "master_config_file":
+    try:
+        JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams, nReplicates, nBaseNames = check_job_structure() 
+    except: 
+        sys.stderr.write("Trouble reading job structure from 'master_config_file' ")
 
-    for i in jobdirlist:    
-        # check current job status
-        cjs = check_if_job_running(JobDir,i)
-        if cjs == "running":
-            print "Job already running in JobDir/{} ".format(i)
-        else:
-            path = JobDir + '/' + i 
-            os.chdir(path)
-            try:
-                subprocess.Popen(['sbatch', StartCommand])
-            except:
-                print "can't launch:  sbatch {} ".format(StartCommand)
-            time.sleep(0.2)   
-            os.chdir(cwd)
+    # descending into Job Tree
+    for i in range(0,nJobStreams):
+        CurrentJobStream = cwd + '/' + JobStreams[i]
+
+        if os.path.isdir(CurrentJobStream):
+        # descending into Job Directory Tree of each Jobstream         
+            JobStreamDirList = get_current_dir_list(CurrentJobStream) 
+            for j in JobStreamDirList:
+                CurrentJobDir = CurrentJobStream + '/' + j
+                if os.path.isdir(CurrentJobDir):
+                    try:
+                        os.chdir(CurrentJobDir)
+                        func( *args) 
+                    except:
+                        print "\nCan't descend into job directory tree. Have you populated?\n {}".format(CurrentJobDir)     
+        else: 
+            print "Can't see job directories {}   -Have you initialized?".format(CurrentJobStream)  
+
+
+def test_function( args ):
+    """testing function"""
+    print "hi there from "
+    cwd2 = os.getcwd()
+    print cwd2, args 
+     
+
+def start_all_jobs():
+    """ function for starting all jobs """
+    mcf = read_master_config_file()
+    startscript      = mcf["SbatchStartScript"]
+    execute_function_in_job_tree( start_jobs, startscript )
+
+def start_jobs( startscript ):
+    """ function to start jobs in a directory"""
+    cwd = os.getcwd()
+    job_status, jobid = check_if_job_running()
+    if job_status == "NotStarted" and jobid == "0":
+        try: 
+            print startscript
+            subprocess.Popen(['sbatch', startscript])
+            status = "submitted"
+            key    = "JobStatus"
+            update_local_job_details( key, status )
+            status = "submitted to job queue"
+            key    = "JobMessage"
+            update_local_job_details( key, status )
+        except:
+            sys.stderr.write("Trouble starting job.")     
+    else:
+        print "It appears a job already running here:{} : jobid:{}".format(cwd,job_status)
+
+
+
+
+
 
 def restart_all_production_jobs():
     """ -function to restart_all_production_jobs """
@@ -877,7 +892,30 @@ def recover_all_jobs():
 def stop_jobs():
     """ -function to stop all jobs, -either immediately or gently."""
     print "-- stopping all jobs"
+    execute_function_in_job_tree(stop_all_jobs_immediately)
 
+def stop_all_jobs_immediately():
+    """ function to stop all jobs imediately"""
+    job_status, jobid = check_if_job_running()
+    if job_status == "job stopped":
+        try: 
+            status = "tried to stop job: none appears running."
+            key    = "JobMessage"
+            update_local_job_details( key, status )
+        except:
+            print "trouble updating job details."     
+    else:
+        try:
+            subprocess.Popen([ 'scancel', jobid ])
+            print " stopping job: {}".format( jobid )
+            status = "stopping job: sent scancel command."
+            key    = "JobMessage"
+            update_local_job_details( key, status )
+            status = "job stopped."
+            key    = "JobStatus"
+            update_local_job_details( key, status )
+        except:
+            print "unable to cancel job"
 
 def new_round():
     """ -function to set up a new round of simulations."""
@@ -886,13 +924,17 @@ def new_round():
 def erase_all_data():
     """ -function to erase all data for a clean start.  Use with caution!"""
     mcf = read_master_config_file()
-    JobDir = mcf["JobStreams"]
+    try:
+        JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams, nReplicates, nBaseNames = check_job_structure()
+    except:
+        sys.stderr.write("Trouble reading job structure from 'master_config_file' ")
+
     cwd = os.getcwd()
     print "\nWe are about to erase all data in this directory, which can be useful" 
     print "for making a clean start, but disasterous if this is the wrong folder!"
     print "{}Proceed with caution!{}".format(c4,c0)
     print "This operation will delete all data in the folders:\n"
-    print "{}/{}                   {}- main job directory.{}".format(c2,JobDir,cc1,c0) 
+    print "{}/{}                              {}".format(c1,JobStreams,c0) 
     print "{}/JobLog/                         {}- Job logs.{}".format(c2,cc1,c0) 
     print "{}/Setup_and_Config/Benchmarking/  {}- Benchmarking data.{}".format(c2,cc1,c0) 
 
@@ -900,20 +942,20 @@ def erase_all_data():
     str = raw_input("")
     if str == "erase all my data": 
         print "Ok, well if you say so...."
-        for j in JobDir:
-            TargetDir = cwd + "/" + j 
+        for j in range(0,nJobStreams):
+            TargetDir = cwd + "/" + JobStreams[j] 
             print " Erasing all files in:{}".format(TargetDir)
         if os.path.isdir(TargetDir):
             shutil.rmtree(TargetDir)
         else:
-            print " Couldn't see {}".format(DIR)
+            print " Couldn't see {}".format(TargetDir)
         print "\nOh the humanity. I sure hope that wasn't anything important."
     else: 
         print "Phew! Nothing erased."
 
 
 def clone():
-    """ -function to clone directory without data, but preseving input files."""
+    """ -function to clone directory without data, but preserving input files."""
     print "-- cloning data directory!!" 
 
 

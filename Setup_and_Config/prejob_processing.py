@@ -19,15 +19,16 @@ def main():
     # open and modify local job details file. 
     ljdf_t = mdwf.read_local_job_details_file(".", "local_job_details.json")
     ljdf_t['CurrentJobId'] = jobid
-    ljdf_t['JobStatus'] = 'submitted'
+    ljdf_t['JobStatus'] = 'running'
     ljdf_t['JobStartTime'] = str(time.time())
 
     # add +1 to RunCount in ljdf, set round to 0 if opt job
-    run = int(ljdf_t["RunCount"])
+    run = int(ljdf_t["CurrentRun"])
     if "opt" in jobtype:
-        ljdf_t["RunCount"] = "000"
+        ljdf_t["JobMessage"] = "Equilibrating"
     else:
-        ljdf_t["RunCount"] = '%03d'% (run + 1)
+        ljdf_t["CurrentRun"] = '%03d'% (run + 1)
+        ljdf_t["JobMessage"] = "Production run"
 
     with open("local_job_details.json", 'w') as outfile:
         json.dump(ljdf_t, outfile, indent=2)
