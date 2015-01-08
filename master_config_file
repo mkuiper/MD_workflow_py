@@ -1,5 +1,5 @@
 {
-"Comment0"     : "Master_Config_File v0.2",
+"Comment0"     : "Master_Config_File v0.25",
 "Account"      : "VR0021",
 "Flavour"      : "Namd",
 
@@ -9,7 +9,7 @@
 "ppn"          : "8",
 "Walltime"     : "24:0:0",
 
-"ModuleFile"   : "namd-xl-pami-smp/2.9",
+"ModuleFile"   :"namd-xl-pami-smp/2.9",
 "PsfFileName"  : "ChangeMe.psf",
 "PdbFileName"  : "ChangeMe.pdb",
 
@@ -22,23 +22,22 @@
 "Runs"          : ["5","3"],
 
 "JobScheme"     : "simple",
-"Round"         : 1,
+"Round"         : "1",
 
-"OptJobName"        : "optimization_job_",
+"EquilibrateJobName"      : "equilibration_job_",
+"SbatchEquilibrateScript" : "sbatch_start_script",
+"EquilibrateConfScript"   : "namd_equilibration_script.conf",
+ 
+"ProductionJobName"       : "production_job_",
+"SbatchProductionScript"  : "sbatch_production_script",
+"ProductionConfScript"    : "namd_production_script.conf",
 
-"SbatchStartScript" : "sbatch_start",
-"OptimizeConfScript": "sim_opt.conf",
+"custom_script1"     : "custom1.conf",
+"custom_script2"     : "custom2.conf",
 
-"ProductionJobName" : "production_job_",
-"SbatchProdScript"  : "sbatch_production",
-"ProdConfScript"    : "sim_production.conf",
-
-"custom_script1"    : "custom1.conf",
-"custom_script2"    : "custom2.conf",
-
-"Comment4"          : "Miscelaneous Parameters",
-"JobFailTime"       : "300", 
-"DiskSpaceCutOff"   : "95",
-"AutoAnalysis"      : "False"
+"Comment4"           : "Miscelaneous Parameters",
+"JobFailTime"        : "300", 
+"DiskSpaceCutOff"    : "95",
+"AutoAnalysis"       : "False"
 
 }

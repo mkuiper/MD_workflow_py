@@ -21,6 +21,7 @@ Options: \033[0m
   -b --benchmark    Setup benchmarking runs for job optimization. 
   -s --start        Start all jobs.
   -r --restart      Restart all production jobs.
+  --clear_stops     Clear pausejob and stop flags. 
   --recover         Recover and cleanup stopped jobs. 
   --stop_jobs       Stops all running jobs. 
   --init_new_round  Initializes new Job round.  
@@ -36,7 +37,7 @@ from mdwf_lib import mdwf_functions as mdwf
 from mdwf_lib import docopt
 
 c0  = '\033[0m'      # default
-cc1 = '\033[2m'      # default
+c1 =  '\033[2m'      # default
 c6  = '\033[34;1m'   # light blue
 
 
@@ -46,7 +47,7 @@ def main():
     action = '--help'                    # default action 
     for i in arg_list: 
         if args[i] == True:
-            print "{}mdwf action:{}{}".format(cc1,c0,i)
+            print "{}mdwf action:{}{}".format(c1,c0,i)
             action = i 
     if action == '--help':
         print __doc__
@@ -55,54 +56,59 @@ def main():
 
 def process(action):
     if action == '--monitor': 
-        print "{}monitoring job status:".format(cc1)
+        print "{}monitoring job status:{}".format( c6, c0 )
         mdwf.monitor_jobs()
 
     if action == '--initialize': 
-        print "{}initializing job directories".format(cc1)
+        print "{}initializing job directories:{}".format( c6, c0 )
         mdwf.initialize_job_directories()
 
     if action == '--populate': 
-        print "{}populating job directories:".format(cc1)
+        print "{}populating job directories:{}".format( c6, c0 )
         mdwf.populate_job_directories()
 
     if action == '--checkjob':
-        print "{}checking job input:".format(cc1) 
+        print "{}checking job input:{}".format( c6, c0 ) 
         mdwf.check_job()
 
     if action == '--benchmark':
-        print "benchmarking job:".format(cc1) 
+        print "{}benchmarking job:{}".format( c6, c0 ) 
         mdwf.benchmark()
 
     if action == '--start':
-        print "starting jobs:".format(cc1) 
+        print "{}starting jobs:{}".format( c6, c0 ) 
         mdwf.start_all_jobs()
 
     if action == '--restart':
-        print "restarting production jobs:".format(cc1) 
+        print "{}restarting production jobs:{}".format( c6, c0 ) 
         mdwf.restart_all_production_jobs()
 
     if action == '--recover':
-        print "recovering and restoring crashed jobs:".format(cc1) 
+        print "{}recovering and restoring crashed jobs:{}".format( c6, c0 ) 
         mdwf.recover_all_jobs()
 
+    if action == '--clear_stops':
+        print "{}clearing pausejob flags:{}".format( c6, c0 ) 
+        mdwf.clear_jobs()
+
     if action == '--stop_jobs':
-        print "stopping all jobs:".format(cc1) 
+        print "{}stopping all jobs:{}".format( c6, c0 ) 
         mdwf.stop_jobs()
 
     if action == '--init_new_round':
-        print "setting up new job rounds:".format(cc1)
+        print "{}setting up new job rounds:{}".format( c6, c0 )
         mdwf.new_round()
 
     if action == '--erase_all_data':
+        print "{}erasing data:{}".format( c6, c0 )
         mdwf.erase_all_data()
 
     if action == '--clone':
-        print "cloning job_directory:".format(cc1) 
+        print "{}cloning job_directory:{}".format( c6, c0 ) 
         mdwf.clone()
 
     if action == '--test':
-        print "testing function:".format(cc1) 
+        print "{}testing function:{}".format( c6, c0 ) 
         mdwf.execute_function_in_job_tree(mdwf.test_function, 5)
 
 if __name__ == '__main__':
