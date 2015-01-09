@@ -5,40 +5,35 @@ import sys
 import json
 import time
 from collections import OrderedDict
-
 lib_path = os.path.abspath('../../mdwf_lib')
 sys.path.append(lib_path)
 import mdwf_functions as mdwf
 
-""" A python script to help setup the optimization phase of a MD simulation."""
+""" A python script to help do the data preprocessing before submitting the job."""
 
-jobid   = sys.argv[1]
-jobtype = sys.argv[2]
+jobid   = sys.argv[1]     # job id of submitted job.  
+jobtype = sys.argv[2]     # job type, 
 
 def main():
-    # open and modify local job details file. 
-    ljdf_t = mdwf.read_local_job_details_file(".", "local_job_details.json")
-    ljdf_t['CurrentJobId'] = jobid
-    ljdf_t['JobStatus'] = 'running'
-    ljdf_t['JobStartTime'] = str(time.time())
+## read details from 'local job details file':
+    ljdf_t     = mdwf.read_local_job_details_file(".", "local_job_details.json" )
+    account    =      ljdf_t[ "Account"         ] 
+    run_number = int( ljdf_t[ "CurrentRun"      ] )
+    total_runs = int( ljdf_t[ "TotalRuns"       ] )
+    diskspace  = int( ljdf_t[ "DiskSpaceCutOff" ] )
 
-    # add +1 to RunCount in ljdf, set round to 0 if opt job
-    run = int(ljdf_t["CurrentRun"])
-    if "opt" in jobtype:
-        ljdf_t["JobMessage"] = "Equilibrating"
-    else:
-        ljdf_t["CurrentRun"] = '%03d'% (run + 1)
-        ljdf_t["JobMessage"] = "Production run"
+## update the local job details file: 
+    mdwf.update_local_job_details_file( "CurrentJobId",  jobid      )
+    mdwf.update_local_job_details_file( "JobStatus",    "running"   )
+    mdwf.update_local_job_details_file( "JobStartTime",  time.time()) 
 
-    with open("local_job_details.json", 'w') as outfile:
-        json.dump(ljdf_t, outfile, indent=2)
-    outfile.close()
+## performs checks before launching the job:  
+    mdwf.check_for_pausejob()                      
+    mdwf.check_disk_quota( account, diskspace )    
+    mdwf.check_run_count( run_number, total_runs ) 
 
-    # check Ok for job to run:
-    # mdwf.check_disk_quota(ljdf["Account"],ljdf["DiskSpaceCutoff"])
-
-    # initialize job counter if optimize flag set.  
-    
+## add +1 to RunCount in ljdf, set round to 0 if opt job
+       
 if __name__ == "__main__":
     main()
 

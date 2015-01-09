@@ -141,23 +141,22 @@ def estimate_dcd_frame_size(psffile):
 
 def check_for_pausejob():
     """checks for pausejob flag in local job details file"""
-    status = "go"
     if os.path.isfile('pausejob'):
-        error = "\nPausejob flag present. Stopping job.\n" 
-        status = "Stopped: Pausejob flag present"
-        key    = "JobStatus"
-        update_local_job_details( key, status )
-        sys.exit(error)
-    return status
+        update_local_job_details( "JobStatus",    "Stopped: pausejob present" )
+        update_local_job_details( "PauseJobFlag", "pausejob" )
 
-def create_pausejob_flag(error):
+def create_pausejob_flag( error ):
     """create pausejob flag to initiate a soft job stop """
+##  creating explicit pausejob file; the job should not continue next round. 
     ts = time.time()
     timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y_%h_%d_%H:%M')
-
+    update_local_job_details( "PauseJobFlag", "pausejob" )
     with open('pausejob', 'w+') as pausejob:
         pausejob.write(timestamp + "\n" + (error) + "\nBe sure to delete pausejob before continuing your simulation.")
     pausejob.close()
+##  Change PauseJobFlag in local job details file
+    update_local_job_details( "PauseJobFlag", "pausejob" )
+
 
 def initialize_job_countdown(equilib = "single"):
     """intializes rounds and countdown timers of local details file based on master_config_file"""
@@ -169,7 +168,7 @@ def initialize_job_countdown(equilib = "single"):
 
 def check_disk_quota(account,diskcutoff):
     """ function for checking that there is enough diskspace on the system before starting job"""
-# run a local systems script "mydisk"  and extract the information    
+## run a local systems script "mydisk"  and extract the information    
     try:
         disk = subprocess.check_output('mydisk')
         dline = disk.split("\n")
@@ -180,87 +179,67 @@ def check_disk_quota(account,diskcutoff):
         b = int(diskcutoff)
         if (a>b):
             print "Warning: Account {} disk space quota low. Usage: {} % ".format(account,a)          
-            error = "\nDiskspace too low. usage: {}%  disk limit set to: {}%\n".format(a,b) 
-            ljdf[ "PauseJobFlag" ] = "1"
-            status = "Stopped: Disk quota too low."
-            key = "JobStatus"
-            update_local_job_details( key, status )
-            status = "Stopped: Disk quota too low."
-            key = "JobMessage"
-            update_local_job_details( key, status )
-
-
-            sys.exit(error)
+            print "Diskspace too low. usage: {}%  disk limit set to: {}%\n".format(a,b) 
+            update_local_job_details( "JobStatus",    "stopping" )
+            update_local_job_details( "PauseJobFlag", "low disk" )
+            update_local_job_details( "JobMessage",   "stopped: Disk quota low." )
     except:
         print "Can't run 'mydisk' on system. Can't check disk quota for account {}.".format(account) 
 
-    return
-
-def log_job_details(jobid):
+def log_job_details( jobid ):
     """logging cluster job details"""
-# update job details
-    ljdf[ "CurrentJobId" ] = jobid
+
+## update job details in local job details file. 
+
     try:
-        jobdetails = subprocess.check_output([ "scontrol", "show", "job", str(jobid)])
-        jdsplit = re.split(' |\n', jobdetails)  
-# add details to local job details file:
+        jobdetails = subprocess.check_output([ "scontrol", "show", "job", str(jobid) ] )
+        jdsplit = re.split( ' |\n', jobdetails )  
+        
         for i in jdsplit:
             if "JobState=" in i:
-                ljdf[ "JobStatus" ]    = i.split("=")[1]
+                update_locate_job_details( "JobStatus",  i.split("=")[1] ) 
             if "NumNodes=" in i:
-                ljdf[ "Nodes" ]        = i.split("=")[1]
+                update_locate_job_details( "Nodes",  i.split("=")[1] ) 
             if "NumCPUs=" in i:
-                ljdf[ "Cores" ]        = i.split("=")[1]
+                update_locate_job_details( "Cores",  i.split("=")[1] ) 
             if "StartTime=" in i:
-                ljdf[ "JobStartTime" ] = i.split("=")[1]
+                update_locate_job_details( "JobStartTime",  i.split("=")[1] ) 
             if "TimeLimit=" in i:
-                ljdf[ "WallTime" ]     = i.split("=")[1]
+                update_locate_job_details( "Walltime",  i.split("=")[1] ) 
     except:
-        print" "
+        print "Trouble logging job details"
 
+#def record_start_time():
+#    """ to log start time in unix time to local details"""
+#    starttime = int( time.time() )
+#    update_local_job_details( "JobStartTime", starttime )
 
-def record_start_time():
-    """ to log start time in unix time to local details"""
-    starttime = int(time.time())
-    try:
-        ljdf[ "JobStartTime" ] = starttime
-    except:
-        print "\ncan't write start time to local job detail file.\n"
+#def record_finish_time():
+#    """ to log start time in unix time to local details"""
+#    finishtime = int( time.time() )
+#    update_local_job_details( "JobFinishTime", finishtime )
 
-def record_finish_time():
-    """ to log start time in unix time to local details"""
-    finishtime = int(time.time())
-    try:
-        ljdf[ "JobFinishTime" ] = finishtime
-    except:
-        print "\ncan't write finish time to local job detail file.\n"
+def check_job_fail( start, finish, limit ):
+    """ check for job failure based on run time """
+    runtime = int( finish ) - int( start ) 
+    if runtime < int( limit ) :
+        update_local_job_details( "JobStatus",  "stopping" )
+        update_local_job_details( "JobMessage", "short run time detected" )
+        create_pausejob_flag( "short run time" )
 
-def check_job_fail(start,finish,limit):
-    """ check for job failure """
-    runtime = finish - start
-    if runtime < limit:
-        error = "Job ran shorter than expected. Possible crash."
-        status = "Short run time: crash? Stopped Job"
-        key = "JobStatus"
-        update_local_job_details( key, status )
-        create_pausejob_flag(error)
-        sys.exit(error)
+def check_run_count( current, total ):
+    """ checking if job runs are finsihed """
+    if ( int( total ) - int( current) )  < 0:
+        update_local_details( "JobStatus",    "finished" )
+        update_local_details( "PauseJobFlag", "finished" )
 
-def check_run_count(current,total):
-    """ fail safe to prevent excessive unwanted simulations from occurring """
-    if total - current < 0:
-        error = "I'm sorry, Dave. I'm afraid I can't do that."
-        status = "An error has occured and an unwanted number of jobs are being created"
-        create_pausejob_flag(status)
-        sys.exit(error)
-
-def check_final_run(current,total):
-    """ end simulation at the completion of final run """
-    if total - current <= 0:
-        error = "All runs completed"
-        status = "All runs completed"
-        create_pausejob_flag(error)
-        final_run_cleanup()
+#def check_final_run(current,total):
+#    """ end simulation at the completion of final run """
+#    if total - current <= 0:
+#        error = "All runs completed"
+#        status = "All runs completed"
+#        create_pausejob_flag(error)
+#        final_run_cleanup()
 
 def final_run_cleanup():
     """ job directory will be cleaned following the final run """
@@ -287,7 +266,7 @@ def create_job_basename(name, run):
     basename = stamp + name + "_r_" + run
     return basename
 
-def update_local_job_details(key, status):
+def update_local_job_details( key, status ):
     """ updates local job details of 'local job details file' """
     ljdf_t = read_local_job_details_file(".", "local_job_details.json")
     try:
@@ -868,15 +847,11 @@ def clear_all_jobs():
     job_status, jobid = check_if_job_running()
     if job_status == "stopped":
         try: 
-            status = "Ready"
-            key    = "JobStatus"
-            update_local_job_details( key, status )
-            status = "0"
-            key    = "CurrentJobId"
-            update_local_job_details( key, status )
-            status = "cleared stop flags"
-            key    = "JobMessage"
-            update_local_job_details( key, status )
+            update_local_job_details( "JobStatus", "Ready" )
+            update_local_job_details( "CurrentJobId", "0" )
+            update_local_job_details( "JobMessage", "cleared stop flags" )
+            update_local_job_details( "PauseJobFlag", "0" )
+         ## remove explicit flag file:    
             if  os.path.isfile( "pausejob" ):
                 os.remove( "pausejob" )
             print "{} cleared stop flags in: {} {}".format( c2, cwd, c0 )
@@ -968,17 +943,18 @@ def erase_all_data():
     str = raw_input("")
     if str == "erase all my data": 
         print "Ok, well if you say so...."
-        for j in range(0,nJobStreams):
+
+        for j in range( 0, nJobStreams):
             TargetDir = cwd + "/" + JobStreams[j] 
             print " Erasing all files in:{}".format(TargetDir)
-        if os.path.isdir(TargetDir):
-            shutil.rmtree(TargetDir)
-        else:
-            print " Couldn't see {}".format(TargetDir)
-        print "\nOh the humanity. I sure hope that wasn't anything important."
-    else: 
-        print "Phew! Nothing erased."
+            if os.path.isdir(  TargetDir ):
+                shutil.rmtree( TargetDir )
+            else:
+                print " Couldn't see {}".format(TargetDir)
 
+        print "\n Oh the humanity. I sure hope that wasn't anything important."
+    else: 
+        print " Phew! Nothing erased."
 
 def clone():
     """ -function to clone directory without data, but preserving input files."""
