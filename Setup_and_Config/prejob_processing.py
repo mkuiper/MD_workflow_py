@@ -2,40 +2,38 @@
 
 import os
 import sys 
-import json
 import time
-from collections import OrderedDict
 lib_path = os.path.abspath('../../mdwf_lib')
 sys.path.append(lib_path)
 import mdwf_functions as mdwf
 
-""" A python script to help do the data preprocessing before submitting the job."""
+""" A python script to help do the data pre-processing before submitting the job."""
 
 jobid   = sys.argv[1]     # job id of submitted job.  
 jobtype = sys.argv[2]     # job type, 
 
 def main():
-## read details from 'local job details file':
-    ljdf_t     = mdwf.read_local_job_details_file(".", "local_job_details.json" )
-    account    =      ljdf_t[ "Account"         ] 
-    run_number = int( ljdf_t[ "CurrentRun"      ] )
-    total_runs = int( ljdf_t[ "TotalRuns"       ] )
-    diskspace  = int( ljdf_t[ "DiskSpaceCutOff" ] )
 
 ## update the local job details file: 
-    mdwf.update_local_job_details_file( "CurrentJobId",  jobid      )
-    mdwf.update_local_job_details_file( "JobStatus",    "running"   )
-    mdwf.update_local_job_details_file( "JobStartTime",  time.time()) 
+    mdwf.update_local_job_details( "CurrentJobId",  jobid      )
+    mdwf.update_local_job_details( "JobStatus",    "running"   )
+ 
+    timestamp = "started at " + time.strftime("%Y_%d%b_%H:%M", time.localtime())
+    mdwf.update_local_job_details( "JobMessage",  timestamp  )
+    mdwf.update_local_job_details( "JobStartTime",  time.time()) 
 
 ## performs checks before launching the job:  
-    mdwf.check_for_pausejob()                      
-    mdwf.check_disk_quota( account, diskspace )    
-    mdwf.check_run_count( run_number, total_runs ) 
+    mdwf.check_for_pausejob()      # -checking for pause flags                
+    mdwf.check_disk_quota()        # -checks disk quota on system
+    mdwf.check_run_counter(0)      # -checks job countdown/increments job:
 
-## add +1 to RunCount in ljdf, set round to 0 if opt job
-       
+## re-read local job details script, check for fails. Cancel if required.
+    ljdf_t = mdwf.read_local_job_details_file( ".", "local_job_details.json" )
+    pauseflag  = ljdf_t[ "PauseJobFlag" ] 
+    
+    if pauseflag != "0":
+        mdwf.cancel_job( jobid )   # -the job should stop here if checks fail    	    
+
 if __name__ == "__main__":
     main()
-
-
 
