@@ -60,7 +60,7 @@ def read_local_job_details_file(path="Setup_and_Config",ljdf_target="local_job_d
             error = "\nPossible .json format errors of {}".format(target)
             sys.exit(error)
     else:
-        error = "Can't see {} ".format(target) 
+        error = "Can't see {}  Have you populated job tree? ".format(target) 
         sys.exit(error)
   
     return ljdf
@@ -142,7 +142,8 @@ def estimate_dcd_frame_size(psffile):
 def check_for_pausejob():
     """checks for pausejob flag in local job details file"""
     if os.path.isfile('pausejob'):
-        update_local_job_details( "JobStatus",    "Stopped: pausejob present" )
+        update_local_job_details( "JobStatus",    "stopped" )
+        update_local_job_details( "JobMessage",   "pausejob flag present" )
         update_local_job_details( "PauseJobFlag", "pausejob" )
 
 def create_pausejob_flag( error ):
@@ -157,7 +158,6 @@ def create_pausejob_flag( error ):
 ##  Change PauseJobFlag in local job details file
     update_local_job_details( "PauseJobFlag", "pausejob" )
 
-
 def initialize_job_countdown(equilib = "single"):
     """intializes rounds and countdown timers of local details file based on master_config_file"""
     # equilib represents equilibration strategy:
@@ -165,19 +165,21 @@ def initialize_job_countdown(equilib = "single"):
     # or "multiple" for each job directory starting its own unique equilibration phase.
     return
 
-
-def check_disk_quota(account,diskcutoff):
+def check_disk_quota():
     """ function for checking that there is enough diskspace on the system before starting job"""
-## run a local systems script "mydisk"  and extract the information    
+## read from local job details file:
+    ljdf_t  = read_local_job_details_file( ".", "local_job_details.json" )
+    account = ljdf_t[ 'Account'  ]
+    diskspc = int( ljdf_t[ 'DiskSpaceCutOff'  ] )
+
+## run a local systems script "mydisk" and extract the information    
     try:
         disk = subprocess.check_output('mydisk')
         dline = disk.split("\n")
         for i in dline:
-            if account in i:               # looks for the line with the matching account number
-                usage = i.split()[-1][:-1] # extracts last 'word' of matching line cutting of '%'
-        a = int(usage)
-        b = int(diskcutoff)
-        if (a>b):
+            if account in i:                      # looks for the line with the matching account number
+                usage = int( i.split()[-1][:-1] ) # extracts last 'word' of matching line cutting of '%'
+        if usage > diskspc:
             print "Warning: Account {} disk space quota low. Usage: {} % ".format(account,a)          
             print "Diskspace too low. usage: {}%  disk limit set to: {}%\n".format(a,b) 
             update_local_job_details( "JobStatus",    "stopping" )
@@ -209,123 +211,109 @@ def log_job_details( jobid ):
     except:
         print "Trouble logging job details"
 
-#def record_start_time():
-#    """ to log start time in unix time to local details"""
-#    starttime = int( time.time() )
-#    update_local_job_details( "JobStartTime", starttime )
-
-#def record_finish_time():
-#    """ to log start time in unix time to local details"""
-#    finishtime = int( time.time() )
-#    update_local_job_details( "JobFinishTime", finishtime )
-
-def check_job_fail( start, finish, limit ):
+def check_job_runtime():
     """ check for job failure based on run time """
-    runtime = int( finish ) - int( start ) 
-    if runtime < int( limit ) :
+## read from local job details file:
+    ljdf_t = read_local_job_details_file( ".", "local_job_details.json" )
+    start  = int( ljdf_t[ 'JobStartTime'  ] )
+    finish = int( ljdf_t[ 'JobFinishTime' ] )
+    limit  = int( ljdf_t[ 'JobFailTime'   ] )
+
+    runtime = finish - start 
+    if runtime < limit:
         update_local_job_details( "JobStatus",  "stopping" )
         update_local_job_details( "JobMessage", "short run time detected" )
         create_pausejob_flag( "short run time" )
 
-def check_run_count( current, total ):
+def check_run_counter( incr ):
     """ checking if job runs are finsihed """
-    if ( int( total ) - int( current) )  < 0:
-        update_local_details( "JobStatus",    "finished" )
-        update_local_details( "PauseJobFlag", "finished" )
+## read from local job details file:
+    ljdf_t  = read_local_job_details_file( ".", "local_job_details.json" )
+    current = int( ljdf_t[ 'CurrentRun'  ] )
 
-#def check_final_run(current,total):
-#    """ end simulation at the completion of final run """
-#    if total - current <= 0:
-#        error = "All runs completed"
-#        status = "All runs completed"
-#        create_pausejob_flag(error)
-#        final_run_cleanup()
+    if  current <= 0:       # -stop jobs if counter reaches zero
+        update_local_job_details( "JobStatus",    "finished" )
+        update_local_job_details( "PauseJobFlag", "pausejob" )
 
-def final_run_cleanup():
-    """ job directory will be cleaned following the final run """
-    for file in glob.glob("FFTW*"):
-        shutil.move(file, "OutputText/")
-    for file in glob.glob("*.BAK"):
-        os.remove(file)
-    for file in glob.glob("generic_restartfile*"):
-        os.remove(file)
-    for file in glob.glob("temporary*"):
-        os.remove(file)
-    for file in glob.glob("Temp*"):
-        os.remove(file)    
+    if incr != 0:           # -adjust job run counter
+        newrun = current - incr
+        update_local_job_details( "CurrentRun",  newrun )
 
 def log_job_timing():
     """ log length of job in human readable format """
 #  still to do
+def get_job_runtime( starttime = 0 ):
+    """ function to return hours and minutes of current running time"""
+    seconds = int( time.time() - starttime ) 
+    m, s = divmod( seconds, 60 )
+    hours, min = divmod( m, 60 )
+    Time = "%d:%02d" % ( hours, min)
+    if starttime == 0:
+        Time = "xx:xx"
+    return Time
 
-
-def create_job_basename(name, run):
+def create_job_basename( jobname, run ):
     """ creates a time stamped basename for current job"""
-    ts = time.time()
-    stamp = datetime.datetime.fromtimestamp(ts).strftime('%Y_%h_%d_%H%S_')
-    basename = stamp + name + "_r_" + run
+    timestamp = time.strftime( "%Y_%d%b_%H:%M", time.localtime() )
+    basename  = timestamp + jobname + "_run_" + str( run )
     return basename
 
 def update_local_job_details( key, status ):
     """ updates local job details of 'local job details file' """
     ljdf_t = read_local_job_details_file(".", "local_job_details.json")
     try:
-        ljdf_t[key] = status
+        ljdf_t[ key ] = status
         with open("local_job_details.json", 'w') as outfile:
             json.dump(ljdf_t, outfile, indent=2)
         outfile.close()
     except:
         print "Can't update local job details file."
 
-def redirect_output(name, run, CurrentWorkingFile="current_MD_run_files"):
-    """ A function to redirect NAMD output to various locations."""
+def redirect_namd_output( CurrentWorkingName = "current_MD_run_files", jobtype = "production"):
+    """ A function to redirect NAMD output."""
+## read from local job details file:
+    ljdf_t = read_local_job_details_file( ".", "local_job_details.json" )
+    jobname = ljdf_t[ 'JobName'    ] 
+    run     = ljdf_t[ 'CurrentRun' ]
+  
+## create a base name based on passed arguments name and run.
+    basename = create_job_basename( jobname, run )
 
-  # create a base name based on passed arguments name and run.
+## make shorthand of current working files
+    cwn_coor = CurrentWorkingName + ".coor"
+    cwn_vel  = CurrentWorkingName + ".vel"
+    cwn_xsc  = CurrentWorkingName + ".xsc"
+    cwn_xst  = CurrentWorkingName + ".xst"
+    cwn_dcd  = CurrentWorkingName + ".dcd"
+
+## copy CurrentWorking (restart) files to LastRestart/ directory 
     try:
-        basename = create_job_basename(name, run)
-    except:
-        error = "\nError making basename. (In redirect_output function) "
-        sys.exit(error)
-
- # make shorthand of current working files
-    cwf_coor = CurrentWorkingFile + ".coor"
-    cwf_vel  = CurrentWorkingFile + ".vel"
-    cwf_xsc  = CurrentWorkingFile + ".xsc"
-    cwf_xst  = CurrentWorkingFile + ".xst"
-    cwf_dcd  = CurrentWorkingFile + ".dcd"
-
- # copy CurrentWorking (restart) files to LastRestart/ directory 
-    try:
-        shutil.copy (cwf_coor, 'LastRestart/' + cwf_coor)
-        shutil.copy (cwf_vel,  'LastRestart/' + cwf_vel)
-        shutil.copy (cwf_xsc,  'LastRestart/' + cwf_xsc)
+        shutil.copy(cwn_coor, 'LastRestart/' + cwn_coor)
+        shutil.copy(cwn_vel,  'LastRestart/' + cwn_vel)
+        shutil.copy(cwn_xsc,  'LastRestart/' + cwn_xsc)
     except:	
-        error = "\nError moving restart files to /LastRestart (In redirect_output function) "
-        sys.exit(error)
-
+        print "Error moving restart files to /LastRestart (In redirect_output function) "
+ 
  # rename and move current working files
     try: 
-        os.rename (cwf_dcd,  'OutputFiles/' + basename + cwf_dcd)
-        os.rename (cwf_vel,  'OutputFiles/' + basename + cwf_vel)
-        os.rename (cwf_xsc,  'OutputFiles/' + basename + cwf_xsc)
-        os.rename (cwf_xst,  'OutputFiles/' + basename + cwf_xst)
-        os.rename (cwf_coor, 'OutputFiles/' + basename + cwf_coor)
+        os.rename( cwn_dcd,    "OutputFiles/"  + basename + ".dcd"  )
+        shutil.copy( cwn_vel,  "RestartFiles/" + basename + ".vel"  )
+        shutil.copy( cwn_xsc,  "RestartFiles/" + basename + ".xsc"  )
+        shutil.copy( cwn_xst,  "RestartFiles/" + basename + ".xst"  )
+        shutil.copy( cwn_coor, "RestartFiles/" + basename + ".coor" )
     except:	
-        error = "\nError moving files to /OutputFiles (In redirect_output function) "
-        sys.exit(error)
+        print "Error moving files to /OutputFiles (In redirect_output function) "
 
- # clean up remaining files
-    post_job_clean()
-
-    return
-
-def post_job_clean():
+def post_jobrun_cleanup():
     """ remove unwanted error, backup files, etc """
     for file in glob.glob("slurm*"):
         shutil.move(file, "JobLog/")
     for file in glob.glob("core*"):
         shutil.move(file, "Errors/")
-    return
+
+
+def log_job_timing():
+    """ log length of job in human readable format """
 
 def countdown_timer():
     """ function to adjust countdown timer """
@@ -353,8 +341,8 @@ def monitor_jobs():
 
     #jobdirlist = get_curr_job_list(JobDir)
 
-    print "Job Name:      |Progress: |JobId:    |Status:   |Nodes:  |Walltime: |Job_messages:"
-    print "---------------|----------|----------|----------|--------|----------|------------------ "
+    print "Job Name:      |Countdown:|JobId:    |Status:   |Nodes: |Walltime: |Job_messages:"
+    print "---------------|----------|----------|----------|-------|----------|------------------ "
 
     for i in range(0,nJobStreams): 
         JobDir = JobStreams[i]
@@ -363,16 +351,17 @@ def monitor_jobs():
         for j in jobdirlist:  
 	    dir_path = JobDir + "/" + j  
             ljdf_t = read_local_job_details_file(dir_path, "local_job_details.json") 
-            jdn  = ljdf_t[ "JobDirName" ]
-            qs   = ljdf_t[ "QueueStatus" ]
-            js   = ljdf_t[ "JobStatus" ]
-            jm   = ljdf_t[ "JobMessage" ]
-            nodes= ljdf_t[ "Nodes" ]
-            wt   = ljdf_t[ "Walltime" ]
+            jdn    = ljdf_t[ "JobDirName" ]
+            qs     = ljdf_t[ "QueueStatus" ]
+            js     = ljdf_t[ "JobStatus" ]
+            jm     = ljdf_t[ "JobMessage" ]
+            nodes  = ljdf_t[ "Nodes" ]
+            wt     = ljdf_t[ "Walltime" ]
+            startT = ljdf_t[ "JobStartTime" ]
+            T      = get_job_runtime( startT ) 
             cjid = str(ljdf_t[ "CurrentJobId" ])
-            #prog = str(ljdf_t[ "CurrentJobRound" ] + ": " + ljdf_t[ "RunCountDown" ] + "/" + ljdf_t[ "TotalRuns" ]) 
-            prog =  ljdf_t[ "CurrentRun" ] + "/" + ljdf_t[ "TotalRuns" ] 
-            print "%-16s %8s %10s %10s %8s %10s   %12s" % (jdn[0:11], prog, cjid, js, nodes, wt, jm) 
+            prog =  str( ljdf_t[ "CurrentRun" ] ) + "/" + str( ljdf_t[ "TotalRuns" ] ) 
+            print "%-16s %8s %10s %10s %8s %10s   %12s" % (jdn[0:11], prog, cjid, js, nodes, T, jm) 
 
     print "{}done.".format(c0)
 
@@ -478,46 +467,30 @@ def populate_job_directories():
     cwd=os.getcwd()
 
     try:
+        ljdf_t[ 'BASE_DIR' ]        = cwd
+        ljdf_t[ 'CurrentRound' ]    = mcf[ "Round" ]
+        ljdf_t[ 'Account' ]         = mcf[ "Account" ]
+        ljdf_t[ 'Nodes' ]           = mcf[ "nodes" ]
+        ljdf_t[ 'ntpn' ]            = mcf[ "ntpn" ]
+        ljdf_t[ 'ppn' ]             = mcf[ "ppn"  ]
+        ljdf_t[ 'Walltime' ]        = mcf[ "Walltime" ]
+        ljdf_t[ 'JobFailTime' ]     = mcf[ "JobFailTime" ]
+        ljdf_t[ 'DiskSpaceCutOff' ] = mcf[ "DiskSpaceCutOff"]
+
         Flavour          = mcf[ "Flavour" ]
-        Round            = mcf[ "Round" ]
-        Account          = mcf[ "Account" ]
-        Nodes            = mcf[ "nodes" ]
-        Ntpn             = mcf[ "ntpn" ]
-        Ppn              = mcf[ "ppn" ]
         OptScript        = mcf[ "EquilibrateConfScript" ]
         ProdScript       = mcf[ "ProductionConfScript" ]
         ModuleFile       = mcf[ "ModuleFile" ]
-        Walltime         = mcf[ "Walltime" ]
         startscript      = mcf[ "SbatchEquilibrateScript" ]
         productionscript = mcf[ "SbatchProductionScript" ]
-        dsco             = mcf[ "DiskSpaceCutOff" ]
-        jft              = mcf[ "JobFailTime" ]
     except:
         error = "Error reading master_config_file variables during populate routine"
         sys.exit(error)
 
-#   # create local job detalis staging file from ljdf_template
-    stagef = ljdf_t           
-
-#   # modify common elements in staging dictionary file:
-    stagef[ 'TOP_DIR' ]         = cwd
-    stagef[ 'CurrentRound' ]    = Round
-    stagef[ 'JobFailTime' ]     = jft
-    stagef[ 'DiskSpaceCutOff' ] = dsco
-    stagef[ 'BASE_DIR' ]        = cwd
-    stagef[ 'CurrentRound' ]    = Round
-    stagef[ 'Account' ]         = Account
-    stagef[ 'Nodes' ]           = Nodes
-    stagef[ 'ntpn' ]            = Ntpn
-    stagef[ 'ppn' ]             = Ppn
-    stagef[ 'Walltime' ]        = Walltime
-    stagef[ 'JobFailTime' ]     = jft
-    stagef[ 'DiskSpaceCutOff' ] = dsco
-
-
 ## list files to transfer:
     print "{}Job Files to transfer from /Setup_and_Config:{}".format( c2, c0 ) 
     print "{}  {} \n  {} ".format( c3, startscript, productionscript )
+    print "  local_job_details.json "
     for pyfile in glob.glob(r'Setup_and_Config/*.py' ):
         print "  " + pyfile[17:]    
     for conffile in glob.glob(r'Setup_and_Config/*.conf' ):
@@ -541,18 +514,18 @@ def populate_job_directories():
             sys.exit(error)
 
 ## modify replicate elements in staging dictionary file:
-        stagef[ 'JOB_STREAM_DIR' ] = JobStreams[i]
-        stagef[ 'CurrentRun' ]     = Runs[i]
-        stagef[ 'TotalRuns' ]      = Runs[i]
-        stagef[ 'JobBaseName' ]    = JobBaseNames[i]
+        ljdf_t[ 'JOB_STREAM_DIR' ] = JobStreams[i]
+        ljdf_t[ 'CurrentRun' ]     = Runs[i]
+        ljdf_t[ 'TotalRuns' ]      = Runs[i]
+        ljdf_t[ 'JobBaseName' ]    = JobBaseNames[i]
 
-        nnodes   = "#SBATCH --nodes="   + Nodes
-        ntime    = "#SBATCH --time="    + Walltime
-        naccount = "#SBATCH --account=" + Account
-        nntpn    = "ntpn=" + Ntpn
-        nppn     = "ppn="  + Ppn
-        nmodule  = "module load " + ModuleFile
-        nopt     = "optimize_script=" + OptScript
+        nnodes   = "#SBATCH --nodes="   + mcf[ "nodes"    ]
+        ntime    = "#SBATCH --time="    + mcf[ "Walltime" ]
+        naccount = "#SBATCH --account=" + mcf[ "Account"  ]
+        nntpn    = "ntpn="              + mcf[ "ntpn"     ]
+        nppn     = "ppn="               + mcf[ "ppn"      ]
+        nmodule  = "module load "       + ModuleFile
+        nopt     = "optimize_script="   + OptScript
         nprod    = "production_script=" + ProdScript
 
         shutil.copy( sb_start_template, 'sb_start_temp')
@@ -561,26 +534,32 @@ def populate_job_directories():
 ## replace lines in sbatch files:
         for f in [ "sb_start_temp", "sb_prod_temp" ]:
             for line in fileinput.FileInput( f, inplace=True ):
-                line = line.replace( '#SBATCH --nodes=X', nnodes )   
-                line = line.replace( '#SBATCH --time=X', ntime )   
+                line = line.replace( '#SBATCH --nodes=X',   nnodes   )   
+                line = line.replace( '#SBATCH --time=X',    ntime    )   
                 line = line.replace( '#SBATCH --account=X', naccount )   
-                line = line.replace( 'ntpn=X', nntpn )   
-                line = line.replace( 'ppn=X',  nppn )   
-                line = line.replace( 'module load X', nmodule )   
-                line = line.replace( 'optimize_script=X', nopt )   
-                line = line.replace( 'production_script=X', nprod )   
+                line = line.replace( 'ntpn=X',              nntpn    )   
+                line = line.replace( 'ppn=X',               nppn     )   
+                line = line.replace( 'module load X',       nmodule  )   
+                line = line.replace( 'optimize_script=X',   nopt     )   
+                line = line.replace( 'production_script=X', nprod    )   
                 sys.stdout.write(line)   
 
 ## update local job details file:
         jobdirlist = get_current_dir_list( JobStreams[i] )
         for j in jobdirlist:
-            print "{} -populating: {}{}".format( c3, j, c0 )
-            stagef[ 'JobDirName' ] = j
+            print "{} -populating: {}{}".format( c3, j, c0 ),
+            #print( line, ) 
+            ljdf_t[ 'JobDirName' ] = j
             ljdfile = JobStreams[i] + "/" + j + "/local_job_details.json"
+         
+            if not os.path.isfile( ljdfile ):
+                with open(ljdfile, 'w') as outfile:
+                    json.dump(ljdf_t, outfile, indent=2)
+                outfile.close()
+                print ""
+            else:
+                print " skipping local_details_file: already exists "
 
-            with open(ljdfile, 'w') as outfile:
-                json.dump(stagef, outfile, indent=2)
-            outfile.close()
 
 ## copy across python scripts from /Setup_and_Config:
             jobpath  = JobStreams[i] + "/" + j + "/"
@@ -821,20 +800,16 @@ def start_jobs( startscript ):
     """ function to start jobs in a directory"""
     cwd = os.getcwd()
     job_status, jobid = check_if_job_running()
-    if job_status == "Ready" and jobid == "0":
+    if job_status == "ready" and jobid == "0":
         try: 
             print startscript
             subprocess.Popen(['sbatch', startscript])
-            status = "submitted"
-            key    = "JobStatus"
-            update_local_job_details( key, status )
-            status = "submitted to job queue"
-            key    = "JobMessage"
-            update_local_job_details( key, status )
+            update_local_job_details( "JobStatus",  "submitted" )
+            update_local_job_details( "JobMessage", "submitted to queue" )
         except:
-            sys.stderr.write("Trouble starting job.")     
+            sys.stderr.write( "Trouble starting job." )     
     else:
-        print "It appears a job already running here:{} : jobid:{}".format(cwd,job_status)
+        print "A job appears to be running here:..{} : jobid:{}".format( cwd[-20:], jobid )
 
 def clear_jobs():
     """ function for clearing all pausejob and stop flags """
@@ -847,10 +822,11 @@ def clear_all_jobs():
     job_status, jobid = check_if_job_running()
     if job_status == "stopped":
         try: 
-            update_local_job_details( "JobStatus", "Ready" )
+            update_local_job_details( "JobStatus", "ready" )
             update_local_job_details( "CurrentJobId", "0" )
             update_local_job_details( "JobMessage", "cleared stop flags" )
             update_local_job_details( "PauseJobFlag", "0" )
+
          ## remove explicit flag file:    
             if  os.path.isfile( "pausejob" ):
                 os.remove( "pausejob" )
@@ -858,7 +834,7 @@ def clear_all_jobs():
         except:
             sys.stderr.write("Trouble clearing stop flags.")     
     else:
-        print "It appears a job is running here:{} : jobstatus:{}".format(cwd,job_status)
+        print "A job appears to be running here:..{} : jobstatus:{}".format( cwd[-20:], jobid )
 
 
 def restart_all_production_jobs():
@@ -893,30 +869,26 @@ def recover_all_jobs():
 def stop_jobs():
     """ -function to stop all jobs, -either immediately or gently."""
     print "-- stopping all jobs"
-    execute_function_in_job_tree(stop_all_jobs_immediately)
+    execute_function_in_job_tree( stop_all_jobs_immediately )
 
 def stop_all_jobs_immediately():
     """ function to stop all jobs imediately"""
     job_status, jobid = check_if_job_running()
-    if job_status == "stopped" or job_status == "Ready":
-        try: 
-            status = "tried to stop job: none appears running."
-            key    = "JobMessage"
-            update_local_job_details( key, status )
-        except:
-            print "trouble updating job details."     
+
+    if job_status == "stopped" or job_status == "ready":
+        update_local_job_details( "JobMessage", "no job running" ) 
     else:
-        try:
-            subprocess.Popen([ 'scancel', jobid ])
-            print " stopping job: {}".format( jobid )
-            status = "sent scancel command."
-            key    = "JobMessage"
-            update_local_job_details( key, status )
-            status = "stopped"
-            key    = "JobStatus"
-            update_local_job_details( key, status )
-        except:
-            print "unable to cancel job"
+        if jobid != "0":
+            cancel_job( jobid )
+
+def cancel_job( jobid ):
+    try:
+        print " stopping job: {}".format( jobid )
+        update_local_job_details( "JobMessage", "sent scancel command" )
+        update_local_job_details( "JobStatus",  "stopped" )
+        subprocess.Popen([ 'scancel', jobid ])
+    except:
+        print "trouble stopping job {} ".format( jobid )
 
 def new_round():
     """ -function to set up a new round of simulations."""
