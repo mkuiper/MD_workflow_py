@@ -36,7 +36,7 @@
 "custom_script2"     : "custom2.conf",
 
 "Comment4"           : "Miscelaneous Parameters",
-"JobFailTime"        : "300", 
+"JobFailTime"        : "60", 
 "DiskSpaceCutOff"    : "95",
 "AutoAnalysis"       : "False"
 
