@@ -18,8 +18,8 @@
 "JobStreams"    : ["Main_Job_dir1","Main_Job_dir2"],
 "JobReplicates" : ["10","5"],
 "BaseDirNames"  : ["Sim1_","Sim2_"],
-"JobBaseNames"  : ["Myjob_","MyJob2_"],
-"Runs"          : ["5","3"],
+"JobBaseNames"  : ["Myjob1_","MyJob2_"],
+"Runs"          : ["3","2"],
 
 "JobScheme"     : "simple",
 "Round"         : "1",

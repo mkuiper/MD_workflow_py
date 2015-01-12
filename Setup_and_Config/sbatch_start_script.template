@@ -24,7 +24,8 @@ module load X			# namd module file
 module load python-fe/2.7.3	# python module file
 
 ## python script to initiate job and setup variables.-----------
-python prejob_processing.py $SLURM_JOBID -optimize
+
+ python prejob_processing.py $SLURM_JOBID -optimize
 
 ## prevent job from running if pausejob is present
 if [ -f pausejob ]; then
@@ -33,10 +34,11 @@ fi
 
 # submit job to the cluster:------------------------------------
 
- srun  --ntasks-per-node $ntpn  namd2 +ppn $ppn $optimize_script >TempOutputFile.out 2>TempErrorFile.err;
+ srun  --ntasks-per-node $ntpn  namd2 +ppn $ppn $optimize_script >temp_working_outputfile.out 2> temp_working_errorsfile.err;
 
 ## python script to cleanup and redirect data-------------------- 
-python postjob_processing.py $SLURM_JOBID -optimize
+
+ python postjob_processing.py $SLURM_JOBID -optimize
 
 ## prevent job from running if pausejob is present
 if [ -f pausejob ]; then
