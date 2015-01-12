@@ -24,11 +24,9 @@ Options: \033[0m
   --clear_stops     Clear pausejob and stop flags. 
   --recover         Recover and cleanup stopped jobs. 
   --stop_jobs       Stops all running jobs. 
-  --init_new_round  Initializes new Job round.  
+  --new_round       Initializes new Job round.  
   --erase_all_data  Erases all job data. Use with caution!
-  --new_job_dir     Create new job directory.
   --clone           Clone directory structure without data. 
-  --test            For testing purposes
 """
 
 import sys
@@ -95,7 +93,7 @@ def process(action):
         print "{}stopping all jobs:{}".format( c6, c0 ) 
         mdwf.stop_jobs()
 
-    if action == '--init_new_round':
+    if action == '--new_round':
         print "{}setting up new job rounds:{}".format( c6, c0 )
         mdwf.new_round()
 
@@ -107,9 +105,6 @@ def process(action):
         print "{}cloning job_directory:{}".format( c6, c0 ) 
         mdwf.clone()
 
-    if action == '--test':
-        print "{}testing function:{}".format( c6, c0 ) 
-        mdwf.execute_function_in_job_tree(mdwf.test_function, 5)
 
 if __name__ == '__main__':
 

@@ -14,25 +14,17 @@ jobtype = sys.argv[2]     # job type,
 
 def main():
 
-## update the local job details file: 
+##  performs checks before launching the job:  
+    mdwf.check_disk_quota()        # -checks disk quota on system
+    mdwf.check_for_pausejob()      # -checking for pause flags                
+
+##  update the local job details file: 
     mdwf.update_local_job_details( "CurrentJobId",  jobid      )
     mdwf.update_local_job_details( "JobStatus",    "running"   )
  
-    timestamp = "started at " + time.strftime("%Y_%d%b_%H:%M", time.localtime())
+    timestamp = "started:  " + time.strftime("%d%b:%H:%M", time.localtime())
     mdwf.update_local_job_details( "JobMessage",  timestamp  )
     mdwf.update_local_job_details( "JobStartTime",  time.time()) 
-
-## performs checks before launching the job:  
-    mdwf.check_for_pausejob()      # -checking for pause flags                
-    mdwf.check_disk_quota()        # -checks disk quota on system
-    mdwf.check_run_counter(0)      # -checks job countdown/increments job:
-
-## re-read local job details script, check for fails. Cancel if required.
-    ljdf_t = mdwf.read_local_job_details_file( ".", "local_job_details.json" )
-    pauseflag  = ljdf_t[ "PauseJobFlag" ] 
-    
-    if pauseflag != "0":
-        mdwf.cancel_job( jobid )   # -the job should stop here if checks fail    	    
 
 if __name__ == "__main__":
     main()

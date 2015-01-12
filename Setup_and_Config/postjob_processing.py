@@ -16,19 +16,18 @@ jobtype = sys.argv[2]
 filename = "current_MD_run_files"
 
 def main():
-
 ##  update local job details file: 
     mdwf.update_local_job_details( "JobStatus",     "ready"   )
-    mdwf.update_local_job_details( "JobMessage",    "finished job run" )
+    timestamp = "finished: " + time.strftime("%d%b:%H:%M", time.localtime())
+    mdwf.update_local_job_details( "JobMessage",    timestamp )
     mdwf.update_local_job_details( "JobFinishTime", time.time() )
 
-    if "opt" in jobtype:
-        mdwf.update_local_job_details( "JobMessage", "finished eqilibration " )
-
-    mdwf.check_job_runtime()                        # -check job ran long enough
     mdwf.redirect_namd_output( filename, jobtype )  # -redirect output
+    mdwf.check_job_runtime()                        # -check job ran long enough
     mdwf.post_jobrun_cleanup()                      # -cleanup files 
-    mdwf.check_run_counter(1)                       # -counts down run counter
+
+    mdwf.check_run_counter()                        # -check job counter
+    mdwf.check_for_pausejob()
 
 if __name__ == "__main__":
     main()
