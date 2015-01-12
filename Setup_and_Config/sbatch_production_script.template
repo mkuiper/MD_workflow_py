@@ -23,19 +23,23 @@ module load X                # module file:
 module load python-fe/2.7.3  # python module file
 
 #--------------------------------------------------------------------------------
-# python script to initiate job and setup variables.
-python prejob_processing.py $SLURM_JOBID -production
+# python script for preprocessing data
+
+ python prejob_processing.py $SLURM_JOBID -production
 
 # prevent job from running if pausejob is present
+
 if [ -f pausejob ]; then
  exit
 fi
 
 # run optimization job.
-srun  --ntasks-per-node $ntpn  namd2 +ppn $ppn $production_script >temporary_outputfile.out 2>temporary_errorsfile.err;
+ srun  --ntasks-per-node $ntpn  namd2 +ppn $ppn $production_script >temp_working_outputfile.out 2>temp_working_errorsfile.err;
 
-## --------------------------------------------------------------------------------------------
-python postjob_processing.py $SLURM_JOBID -production
+# --------------------------------------------------------------------------------------------
+# python script for postprocessing data
+
+ python postjob_processing.py $SLURM_JOBID -production
 
 # prevent job from running if pausejob is present
 if [ -f pausejob ]; then
@@ -44,8 +48,4 @@ fi
 
 # launch next phase: 
  sbatch sbatch_production_script 
-
-
-
-
 

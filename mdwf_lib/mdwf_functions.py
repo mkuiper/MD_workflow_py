@@ -30,7 +30,6 @@ c7 = '\033[34;2m'     # dark blue
 c8 = '\033[38;5;220m' # orange 
 c9 = '\033[36;1m'     # cyan
 
-#Testing individual functions started 12/12/2014 EB branch file
 
 def read_master_config_file():  
     """ Reads parameters from 'master_config_file'  """  
@@ -142,9 +141,13 @@ def estimate_dcd_frame_size(psffile):
 def check_for_pausejob():
     """checks for pausejob flag in local job details file"""
     if os.path.isfile('pausejob'):
-        update_local_job_details( "JobStatus",    "stopped" )
-        update_local_job_details( "JobMessage",   "pausejob flag present" )
-        update_local_job_details( "PauseJobFlag", "pausejob" )
+        ldjf_t = read_local_details( ".", "local_job_details.json")   
+        status = ljdf_t( "Status" ) 
+          
+        if not status == "finished":
+            update_local_job_details( "JobStatus",    "stopped" )
+            update_local_job_details( "JobMessage",   "pausejob flag present" )
+            update_local_job_details( "PauseJobFlag", "pausejob" )
 
 def create_pausejob_flag( error ):
     """create pausejob flag to initiate a soft job stop """
@@ -225,37 +228,43 @@ def check_job_runtime():
         update_local_job_details( "JobMessage", "short run time detected" )
         create_pausejob_flag( "short run time" )
 
-def check_run_counter( incr ):
+def check_run_counter():
     """ checking if job runs are finsihed """
 ## read from local job details file:
     ljdf_t  = read_local_job_details_file( ".", "local_job_details.json" )
-    current = int( ljdf_t[ 'CurrentRun'  ] )
+    current = ljdf_t[ 'CurrentRun'  ] 
+    total   = ljdf_t[ 'TotalRuns'  ] 
 
-    if  current <= 0:       # -stop jobs if counter reaches zero
+    newrun = int( current ) + 1
+
+    if  newrun > total:       # -stop jobs if current run equals totalruns
         update_local_job_details( "JobStatus",    "finished" )
         update_local_job_details( "PauseJobFlag", "pausejob" )
+        create_pausejob_flag( "finished runs" )
+        final_job_cleanup()
+        return None
 
-    if incr != 0:           # -adjust job run counter
-        newrun = current - incr
-        update_local_job_details( "CurrentRun",  newrun )
+    update_local_job_details( "CurrentRun",  newrun )
 
 def log_job_timing():
     """ log length of job in human readable format """
 #  still to do
-def get_job_runtime( starttime = 0 ):
+
+def get_job_runtime( starttime, status ):
     """ function to return hours and minutes of current running time"""
-    seconds = int( time.time() - starttime ) 
-    m, s = divmod( seconds, 60 )
-    hours, min = divmod( m, 60 )
-    Time = "%d:%02d" % ( hours, min)
-    if starttime == 0:
+    if status == "running":
+        seconds = int( time.time() - starttime ) 
+        m, s = divmod( seconds, 60 )
+        hours, min = divmod( m, 60 )
+        Time = "%d:%02d" % ( hours, min)
+    else: 
         Time = "xx:xx"
     return Time
 
-def create_job_basename( jobname, run ):
+def create_job_basename( jobname, run, zf ):
     """ creates a time stamped basename for current job"""
-    timestamp = time.strftime( "%Y_%d%b_%H:%M", time.localtime() )
-    basename  = timestamp + jobname + "_run_" + str( run )
+    timestamp = time.strftime( "%Y_%d%b_", time.localtime() )
+    basename  = timestamp + jobname + "run_" + str( run ).zfill( zf )
     return basename
 
 def update_local_job_details( key, status ):
@@ -273,11 +282,13 @@ def redirect_namd_output( CurrentWorkingName = "current_MD_run_files", jobtype =
     """ A function to redirect NAMD output."""
 ## read from local job details file:
     ljdf_t = read_local_job_details_file( ".", "local_job_details.json" )
-    jobname = ljdf_t[ 'JobName'    ] 
+    jobname = ljdf_t[ 'JobBaseName' ] 
     run     = ljdf_t[ 'CurrentRun' ]
-  
+    total   = ljdf_t[ 'TotalRuns' ]
+    zfill   = len( str( total ) )
+
 ## create a base name based on passed arguments name and run.
-    basename = create_job_basename( jobname, run )
+    basename = create_job_basename( jobname, run, zfill )
 
 ## make shorthand of current working files
     cwn_coor = CurrentWorkingName + ".coor"
@@ -301,6 +312,9 @@ def redirect_namd_output( CurrentWorkingName = "current_MD_run_files", jobtype =
         shutil.copy( cwn_xsc,  "RestartFiles/" + basename + ".xsc"  )
         shutil.copy( cwn_xst,  "RestartFiles/" + basename + ".xst"  )
         shutil.copy( cwn_coor, "RestartFiles/" + basename + ".coor" )
+        shutil.move( "temp_working_outputfile.out", "OutputText/" + basename + ".txt" )
+        shutil.move( "temp_working_errorsfile.err", "Errors/" + basename + ".err" )
+        
     except:	
         print "Error moving files to /OutputFiles (In redirect_output function) "
 
@@ -311,6 +325,10 @@ def post_jobrun_cleanup():
     for file in glob.glob("core*"):
         shutil.move(file, "Errors/")
 
+def final_job_cleanup():
+    """ perform final cleanup once jobruns are finished. """
+    for file in glob.glob("*BAK"):
+        os.remove( file )
 
 def log_job_timing():
     """ log length of job in human readable format """
@@ -341,8 +359,8 @@ def monitor_jobs():
 
     #jobdirlist = get_curr_job_list(JobDir)
 
-    print "Job Name:      |Countdown:|JobId:    |Status:   |Nodes: |Walltime: |Job_messages:"
-    print "---------------|----------|----------|----------|-------|----------|------------------ "
+    print "Job Name:      |Counter |JobId   |Status  |Nodes|Runtime:|Job_messages:"
+    print "---------------|--------|--------|--------|-----|----H:M-|------------------ "
 
     for i in range(0,nJobStreams): 
         JobDir = JobStreams[i]
@@ -358,10 +376,10 @@ def monitor_jobs():
             nodes  = ljdf_t[ "Nodes" ]
             wt     = ljdf_t[ "Walltime" ]
             startT = ljdf_t[ "JobStartTime" ]
-            T      = get_job_runtime( startT ) 
+            T      = get_job_runtime( startT, js ) 
             cjid = str(ljdf_t[ "CurrentJobId" ])
             prog =  str( ljdf_t[ "CurrentRun" ] ) + "/" + str( ljdf_t[ "TotalRuns" ] ) 
-            print "%-16s %8s %10s %10s %8s %10s   %12s" % (jdn[0:11], prog, cjid, js, nodes, T, jm) 
+            print "%-16s %7s  %7s %8s %5s  %7s  %20s" % (jdn[0:11], prog, cjid, js, nodes, T, jm) 
 
     print "{}done.".format(c0)
 
@@ -515,8 +533,8 @@ def populate_job_directories():
 
 ## modify replicate elements in staging dictionary file:
         ljdf_t[ 'JOB_STREAM_DIR' ] = JobStreams[i]
-        ljdf_t[ 'CurrentRun' ]     = Runs[i]
-        ljdf_t[ 'TotalRuns' ]      = Runs[i]
+        ljdf_t[ 'CurrentRun' ]     = 0
+        ljdf_t[ 'TotalRuns' ]      = int( Runs[i] )
         ljdf_t[ 'JobBaseName' ]    = JobBaseNames[i]
 
         nnodes   = "#SBATCH --nodes="   + mcf[ "nodes"    ]
@@ -820,7 +838,7 @@ def clear_all_jobs():
     """ function to clear all stop flags in a directory"""
     cwd = os.getcwd()
     job_status, jobid = check_if_job_running()
-    if job_status == "stopped":
+    if job_status != "running":
         try: 
             update_local_job_details( "JobStatus", "ready" )
             update_local_job_details( "CurrentJobId", "0" )
@@ -841,25 +859,22 @@ def restart_all_production_jobs():
     """ -function to restart_all_production_jobs """
     print "-- restarting production jobs."
     mcf = read_master_config_file()
-    JobDir       = mcf[ "JobStreams" ]
-    ProdCommand  = mcf[ "SbatchProductionScript" ]
+    restartscript = mcf[ "SbatchProductionScript" ]
+    execute_function_in_job_tree( restart_jobs, restartscript )
+
+def restart_jobs( restartscript ):
+    """ function to restart production jobs """
     cwd = os.getcwd()
-    jobdirlist = get_curr_job_list(JobDir)
-
-    for i in jobdirlist:    
-        # check current job status
-        cjs = check_if_job_running(JobDir,i)
-        if cjs == "running":
-            print "Job already running in JobDir/{} ".format(i)
-        else:
-            path = JobDir + '/' + i 
-            os.chdir(path)
-            try:
-                subprocess.Popen(['sbatch', ProdCommand])
-            except:
-                print "can't launch:  sbatch {} ".format(ProdCommand)
-            os.chdir(cwd)
-
+    job_status, jobid = check_if_job_running()
+    if job_status == "running" and jobid != "0":
+        print "A job appears to be running here:..{} : jobid:{}".format( cwd[-20:], jobid )
+    else:
+	try:
+            subprocess.Popen(['sbatch', restartscript])
+            update_local_job_details( "JobStatus",  "submitted" )
+            update_local_job_details( "JobMessage", "production job restarted" )
+        except:
+            print "Trouble starting job in ..{}".format( cwd[-20] )
 
 def recover_all_jobs():
     """ -function to recover and restore crashed jobs """
@@ -886,17 +901,42 @@ def cancel_job( jobid ):
         print " stopping job: {}".format( jobid )
         update_local_job_details( "JobMessage", "sent scancel command" )
         update_local_job_details( "JobStatus",  "stopped" )
+        message = " scancel jobid: %s" % jobid 
+        create_pausejob_flag( message )         
         subprocess.Popen([ 'scancel', jobid ])
+        
     except:
         print "trouble stopping job {} ".format( jobid )
 
 def new_round():
     """ -function to set up a new round of simulations."""
     print "-- setting up new simulation round"
+## Assumes we want to restart a completed production run. 
+## Will update the local jobs detail file. Totalruns = TotalRuns + Runs 
+    mcf = read_master_config_file()
+    runs = 10
+    JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams, nReplicates, nBaseNames = check_job_structure()
+    execute_function_in_job_tree( set_new_round, runs )
+
+def set_new_round( runs ):
+    """ Function to set values for simulation continuation. """ 
+    ldjf_t = read_local_details()
+    current = ljdf_t( "CurrentRun" )
+    total   = ljdf_t( "TotalRuns" ) 
+    
+    if current == total: 
+        newtotal   = total + int( runs ) 
+        newcurrent = current + 1  
+
+        update_local_job_details( "CurrentRun", newcurrent )
+        update_local_job_details( "TotalRuns",  newtotal )
+    else: 
+        print " current production run doesn't appear finished." 
+
+
 
 def erase_all_data():
     """ -function to erase all data for a clean start.  Use with caution!"""
-    mcf = read_master_config_file()
     try:
         JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams, nReplicates, nBaseNames = check_job_structure()
     except:
