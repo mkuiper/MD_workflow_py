@@ -22,7 +22,7 @@
 "Runs"          : ["3","2"],
 
 "JobScheme"     : "simple",
-"Round"         : "1",
+"Round"         : 1,
 
 "EquilibrateJobName"      : "equilibration_job_",
 "SbatchEquilibrateScript" : "sbatch_start_script",
@@ -36,8 +36,8 @@
 "custom_script2"     : "custom2.conf",
 
 "Comment4"           : "Miscelaneous Parameters",
-"JobFailTime"        : "60", 
-"DiskSpaceCutOff"    : "95",
+"JobFailTime"        : 120, 
+"DiskSpaceCutOff"    : 95,
 "AutoAnalysis"       : "False"
 
 }

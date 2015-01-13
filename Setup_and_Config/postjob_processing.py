@@ -12,13 +12,19 @@ import mdwf_functions as mdwf
 jobid   = sys.argv[1]
 jobtype = sys.argv[2]
 
+# ansi color variables for formatting purposes: 
+c0 = '\033[0m'        # default
+c1 = '\033[31;2m'     # dark red
+c3 = '\033[32;2m'     # dark green
+
 ## generic name of working MD files, (must be the same in .conf files). 
 filename = "current_MD_run_files"
 
 def main():
 ##  update local job details file: 
-    mdwf.update_local_job_details( "JobStatus",     "ready"   )
+    mdwf.update_local_job_details( "JobStatus", "ready" )
     timestamp = "finished: " + time.strftime("%d%b:%H:%M", time.localtime())
+
     mdwf.update_local_job_details( "JobMessage",    timestamp )
     mdwf.update_local_job_details( "JobFinishTime", time.time() )
 
@@ -27,7 +33,6 @@ def main():
     mdwf.post_jobrun_cleanup()                      # -cleanup files 
 
     mdwf.check_run_counter()                        # -check job counter
-    mdwf.check_for_pausejob()
 
 if __name__ == "__main__":
     main()
