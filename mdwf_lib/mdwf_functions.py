@@ -21,7 +21,12 @@ defaultcolour = '\033[0m'
 darkred       = '\033[31;2m'     
 darkgreen     = '\033[32;2m'     
 darkblue      = '\033[34;3m'     
-
+HEADER  = '\033[95m'
+OKBLUE  = '\033[94m'
+OKGREEN = '\033[92m'
+WARNING = '\033[93m'
+FAIL    = '\033[91m'
+ENDC    = '\033[0m'
 
 def read_master_config_file():  
     """ Reads the json file 'master_config_file' and
@@ -282,7 +287,7 @@ def redirect_namd_output( CurrentWorkingName = "current_MD_run_files",
     jobname = ljdf_t[ 'JobBaseName' ] 
     run     = ljdf_t[ 'CurrentRun' ]
     total   = ljdf_t[ 'TotalRuns' ]
-    zfill   = len( str( total ) )
+    zfill   = len( str( total ) ) + 1
     basename = create_job_basename( jobname, run, zfill )
 
     # make shorthand of current working files
@@ -342,18 +347,20 @@ def monitor_jobs():
     """ -function to monitor jobs status on the cluster """ 
 
     mcf = read_master_config_file()
-    Account = mcf[ "Account" ]
+    account  = mcf[ "Account" ]
+    walltime = mcf[ "Walltime" ]
+    nodes    = mcf[ "nodes" ]
     cwd = os.getcwd()
     JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams,\
                 nReplicates, nBaseNames = check_job_structure() 
-
-    print "Job Name:  |Count  |JobId   |Status   |Nodes|Runtime|Job_messages:"
-    print "-----------|-------|--------|---------|-----|---H:M-|------------ "
+    print " Account: %6s    nodes: %-6s " % (account, nodes)
+    print " Job Name:      |Count |JobId   |Status    |Runtime |Job_messages:"
+    print " ---------------|------|--------|----------|-%6s-|------------ " % walltime[:-2]
 
     for i in range(0,nJobStreams): 
         JobDir = JobStreams[i]
         jobdirlist = get_current_dir_list(JobDir) 
-        print darkgreen + JobDir + ":"+ defaultcolour
+        print "%24s " %( darkgreen + JobDir + ":"+ defaultcolour )
         for j in jobdirlist:  
 	    dir_path = JobDir + "/" + j  
             ljdf_t = read_local_job_details(dir_path,\
@@ -362,15 +369,13 @@ def monitor_jobs():
             qs     = ljdf_t[ "QueueStatus" ]
             js     = ljdf_t[ "JobStatus" ]
             jm     = ljdf_t[ "JobMessage" ]
-            nodes  = ljdf_t[ "Nodes" ]
-            wt     = ljdf_t[ "Walltime" ]
             startT = ljdf_t[ "JobStartTime" ]
             T      = get_job_runtime( startT, js ) 
             cjid = str(ljdf_t[ "CurrentJobId" ])
             prog =  str( ljdf_t[ "CurrentRun" ] ) + "/" + \
                     str( ljdf_t[ "TotalRuns" ] ) 
-            print "%-12s %6s  %7s %9s %5s %7s  %20s" % \
-                    (jdn[0:11], prog, cjid, js, nodes, T, jm) 
+            print " {:<15s}{:>7s} {:>8s} {:>10s} {:>8s} {:<20s}"\
+                     .format(jdn[0:14], prog, cjid, js, T, jm) 
 
     print "\n{}done.".format(defaultcolour)
 
@@ -834,30 +839,42 @@ def clear_all_jobs():
 def restart_all_production_jobs():
     """ -function to restart_all_production_jobs """
     print "-- restarting production jobs."
+    print "You are about to restart production jobs. Enter how many new runs to perform"
+    str = raw_input("")
+    runs = int(str)   
     mcf = read_master_config_file()
     restartscript = mcf[ "SbatchProductionScript" ]
-    execute_function_in_job_tree( restart_jobs, restartscript )
+    execute_function_in_job_tree( restart_jobs, restartscript, runs )
     
-def restart_jobs( restartscript ):
+def restart_jobs( restartscript, runs ):
     """ function to restart production jobs """
 
     cwd = os.getcwd()
     jobstatus, jobid = check_if_job_running()
     ljdf_t = read_local_job_details( ".", "local_job_details.json" )
     current = ljdf_t[ "CurrentRun" ]
+    jobid   = ljdf_t[ "CurrentJobId"]
     total   = ljdf_t[ "TotalRuns" ] 
     message = ljdf_t[ "JobMessage" ] 
-    runs    = ljdf_t[ "Runs" ] 
-    time.sleep( 0.2 )
+    #runs    = ljdf_t[ "Runs" ] 
+    time.sleep( 0.1 )
 
-    if "running" in jobstatus and jobid != 0:
+    if "running" in jobstatus:
         print "A job appears to be running here:..{} : jobid:{}".format( cwd[-20:], jobid )
         return
-    if  "cancel" in message:
+    if  "cancelled" in jobstatus:
         print "Job was abruptly cancelled. Clear pause flags first. (--clear) {}".format( cwd[-20:])
         return
     if jobstatus in { "finished", "ready" }:
-        if current == total:
+        
+        if "cleared" in message:           # assume restarting from cancelled job.   
+            pausejob_flag( "remove" )      # -so we don't increment CurrentRun number
+            subprocess.Popen(['sbatch', restartscript])
+            update_local_job_details( "JobStatus",  "submitted" )
+            update_local_job_details( "JobMessage", "production job restarted" )
+            return 
+
+        if current == total: 
             newtotal   = total + int( runs ) 
             newcurrent = current + 1  
             pausejob_flag( "remove" )
@@ -868,14 +885,6 @@ def restart_jobs( restartscript ):
             update_local_job_details( "JobStatus",  "submitted" )
             update_local_job_details( "JobMessage", "production job restarted" )
             return 
-
-        if "cleared" in message:
-            pausejob_flag( "remove" )
-            subprocess.Popen(['sbatch', restartscript])
-            update_local_job_details( "JobStatus",  "submitted" )
-            update_local_job_details( "JobMessage", "production job restarted" )
-            return 
-
 
 def recover_all_jobs():
     """ -function to recover and restore crashed jobs """
@@ -890,7 +899,7 @@ def stop_all_jobs_immediately():
     """ function to stop all jobs immediately """
 
     jobstatus, jobid = check_if_job_running()
-    if jobstatus in { "stopped", "ready" }:
+    if jobstatus in { "stopped", "ready","cancelled" }:
         update_local_job_details( "JobMessage", "no job running" ) 
     else:
         if jobid != 0:
@@ -900,11 +909,13 @@ def cancel_job( jobid ):
     """ function to send scancelcommand for jobid """
 
     print " stopping job: {}".format( jobid )
+    message = " scancel jobid: %s" % jobid 
+    subprocess.Popen([ 'scancel', jobid ])
+    pausejob_flag( "create" )         
     update_local_job_details( "JobMessage", "sent scancel command" )
     update_local_job_details( "JobStatus",  "cancelled" )
-    message = " scancel jobid: %s" % jobid 
-    pausejob_flag( "create" )         
-    subprocess.Popen([ 'scancel', jobid ])
+    update_local_job_details( "PauseJobFlag", "cancelled" )
+    update_local_job_details( "CurrentJobId",  -1 )
         
 def erase_all_data():
     """ -function to erase all data for a clean start.  Use with caution!"""
@@ -937,6 +948,20 @@ def erase_all_data():
         print "\n Oh the humanity. I sure hope that wasn't anything important."
     else: 
         print " Phew! Nothing erased."
+
+def create_dcd_file_loader( first = 0, last = -1, step =1):
+    """ A function to create an easyfile loader to be able to read in a
+        contiguous series of dcd output files for VMD.   """
+    
+    cwd = os.getcwd()
+    OutputDir = cwd + "/" "OutputFiles"
+    DirList = get_current_dir_list( OutputDir )
+ 
+    # create vmd line:
+    line = "mol addfile %s type dcd first %s last %s step %s filebonds 1 autobonds 1 waitfor all\n"\
+            .format( dcdline, first, last, step )
+
+
 
 def clone():
     """ -function to clone directory without data, but preserving input files."""

@@ -26,7 +26,7 @@ def main():
  
 ##  update the local job details file: 
     mdwf.update_local_job_details( "CurrentJobId", jobid )
-    mdwf.update_local_job_details( "JobStatus", c3+"running"+c0 )
+    mdwf.update_local_job_details( "JobStatus", "running" )
  
     timestamp = "started: " + time.strftime( "%d%b:%H:%M", time.localtime() )
     mdwf.update_local_job_details( "JobMessage",   timestamp  )
