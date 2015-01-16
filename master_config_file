@@ -15,14 +15,14 @@
 
 
 "Comment2"      : "Job Details Section",
-"JobStreams"    : ["Main_Job_dir1","Main_Job_dir2"],
-"JobReplicates" : ["10","5"],
-"BaseDirNames"  : ["Sim1_","Sim2_"],
+"JobStreams"    : ["Main_Job_dir1","Main_dir2"],
+"JobReplicates" : ["12","5"],
+"BaseDirNames"  : ["Sim1_","Sim222_"],
 "JobBaseNames"  : ["Myjob1_","MyJob2_"],
-"Runs"          : ["3","2"],
+"Runs"          : ["15","5"],
 
 "JobScheme"     : "simple",
-"Round"         : "1",
+"Round"         : 1,
 
 "EquilibrateJobName"      : "equilibration_job_",
 "SbatchEquilibrateScript" : "sbatch_start_script",
@@ -36,8 +36,8 @@
 "custom_script2"     : "custom2.conf",
 
 "Comment4"           : "Miscelaneous Parameters",
-"JobFailTime"        : "60", 
-"DiskSpaceCutOff"    : "95",
+"JobFailTime"        : 120, 
+"DiskSpaceCutOff"    : 95,
 "AutoAnalysis"       : "False"
 
 }
