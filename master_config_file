@@ -15,11 +15,11 @@
 
 
 "Comment2"      : "Job Details Section",
-"JobStreams"    : ["Main_Job_dir1","Main_dir2"],
-"JobReplicates" : ["12","5"],
-"BaseDirNames"  : ["Sim1_","Sim222_"],
-"JobBaseNames"  : ["Myjob1_","MyJob2_"],
-"Runs"          : ["15","5"],
+"JobStreams"    : ["MainJobdir1"],
+"JobReplicates" : ["10"],
+"BaseDirNames"  : ["Sim1_"],
+"JobBaseNames"  : ["Myjob1_"],
+"Runs"          : ["5"],
 
 "JobScheme"     : "simple",
 "Round"         : 1,
@@ -36,7 +36,7 @@
 "custom_script2"     : "custom2.conf",
 
 "Comment4"           : "Miscelaneous Parameters",
-"JobFailTime"        : 120, 
+"JobFailTime"        : 60, 
 "DiskSpaceCutOff"    : 95,
 "AutoAnalysis"       : "False"
 
