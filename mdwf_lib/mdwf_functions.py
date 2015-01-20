@@ -220,8 +220,9 @@ def check_job_runtime():
     finish = int( ljdf_t[ 'JobFinishTime' ] )
     limit  = int( ljdf_t[ 'JobFailTime'   ] )
     runtime = finish - start 
+
     if runtime < limit:
-        update_local_job_details( "JobStatus",  "stopping" )
+        update_local_job_details( "JobStatus",  "stopped" )
         update_local_job_details( "JobMessage", "short run time detected" )
         pausejob_flag( "create" )
 
@@ -251,7 +252,7 @@ def check_run_counter():
 
 def get_job_runtime( starttime, status ):
     """ Function to return runtime of current job in H:M format.
-        Returns xx:xx if job not running. """
+        Returns --:-- if job not running. """
 
     if "running" in status:
         seconds = int( time.time() - starttime ) 
@@ -259,7 +260,7 @@ def get_job_runtime( starttime, status ):
         hours, min = divmod( m, 60 )
         Time = "%d:%02d" % ( hours, min)
     else: 
-        Time = "xx:xx"
+        Time = "--:--"
     return Time
 
 def create_job_basename( jobname, run, zf ):
@@ -291,25 +292,32 @@ def redirect_namd_output( CurrentWorkingName = "current_MD_run_files",
     basename = create_job_basename( jobname, run, zfill )
 
     # make shorthand of current working files
-    cwn_coor = CurrentWorkingName + ".coor"
-    cwn_vel  = CurrentWorkingName + ".vel"
-    cwn_xsc  = CurrentWorkingName + ".xsc"
-    cwn_xst  = CurrentWorkingName + ".xst"
-    cwn_dcd  = CurrentWorkingName + ".dcd"
+    cwf_coor = CurrentWorkingName + ".coor"
+    cwf_vel  = CurrentWorkingName + ".vel"
+    cwf_xsc  = CurrentWorkingName + ".xsc"
+    cwf_xst  = CurrentWorkingName + ".xst"
+    cwf_dcd  = CurrentWorkingName + ".dcd"
+
+    # check that restartfiles actually exisit, if not create pausejob condition. 
+    if not os.path.isfile(cwf_coor) or not os.path.isfile(cwf_vel) \
+            or not os.path.isfile(cwf_xsc):
+        pausejob_flag( "create" )
+        update_local_job_details( "JobStatus", "stopping" )
+        update_local_job_details( "JobMessage", "no namd outputfiles generated" )
 
     # copy CurrentWorking (restart) files to LastRestart/ directory 
-    shutil.copy(cwn_coor, 'LastRestart/' + cwn_coor)
-    shutil.copy(cwn_vel,  'LastRestart/' + cwn_vel)
-    shutil.copy(cwn_xsc,  'LastRestart/' + cwn_xsc)
+    shutil.copy(cwf_coor, 'LastRestart/' + cwf_coor)
+    shutil.copy(cwf_vel,  'LastRestart/' + cwf_vel)
+    shutil.copy(cwf_xsc,  'LastRestart/' + cwf_xsc)
  
     # rename and move current working files
-    os.rename( cwn_dcd,    "OutputFiles/"  + basename + ".dcd"  )
-    shutil.copy( cwn_vel,  "RestartFiles/" + basename + ".vel"  )
-    shutil.copy( cwn_xsc,  "RestartFiles/" + basename + ".xsc"  )
-    shutil.copy( cwn_xst,  "RestartFiles/" + basename + ".xst"  )
-    shutil.copy( cwn_coor, "RestartFiles/" + basename + ".coor" )
+    os.rename( cwf_dcd,    "OutputFiles/"  + basename + ".dcd"  )
+    shutil.copy( cwf_vel,  "RestartFiles/" + basename + ".vel"  )
+    shutil.copy( cwf_xsc,  "RestartFiles/" + basename + ".xsc"  )
+    shutil.copy( cwf_xst,  "RestartFiles/" + basename + ".xst"  )
+    shutil.copy( cwf_coor, "RestartFiles/" + basename + ".coor" )
     shutil.move( "temp_working_outputfile.out", "OutputText/" + basename + ".txt" )
-    shutil.move( "temp_working_errorsfile.err", "Errors/" + basename + ".err" )
+    shutil.move( "temp_working_errorsfile.err", "Errors/"     + basename + ".err" )
         
 def post_jobrun_cleanup():
     """ remove unwanted error, backup files, etc """
@@ -317,6 +325,36 @@ def post_jobrun_cleanup():
         shutil.move(file, "JobLog/")
     for file in glob.glob("core*"):
         shutil.move(file, "Errors/")
+    for file in glob.glob("*.restart.*"):
+        shutil.move(file, "LastRestart/")
+
+    # reset timer / jobid flags: 
+    update_local_job_details( "JobStartTime", 0 )
+    update_local_job_details( "JobFinishTime", 0 )
+    update_local_job_details( "CurrentJobId", 0 )
+    
+    # update dcd files list: 
+    update_local_dcd_list()
+
+def update_local_dcd_list():
+    """ a simple function to create a local dcd_files_list.vmd use to load data into VMD""" 
+
+    f = open('local_dcd_files_loader.vmd', 'w')
+    cwd = os.getcwd()    
+    
+    f.write("set firstframe 1 \n")
+    f.write("set lastframe -1 \n")
+    f.write("set stepsize  1 \n\n")
+    f.write("set cwd " + cwd + "\n\n")
+    
+    dcdlist = glob.glob( "OutputFiles/*.dcd" ) 
+    for i in dcdlist:
+        line = " mol addfile %s%s type dcd first %s last %s step %s filebonds 1 autobonds 1 waitfor all\n"\
+                % ( "$cwd/", i, "$firstframe", "$lastframe", "$stepsize")
+        f.write( line )        
+
+    f.close()
+
 
 def final_job_cleanup():
     """ perform final cleanup once jobruns are finished. """
