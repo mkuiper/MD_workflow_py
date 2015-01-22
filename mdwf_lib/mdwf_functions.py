@@ -632,7 +632,8 @@ def check_job():
     jd_prod, jd_prod_pl = read_namd_job_details(mcf[ "ProductionConfScript" ])    
     sr = 0             # Initalise no. of job repliates
     run = 0            # Initalise no. of runs in each replicate
-    print "{}\nJob check summary: ".format(darkred)
+    print "{}--------------------------------------------------------------------------------".format(darkblue)
+    print "{}Job check summary: ".format(darkblue,defaultcolour)
     print "{}--------------------------------------------------------------------------------".format(darkblue)
     print "{} Main Job Directory:        {}{}".format(darkred,defaultcolour,mcf[ "JobStreams" ])
     print "{} Simulation basename:       {}{}".format(darkred,defaultcolour,mcf[ "BaseDirNames" ])
@@ -661,9 +662,9 @@ def check_job():
     tdf = int(spr)/int(dcd)*int(run)*int(sr)             # total dcd frames 
     tpd = tdf*dfs/(1024)                                 # total production data 
     tst = (int(sr)*int(run)*int(jd_prod[ "timestep" ])*int(spr))/1000000.0  # total simulated time
-
-    print "{}\nEstimation of data to be generated from the production run of this simulation:{}".format(darkred,defaultcolour)
-    print "{}--------------------------------------------------------------------------------".format(darkred)
+    print "{}--------------------------------------------------------------------------------".format(darkblue)
+    print "{}Estimation of data to be generated from the production run of this simulation:{}".format(darkblue,defaultcolour)
+    print "{}--------------------------------------------------------------------------------".format(darkblue)
     print "{} Simulation directories:   {}%-8s      {}Runs per directory:   {}%s"\
               .format(darkred,defaultcolour,darkred,defaultcolour) % (sr,run)
     print "{} Steps per run:            {}%-8s      {}Dcdfreq in run:       {}%s"\
@@ -679,7 +680,8 @@ def check_job():
     else:
         print " {}   Total production data:{} %12.2f {}GB {} - error in calculating \
                 frame size. No psf file?".format(darkred,darkred,darkred,defaultcolour) %(tpd) 
-    print "{}\nNode configuration:{}".format(darkred,defaultcolour)
+    print "{}------------------------------------------------------------------------------".format(darkblue)
+    print "{}Node configuration:{}".format(darkblue,defaultcolour)
     print "{}------------------------------------------------------------------------------".format(darkblue)
     print "{}Sbatch Scripts:     {} %s , %s  ".format(darkred,defaultcolour) % \
            (mcf[ "SbatchEquilibrateScript" ], mcf[ "SbatchProductionScript" ])      
@@ -692,8 +694,8 @@ def check_job():
     else:
         print "{}account:            {} %-12s{}-have you set your account?{} "\
           .format(darkred,darkred,darkred,defaultcolour) % (mcf[ "Account" ])
-
-    print "{}\nChecking configuration input files:{}".format(darkred,defaultcolour)
+    print "{}--------------------------------------------------------------------------------".format(darkblue)
+    print "{}Checking configuration input files:{}".format(darkblue,defaultcolour)
     print "{}--------------------------------------------------------------------------------".format(darkblue)
 
 #   # checking if files in configuration exist where they are supposed to be. 
@@ -711,9 +713,9 @@ def check_job():
 
 
 def check_file_exists(target):
-    mesg1 = "{} found {} -ok!{}".format(darkblue,darkblue,defaultcolour)
-    mesg2 = "{} found {} -ok!{} -example file?{}".format(darkred,darkred,darkred,defaultcolour)
-    mesg3 = "{} not found.{} -Check config file.{}".format(darkred,darkred,defaultcolour) 
+    mesg1 = "{} found {} -ok!{}".format(defaultcolour,defaultcolour,defaultcolour)
+    mesg2 = "{} found {} -ok!{} -example file?{}".format(darkred,defaultcolour,defaultcolour,defaultcolour)
+    mesg3 = "{} not found.{} -Check config file.{}".format(defaultcolour,defaultcolour,defaultcolour) 
 
     ntarget = target[6:]        # strip off "../../"
     if not "../../" in target[0:6]:
