@@ -2,6 +2,7 @@
 "Comment0"     : "Master_Config_File v0.25",
 "Account"      : "VR0021",
 "Flavour"      : "Namd",
+"UserName"     : "mike", 
 
 "Comment1"     : "BlueGene/Q Namd Job parameters:",
 "nodes"        : "2",
