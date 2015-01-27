@@ -18,9 +18,9 @@ import re
 
 # ansi color variables for formatting purposes: 
 defaultcolour = '\033[0m'        
-darkred       = '\033[31;2m'     
+darkred       = '\033[34;3m'     
 darkgreen     = '\033[32;2m'     
-darkblue      = '\033[34;3m'     
+darkblue      = '\033[31;2m'     
 HEADER  = '\033[95m'
 OKBLUE  = '\033[94m'
 OKGREEN = '\033[92m'
@@ -322,7 +322,7 @@ def redirect_namd_output( CurrentWorkingName = "current_MD_run_files",
 def post_jobrun_cleanup():
     """ remove unwanted error, backup files, etc """
     for file in glob.glob("slurm*"):
-        shutil.move(file, "JobLog/")
+        shutil.move(file, "JobLog/" )
     for file in glob.glob("core*"):
         shutil.move(file, "Errors/")
     for file in glob.glob("*.restart.*"):
@@ -376,6 +376,13 @@ def check_if_job_running():
     current_jobid     = ljdf_t[ "CurrentJobId" ]
     current_jobstatus = ljdf_t[ "JobStatus" ]
 
+#    status = running 
+#    status = submitted 
+#    status = processing 
+#    status = cancelled
+
+
+
 ## needs better way to efficient way to check queue here
 ## this method currently just relies on 'local_job_details'
 
@@ -398,7 +405,7 @@ def monitor_jobs():
     for i in range(0,nJobStreams): 
         JobDir = JobStreams[i]
         jobdirlist = get_current_dir_list(JobDir) 
-        print "%24s " %( darkgreen + JobDir + ":"+ defaultcolour )
+        print "%-24s " %( darkgreen + JobDir + ":"+ defaultcolour )
         for j in jobdirlist:  
 	    dir_path = JobDir + "/" + j  
             ljdf_t = read_local_job_details(dir_path,\
@@ -630,6 +637,23 @@ def check_job():
     mcf = read_master_config_file()
     jd_opt,  jd_opt_pl  = read_namd_job_details(mcf[ "EquilibrateConfScript" ])    
     jd_prod, jd_prod_pl = read_namd_job_details(mcf[ "ProductionConfScript" ])    
+
+#   # checking if files in configuration exist where they are supposed to be. 
+    print "{}--------------------------------------------------------------------------------".format(darkblue)
+    print "{}Checking configuration input files:{}".format(darkblue,defaultcolour)
+    print "{}--------------------------------------------------------------------------------".format( darkblue)
+    print "{}{}:{}".format(darkblue,mcf[ "EquilibrateConfScript" ],defaultcolour)
+    check_file_exists(jd_opt[ "psffilepath" ])
+    check_file_exists(jd_opt[ "pdbfilepath" ])
+    for i in jd_opt_pl:
+        check_file_exists(i)
+
+    print "{}{}:{}".format(darkblue,mcf[ "ProductionConfScript" ],defaultcolour)
+    check_file_exists(jd_prod[ "psffilepath" ])
+    check_file_exists(jd_prod[ "pdbfilepath" ])
+    for i in jd_prod_pl:
+        check_file_exists(i)
+
     sr = 0             # Initalise no. of job repliates
     run = 0            # Initalise no. of runs in each replicate
     print "{}--------------------------------------------------------------------------------".format(darkblue)
@@ -694,22 +718,6 @@ def check_job():
     else:
         print "{}account:            {} %-12s{}-have you set your account?{} "\
           .format(darkred,darkred,darkred,defaultcolour) % (mcf[ "Account" ])
-    print "{}--------------------------------------------------------------------------------".format(darkblue)
-    print "{}Checking configuration input files:{}".format(darkblue,defaultcolour)
-    print "{}--------------------------------------------------------------------------------".format(darkblue)
-
-#   # checking if files in configuration exist where they are supposed to be. 
-    print "{}{}:{}".format(darkblue,mcf[ "EquilibrateConfScript" ],defaultcolour)
-    check_file_exists(jd_opt[ "psffilepath" ])
-    check_file_exists(jd_opt[ "pdbfilepath" ])
-    for i in jd_opt_pl:
-        check_file_exists(i)
-
-    print "{}{}:{}".format(darkblue,mcf[ "ProductionConfScript" ],defaultcolour)
-    check_file_exists(jd_prod[ "psffilepath" ])
-    check_file_exists(jd_prod[ "pdbfilepath" ])
-    for i in jd_prod_pl:
-        check_file_exists(i)
 
 
 def check_file_exists(target):
@@ -879,10 +887,21 @@ def clear_all_jobs():
 def restart_all_production_jobs():
     """ -function to restart_all_production_jobs """
     print "-- restarting production jobs."
-    print "You are about to restart production jobs. Enter how many new runs to perform"
-    str = raw_input("")
+    print "You are about to restart production jobs."
+    str = raw_input( "Enter how many new runs to perform: ")
     runs = int(str)   
+    if runs > 100:
+        confirm = raw_input( "Mmm, that sounds like a lot of runs, are you sure? y/n ")
+        if confirm in ( "y", "Y", "yes", "Yes"): 
+            print "Ok, just checking."
+        else:
+            print "ok then, aborting restart."
+            return   
+
     mcf = read_master_config_file()
+
+## check_job_status
+
     restartscript = mcf[ "SbatchProductionScript" ]
     execute_function_in_job_tree( restart_jobs, restartscript, runs )
     
@@ -928,7 +947,69 @@ def restart_jobs( restartscript, runs ):
 
 def recover_all_jobs():
     """ -function to recover and restore crashed jobs """
-    print "-- recovering crashed jobs."
+    print "Crash recovery: "
+    print "Typically we expect binary output files like .dcd to be the"
+    print "same size using this workflow. If a job has crashed we can "
+    print "restore the directory to the last known good point by entering" 
+    print "the name of the last good run. " 
+
+
+    execute_function_in_job_tree( recovery_function )
+
+def recovery_function():
+    """ this function checks sizes and md5sums of outputfiles, giving the opportunity
+        for a user to recover from the last known good file"""   
+    ljdf = read_local_job_details( ".", "local_job_details.json" ) 
+
+    # the following constructs a string to find the "equilibration" dcd file
+    # (which is numbered 0, but with zfill padding) 
+
+
+
+    total = ljdf["TotalRuns"]
+    zf = len( str(total) ) + 1 + 4
+    zf_bait = ".dcd".zfill( zf )
+
+    dirlist = get_current_dir_list( "OutputFiles" )
+    line = ljdf["JOB_STREAM_DIR"] + "/" + ljdf["JobDirName"] + "OutputFiles:"
+    print "\n{}{}{}".format( darkgreen, line, defaultcolour )
+
+    #### while 
+
+    for i in dirlist:
+        if "dcd" in i:
+            path = 'OutputFiles/' + i  
+            size = os.path.getsize( path ) 
+            if not zf_bait in i:
+                print "%-24s %12s " % ( i, size ) 
+            else:
+                print "{}%-24s %12s -equilibration file {} ".format( darkblue, defaultcolour )  % ( i, size ) 
+    print "Enter the name of the first bad file or" 
+    target = raw_input(" ('q' to quit or enter to continue scanning): " ) 
+
+    if target == "q":
+        sys.exit("exiting" )    
+    if target != "": 
+        # find index of target in dirlist. 
+        if target in dirlist:
+            index = dirlist.index( target )
+
+            # find index of target in dirlist. 
+            index = dirlist.index( target )
+            print "\n{}Files to delete:{}".format( darkblue, defaultcolour ) 
+            for i in range( index, int(len(dirlist))):         
+                print dirlist[i]
+            line = " {}confirm:{} y/n ".format( darkblue, defaultcolour ) 
+            confirm = raw_input( line ) 
+            if confirm in { 'Y', 'y' }: 
+                # slice job number from dcd job name:      
+                num = int( target[-zf:-4] )
+                basename = target[ :-4 ]
+                print num, basename, index
+        else:
+            print target, " not found: "    
+
+
 
 def stop_jobs():
     """ -function to stop all jobs, -either immediately or gently."""
@@ -939,23 +1020,22 @@ def stop_all_jobs_immediately():
     """ function to stop all jobs immediately """
 
     jobstatus, jobid = check_if_job_running()
-    if jobstatus in { "stopped", "ready","cancelled" }:
+    if jobstatus in { "stopped", "cancelled" }:
         update_local_job_details( "JobMessage", "no job running" ) 
     else:
-        if jobid != 0:
-            cancel_job( jobid )
+        cancel_job( jobid )
 
 def cancel_job( jobid ):
     """ function to send scancelcommand for jobid """
 
     print " stopping job: {}".format( jobid )
     message = " scancel jobid: %s" % jobid 
-    subprocess.Popen([ 'scancel', jobid ])
     pausejob_flag( "create" )         
     update_local_job_details( "JobMessage", "sent scancel command" )
-    update_local_job_details( "JobStatus",  "cancelled" )
     update_local_job_details( "PauseJobFlag", "cancelled" )
-    update_local_job_details( "CurrentJobId",  -1 )
+    if jobid > 0:
+        subprocess.Popen([ 'scancel', jobid ])
+        update_local_job_details( "CurrentJobId",  -1 )
         
 def erase_all_data():
     """ -function to erase all data for a clean start.  Use with caution!"""
@@ -972,8 +1052,8 @@ def erase_all_data():
     print "/JobLog/                         - Job logs." 
     print "/Setup_and_Config/Benchmarking/  - Benchmarking data." 
 
-    print("\nPress 'enter' to quit or type: '{}erase all my data{}':").format(darkgreen,defaultcolour)
-    str = raw_input("")
+    str = raw_input("\n Press enter to quit or type:{} 'erase all my data' :{}".format( darkgreen, defaultcolour))
+   
     if str == "erase all my data": 
         print "Ok, well if you say so...."
 
