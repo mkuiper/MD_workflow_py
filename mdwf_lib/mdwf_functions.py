@@ -263,12 +263,12 @@ def get_job_runtime( starttime, status ):
         Time = "--:--"
     return Time
 
-def create_job_basename( jobname, run, zf ):
+def create_job_basename( jobname, jobid, run, zf ):
     """ creates a time stamped basename for current job, uses zfill for 
         numbering convention. """
 
     timestamp = time.strftime( "%Y_%d%b_", time.localtime() )
-    basename  = timestamp + jobname + "run_" + str( run ).zfill( zf )
+    basename  = timestamp + jobname + jobid + "_run_" + str( run ).zfill( zf )
     return basename
 
 def update_local_job_details( key, status ):
@@ -288,8 +288,9 @@ def redirect_namd_output( CurrentWorkingName = "current_MD_run_files",
     jobname = ljdf_t[ 'JobBaseName' ] 
     run     = ljdf_t[ 'CurrentRun' ]
     total   = ljdf_t[ 'TotalRuns' ]
+    jobid   = ljdf_t[ 'CurrentJobId' ]
     zfill   = len( str( total ) ) + 1
-    basename = create_job_basename( jobname, run, zfill )
+    basename = create_job_basename( jobname,jobid, run, zfill )
 
     # make shorthand of current working files
     cwf_coor = CurrentWorkingName + ".coor"
@@ -850,12 +851,13 @@ def start_jobs( startscript ):
     if jobstatus == "ready" and jobid == 0:
         subprocess.Popen(['sbatch', startscript])
         update_local_job_details( "JobStatus",  "submitted" )
+        update_local_job_details( "CurrentJobId",  jobid )
         update_local_job_details( "JobMessage", "submitted to queue" )
     else:
         if jobstatus == "cancelled":
             print "Appears this job was cancelled. Clear flags before restart. {}".format( cwd[-20:], jobid )   
-        if "running" in jobstatus:
-            print "A job appears to be running here: {} : jobid:{}".format( cwd[-20:], jobid )
+        if jobstatus in { "running", "submitted" }:
+            print "A job appears to be running or aleady submitted here:..{} : jobid:{}".format( cwd[-20:], jobid )
 
         if jobid == -1:
             print "Seems equilibration job already run here, don't you want to restart instead? (--restart)"
@@ -887,9 +889,12 @@ def clear_all_jobs():
 def restart_all_production_jobs():
     """ -function to restart_all_production_jobs """
     print "-- restarting production jobs."
-    print "You are about to restart production jobs."
+    print "You are about to restart production jobs or type 'q' to quit. "
     str = raw_input( "Enter how many new runs to perform: ")
-    runs = int(str)   
+    if str == "q":
+        sys.exit("... quiting restart")
+    else:
+        runs = int(str)
     if runs > 100:
         confirm = raw_input( "Mmm, that sounds like a lot of runs, are you sure? y/n ")
         if confirm in ( "y", "Y", "yes", "Yes"): 
@@ -918,8 +923,8 @@ def restart_jobs( restartscript, runs ):
     #runs    = ljdf_t[ "Runs" ] 
     time.sleep( 0.1 )
 
-    if "running" in jobstatus:
-        print "A job appears to be running here:..{} : jobid:{}".format( cwd[-20:], jobid )
+    if  jobstatus in { "running", "submitted" }:
+        print "A job appears to be running or aleady submitted here:..{} : jobid:{}".format( cwd[-20:], jobid )
         return
     if  "cancelled" in jobstatus:
         print "Job was abruptly cancelled. Clear pause flags first. (--clear) {}".format( cwd[-20:])
@@ -930,6 +935,7 @@ def restart_jobs( restartscript, runs ):
             pausejob_flag( "remove" )      # -so we don't increment CurrentRun number
             subprocess.Popen(['sbatch', restartscript])
             update_local_job_details( "JobStatus",  "submitted" )
+            update_local_job_details( "CurrentJobId",  jobid ) 
             update_local_job_details( "JobMessage", "production job restarted" )
             return 
 
@@ -971,7 +977,7 @@ def recovery_function():
     zf_bait = ".dcd".zfill( zf )
 
     dirlist = get_current_dir_list( "OutputFiles" )
-    line = ljdf["JOB_STREAM_DIR"] + "/" + ljdf["JobDirName"] + "OutputFiles:"
+    line = ljdf["JOB_STREAM_DIR"] + "/" + ljdf["JobDirName"] +  "/" + "OutputFiles:"
     print "\n{}{}{}".format( darkgreen, line, defaultcolour )
 
     #### while 
@@ -1020,7 +1026,7 @@ def stop_all_jobs_immediately():
     """ function to stop all jobs immediately """
 
     jobstatus, jobid = check_if_job_running()
-    if jobstatus in { "stopped", "cancelled" }:
+    if jobstatus in { "stopped", "cancelled", "processing" }:
         update_local_job_details( "JobMessage", "no job running" ) 
     else:
         cancel_job( jobid )
@@ -1032,6 +1038,7 @@ def cancel_job( jobid ):
     message = " scancel jobid: %s" % jobid 
     pausejob_flag( "create" )         
     update_local_job_details( "JobMessage", "sent scancel command" )
+    update_local_job_details( "JobStatus", "stopped" )
     update_local_job_details( "PauseJobFlag", "cancelled" )
     if jobid > 0:
         subprocess.Popen([ 'scancel', jobid ])
