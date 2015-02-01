@@ -1,0 +1,162 @@
+Converse/Charm++ Commit ID: v6.3.0-723-g6148ae1
+[0] isomalloc.c> Disabling isomalloc because isomalloc disabled by conv-mach
+Info: NAMD 2.9 for BlueGeneQ
+Info: 
+Info: Please visit http://www.ks.uiuc.edu/Research/namd/
+Info: for updates, documentation, and support information.
+Info: 
+Info: Please cite Phillips et al., J. Comp. Chem. 26:1781-1802 (2005)
+Info: in all publications reporting results obtained with NAMD.
+Info: 
+Info: Based on Charm++/Converse 60305 for pami-bluegeneq-smp-xlc
+Info: Built Sun Dec 7 11:31:12 EST 2014 by bobdanani on avoca-test
+Info: Running on 128 processors, 16 nodes, 16 physical nodes.
+Info: CPU topology information unavailable.
+Info: Charm++/Converse parallel runtime startup completed at 0.0432813 s
+Info: 202.062 MB of memory in use based on /proc/self/stat
+Info: Configuration file is namd_equilibration_script.conf
+Info: Working in the current directory /vlsci/VR0021/mike/GIT/MD_workflow_py/newdir/newiDir0031
+TCL: Suspending until startup complete.
+Info: SIMULATION PARAMETERS:
+Info: TIMESTEP               2
+Info: NUMBER OF STEPS        0
+Info: STEPS PER CYCLE        10
+Info: PERIODIC CELL BASIS 1  48 0 0
+Info: PERIODIC CELL BASIS 2  0 48 0
+Info: PERIODIC CELL BASIS 3  0 0 48
+Info: PERIODIC CELL CENTER   0 0 0
+Info: WRAPPING WATERS AROUND PERIODIC BOUNDARIES ON OUTPUT.
+Info: WRAPPING ALL CLUSTERS AROUND PERIODIC BOUNDARIES ON OUTPUT.
+Info: LOAD BALANCER  Centralized
+Info: LOAD BALANCING STRATEGY  New Load Balancers -- DEFAULT
+Info: LDB PERIOD             2000 steps
+Info: FIRST LDB TIMESTEP     50
+Info: LAST LDB TIMESTEP     -1
+Info: LDB BACKGROUND SCALING 1
+Info: HOM BACKGROUND SCALING 1
+Info: PME BACKGROUND SCALING 1
+Info: REMOVING PATCHES FROM PROCESSOR 0
+Info: MIN ATOMS PER PATCH    40
+Info: INITIAL TEMPERATURE    310
+Info: CENTER OF MASS MOVING INITIALLY? NO
+Info: DIELECTRIC             1
+Info: EXCLUDE                SCALED ONE-FOUR
+Info: 1-4 ELECTROSTATICS SCALED BY 1
+Info: MODIFIED 1-4 VDW PARAMETERS WILL BE USED
+Info: DCD FILENAME           current_MD_run_files.dcd
+Info: DCD FREQUENCY          500
+Info: DCD FIRST STEP         500
+Info: DCD FILE WILL CONTAIN UNIT CELL DATA
+Info: XST FILENAME           current_MD_run_files.xst
+Info: XST FREQUENCY          500
+Info: NO VELOCITY DCD OUTPUT
+Info: NO FORCE DCD OUTPUT
+Info: OUTPUT FILENAME        current_MD_run_files
+Info: BINARY OUTPUT FILES WILL BE USED
+Info: RESTART FILENAME       current_MD_run_files.restart
+Info: RESTART FREQUENCY      5000
+Info: BINARY RESTART FILES WILL BE USED
+Info: SWITCHING ACTIVE
+Info: SWITCHING ON           10
+Info: SWITCHING OFF          12
+Info: PAIRLIST DISTANCE      14
+Info: PAIRLIST SHRINK RATE   0.01
+Info: PAIRLIST GROW RATE     0.01
+Info: PAIRLIST TRIGGER       0.3
+Info: PAIRLISTS PER CYCLE    2
+Info: PAIRLISTS ENABLED
+Info: MARGIN                 0.99
+Info: HYDROGEN GROUP CUTOFF  2.5
+Info: PATCH DIMENSION        17.49
+Info: ENERGY OUTPUT STEPS    500
+Info: CROSSTERM ENERGY INCLUDED IN DIHEDRAL
+Info: TIMING OUTPUT STEPS    500
+Info: PRESSURE OUTPUT STEPS  500
+Info: LANGEVIN DYNAMICS ACTIVE
+Info: LANGEVIN TEMPERATURE   310
+Info: LANGEVIN DAMPING COEFFICIENT IS 5 INVERSE PS
+Info: LANGEVIN DYNAMICS NOT APPLIED TO HYDROGENS
+Info: LANGEVIN PISTON PRESSURE CONTROL ACTIVE
+Info:        TARGET PRESSURE IS 1.01325 BAR
+Info:     OSCILLATION PERIOD IS 100 FS
+Info:             DECAY TIME IS 50 FS
+Info:     PISTON TEMPERATURE IS 310 K
+Info:       PRESSURE CONTROL IS GROUP-BASED
+Info:    INITIAL STRAIN RATE IS 0 0 0
+Info:       CELL FLUCTUATION IS ANISOTROPIC
+Info: PARTICLE MESH EWALD (PME) ACTIVE
+Info: PME TOLERANCE               1e-06
+Info: PME EWALD COEFFICIENT       0.257952
+Info: PME INTERPOLATION ORDER     4
+Info: PME GRID DIMENSIONS         48 48 48
+Info: PME MAXIMUM GRID SPACING    1
+Info: Attempting to read FFTW data from FFTW_NAMD_2.9_BlueGeneQ.txt
+Info: Optimizing 6 FFT steps.  1... 2... 3... 4... 5... 6...   Done.
+Info: Writing FFTW data to FFTW_NAMD_2.9_BlueGeneQ.txt
+Info: FULL ELECTROSTATIC EVALUATION FREQUENCY      2
+Info: USING VERLET I (r-RESPA) MTS SCHEME.
+Info: C1 SPLITTING OF LONG RANGE ELECTROSTATICS
+Info: PLACING ATOMS IN PATCHES BY HYDROGEN GROUPS
+Info: RIGID BONDS TO HYDROGEN : ALL
+Info:         ERROR TOLERANCE : 1e-08
+Info:          MAX ITERATIONS : 100
+Info: RIGID WATER USING SETTLE ALGORITHM
+Info: RANDOM NUMBER SEED     1422832118
+Info: USE HYDROGEN BONDS?    NO
+Info: COORDINATE PDB         ../../InputFiles/example.pdb
+Info: STRUCTURE FILE         ../../InputFiles/example.psf
+Info: PARAMETER file: CHARMM format! 
+Info: PARAMETERS             ../../InputFiles/Parameters/par_all27_prot_na.prm
+Info: USING ARITHMETIC MEAN TO COMBINE L-J SIGMA PARAMETERS
+Info: SUMMARY OF PARAMETERS:
+Info: 258 BONDS
+Info: 666 ANGLES
+Info: 1134 DIHEDRAL
+Info: 70 IMPROPER
+Info: 6 CROSSTERM
+Info: 164 VDW
+Info: 0 VDW_PAIRS
+Info: 0 NBTHOLE_PAIRS
+Info: TIME FOR READING PSF FILE: 2.0028
+Info: TIME FOR READING PDB FILE: 0.450145
+Info: 
+Info: ****************************
+Info: STRUCTURE SUMMARY:
+Info: 10315 ATOMS
+Info: 7285 BONDS
+Info: 5281 ANGLES
+Info: 3293 DIHEDRALS
+Info: 204 IMPROPERS
+Info: 74 CROSSTERMS
+Info: 0 EXCLUSIONS
+Info: 9701 RIGID BONDS
+Info: 21244 DEGREES OF FREEDOM
+Info: 3638 HYDROGEN GROUPS
+Info: 4 ATOMS IN LARGEST HYDROGEN GROUP
+Info: 3638 MIGRATION GROUPS
+Info: 4 ATOMS IN LARGEST MIGRATION GROUP
+Info: TOTAL MASS = 63394.1 amu
+Info: TOTAL CHARGE = 1.00955e-06 e
+Info: MASS DENSITY = 0.951884 g/cm^3
+Info: ATOM DENSITY = 0.0932708 atoms/A^3
+Info: *****************************
+Info: 
+Info: Entering startup at 24.559 s, 202.062 MB of memory in use
+Info: Startup phase 0 took 0.00322059 s, 202.062 MB of memory in use
+Info: Startup phase 1 took 0.103963 s, 202.062 MB of memory in use
+Info: Startup phase 2 took 0.0038606 s, 202.062 MB of memory in use
+Info: Startup phase 3 took 0.00288744 s, 202.062 MB of memory in use
+Info: PATCH GRID IS 5 (PERIODIC) BY 5 (PERIODIC) BY 2 (PERIODIC)
+Info: PATCH GRID IS 2-AWAY BY 2-AWAY BY 1-AWAY
+Info: REMOVING COM VELOCITY -0.0414594 -0.0228651 -0.170267
+Info: LARGEST PATCH (12) HAS 234 ATOMS
+Info: Startup phase 4 took 0.0339247 s, 202.062 MB of memory in use
+Info: PME using 24 and 24 processors for FFT and reciprocal sum.
+Info: PME USING 16 GRID NODES AND 16 TRANS NODES
+Info: PME GRID LOCATIONS: 7 11 15 23 27 31 39 43 47 55 ...
+Info: PME TRANS LOCATIONS: 3 5 13 19 21 29 35 37 45 51 ...
+Info: Startup phase 5 took 0.00808582 s, 202.062 MB of memory in use
+Info: Startup phase 6 took 0.009837 s, 202.062 MB of memory in use
+LDB: Central LB being created...
+2015-02-02 10:09:05.116 (WARN ) [0xfff79cc9220] 8761467:ibm.runjob.client.Job: terminated by signal 9
+2015-02-02 10:09:05.117 (WARN ) [0xfff79cc9220] 8761467:ibm.runjob.client.Job: abnormal termination by signal 9 from rank 9

@@ -918,8 +918,8 @@ def restart_jobs( restartscript, runs ):
     #runs    = ljdf_t[ "Runs" ] 
     time.sleep( 0.1 )
 
-    if "running" in jobstatus:
-        print "A job appears to be running here:..{} : jobid:{}".format( cwd[-20:], jobid )
+    if jobstatus in { "running", "submittied" }:
+        print "A job appears to be submitted or running here:..{} : jobid:{}".format( cwd[-20:], jobid )
         return
     if  "cancelled" in jobstatus:
         print "Job was abruptly cancelled. Clear pause flags first. (--clear) {}".format( cwd[-20:])
@@ -971,7 +971,7 @@ def recovery_function():
     zf_bait = ".dcd".zfill( zf )
 
     dirlist = get_current_dir_list( "OutputFiles" )
-    line = ljdf["JOB_STREAM_DIR"] + "/" + ljdf["JobDirName"] + "OutputFiles:"
+    line = ljdf["JOB_STREAM_DIR"] + "/" + ljdf["JobDirName"] + "/" +  "OutputFiles:"
     print "\n{}{}{}".format( darkgreen, line, defaultcolour )
 
     #### while 
@@ -1020,7 +1020,7 @@ def stop_all_jobs_immediately():
     """ function to stop all jobs immediately """
 
     jobstatus, jobid = check_if_job_running()
-    if jobstatus in { "stopped", "cancelled" }:
+    if jobstatus in { "stopped", "cancelled", "processing" }:
         update_local_job_details( "JobMessage", "no job running" ) 
     else:
         cancel_job( jobid )
@@ -1032,6 +1032,7 @@ def cancel_job( jobid ):
     message = " scancel jobid: %s" % jobid 
     pausejob_flag( "create" )         
     update_local_job_details( "JobMessage", "sent scancel command" )
+    update_local_job_details( "JobStatus", "stopped" )
     update_local_job_details( "PauseJobFlag", "cancelled" )
     if jobid > 0:
         subprocess.Popen([ 'scancel', jobid ])

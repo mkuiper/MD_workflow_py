@@ -1,0 +1,4 @@
+Job 3203260 started at Mon Feb 2 10:08:30 EST 2015
+Scratch directory /scratch/avoca/3203260 has been allocated
+2 Blue Gene/Q compute nodes have been allocated
+slurmstepd: *** JOB 3203260 CANCELLED AT 2015-02-02T10:09:03 *** on avoca-la
