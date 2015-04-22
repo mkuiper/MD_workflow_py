@@ -1,0 +1,48 @@
+#  VMD psfgen example:
+#  this script generates a psf and pdb file of a given
+#  structure in preparation of a namd simulation.
+#
+# 
+#  usage:  at the command line type:
+#  vmd -dispdev text -e build_example
+
+package require psfgen
+
+topology ../InputFiles/Parameters/top_all27_prot_na.rtf
+
+#topology ../InputFiles/Parameters/top_all36_prot.rtf
+#topology ../InputFiles/Parameters/top_all36_na.rtf
+#topology ../InputFiles/Parameters/top_all36_lipid.rtf
+#topology ../InputFiles/Parameters/top_all36_carb.rtf
+#topology ../InputFiles/Parameters/toppar_all36_carb_model.str
+#topology ../InputFiles/Parameters/toppar_water_ions_namd.str
+
+
+#
+# Alias residue names
+alias residue HIS HSE
+alias atom ILE CD1 CD
+
+# Build protein segment
+
+segment A {pdb ../Examples/1ubq_chainA.pdb}
+
+# Patch protein segment:  for adding disulphide bonds etc: segment MF {pdb nad.pdb}
+
+# patch DISU A:97  A:104
+# patch TP2 A:199  
+# regenerate angles dihedrals
+
+coordpdb ../Examples/1ubq_chainA.pdb A
+
+guesscoord
+
+# Write structure and coordinate files
+
+writepsf model_temp_x.psf
+writepdb model_temp_x.pdb
+
+# Still need to solvate and ionize! 
+# do that with vmd modules
+
+exit
