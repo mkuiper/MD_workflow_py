@@ -10,16 +10,16 @@
 "ppn"          : "8",
 "Walltime"     : "24:0:0",
 
-"ModuleFile"   :"namd-xl-pami-smp/2.9",
+"ModuleFile"   :"namd-xl-pami-smp/2.10",
 "PsfFileName"  : "ChangeMe.psf",
 "PdbFileName"  : "ChangeMe.pdb",
 
 
 "Comment2"      : "Job Details Section",
-"JobStreams"    : ["MainJobdir1","MainDir2"],
+"JobStreams"    : ["MainJobdir1","MainJobDir2"],
 "JobReplicates" : ["10","5"],
 "BaseDirNames"  : ["Sim1_","Sim2_" ],
-"JobBaseNames"  : ["Myjob1_","Job2" ],
+"JobBaseNames"  : ["MyJob1_","MyJob2" ],
 "Runs"          : ["5","3" ],
 
 "JobScheme"     : "simple",
