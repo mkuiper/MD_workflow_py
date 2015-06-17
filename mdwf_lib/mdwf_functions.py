@@ -36,12 +36,13 @@ def read_master_config_file():
         master_json = open( 'master_config_file' )
         mcf = json.load(master_json,object_pairs_hook=OrderedDict)
         master_json.close()
+        return mcf  
     else:
-        print "{}Can't see 'master_config_file' in directory:{} {}\n"\
-                .format(darkred, cwd, defaultcolour) 
-        print "{}Have you populated the directory? (./mdwf -p){} \n"\
-                .format(darkred, defaultcolour) 
-    return mcf
+        print "{}Can't see 'master_config_file' {} "\
+                .format(WARNING, defaultcolour) 
+        print "{}Have you populated the directory? (./mdwf -p){}"\
+                .format(WARNING, defaultcolour) 
+   
 
 def read_local_job_details(path="Setup_and_Config",
         ljdf_target="local_job_details_template.json"):  
@@ -117,25 +118,41 @@ def read_namd_job_details(targetfile):
         print "{} {} file not found.{}".format(darkred,targetfile,defaultcolour)
     return jdd, jdpl
 
-def harvest_jobs():
-    """function to create a convenient input file to viewing trajectory data"""
-
+def gather_jobs():
+    """function to create a convenient vmd input file to load and view trajectory data"""
     global dcdlist
-    with open("Analysis/Dcd_inputfile.txt", "w+") as dcdlist:
-        execute_function_in_job_tree(harvest_list)
+    # write basic model loader. 
+    mcf = read_master_config_file()
+    psf   = mcf[ "PsfFileName" ]
+    pdb   = mcf[ "PdbFileName" ]
+    cwd = os.getcwd()
+    with open("Analysis/model_loader.vmd", "w+") as mfile:
+        mfile.write("# Basic vmd model loader \n") 
+        mfile.write("mol new     " + cwd + "/InputFiles/" + psf 
+              + " type psf first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all\n")
+        mfile.write("mol addfile " + cwd + "/InputFiles/" + pdb 
+              + " type pdb first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all\n")
+        mfile.close()
+
+    with open("Analysis/dcd_trajectory_fileloader.vmd", "w+") as dcdlist:
+        execute_function_in_job_tree(gather_list)
         dcdlist.close()  
 
-def harvest_list():
+def gather_list():
     """function to create list of output files from OutputFiles folder""" 
     # list dcd files in /OutputFiles folder
-    line = "# " + os.getcwd() + "\n"  
+    cwd = os.getcwd()
+    line = "# " + cwd + "\n"  
     dcdlist.write(line)
 
     if os.path.isdir("OutputFiles"):
         list = (sorted(os.listdir("OutputFiles"))) 
+        # for creating vmd fileloader
+        head = "mol addfile "
+        tail = "type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all\n"
         for l in list:
             if ".dcd" in l:
-                dcdline = l + "\n"
+                dcdline = head + cwd + "/" + l + tail
                 dcdlist.write(dcdline)
 
 def get_atoms(psffile):
@@ -857,6 +874,9 @@ def execute_function_in_job_tree( func, *args ):
         else: 
             print "Can't see job directories {}   -Have you initialized?"\
                            .format(CurrentJobStream)  
+
+    os.chdir(cwd)
+
 
 def start_all_jobs():
     """ function for starting all jobs """

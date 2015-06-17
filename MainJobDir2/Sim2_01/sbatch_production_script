@@ -19,7 +19,7 @@ ppn=8          # processors per node:
 
 production_script=namd_production_script.conf
 
-module load namd-xl-pami-smp/2.9                # module file:
+module load namd-xl-pami-smp/2.10                # module file:
 module load python-fe/2.7.3  # python module file
 
 #--------------------------------------------------------------------------------

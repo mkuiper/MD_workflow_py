@@ -20,7 +20,7 @@ ppn=8        # processors per node
 
 optimize_script=namd_equilibration_script.conf      
 
-module load namd-xl-pami-smp/2.9			# namd module file
+module load namd-xl-pami-smp/2.10			# namd module file
 module load python-fe/2.7.3	# python module file
 
 ## python script to initiate job and setup variables.-----------
