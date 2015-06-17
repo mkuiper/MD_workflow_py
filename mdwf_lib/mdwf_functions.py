@@ -152,7 +152,7 @@ def gather_list():
         tail = " type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all\n"
         for l in list:
             if ".dcd" in l:
-                dcdline = head + cwd + "/" + l + tail
+                dcdline = head + cwd + "/OutputFiles/" + l + tail
                 dcdlist.write(dcdline)
 
 def get_atoms(psffile):
