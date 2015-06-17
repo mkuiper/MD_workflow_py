@@ -149,7 +149,7 @@ def gather_list():
         list = (sorted(os.listdir("OutputFiles"))) 
         # for creating vmd fileloader
         head = "mol addfile "
-        tail = "type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all\n"
+        tail = " type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all\n"
         for l in list:
             if ".dcd" in l:
                 dcdline = head + cwd + "/" + l + tail
