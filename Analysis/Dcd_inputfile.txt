@@ -1,0 +1,35 @@
+# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_001
+test01.dcd
+test02.dcd
+test03.dcd
+test04.dcd
+# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_002
+test01.dcd
+test02.dcd
+test03.dcd
+test04.dcd
+# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_003
+test01.dcd
+test02.dcd
+test03.dcd
+test04.dcd
+# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_004
+test01.dcd
+test02.dcd
+test03.dcd
+test04.dcd
+# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_005
+test01.dcd
+test02.dcd
+test03.dcd
+test04.dcd
+# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_006
+# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_007
+# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_008
+# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_009
+# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_010
+# /home/mike/Dropbox/GIT/MD_workflow_py/MainDir2/Sim2_01
+# /home/mike/Dropbox/GIT/MD_workflow_py/MainDir2/Sim2_02
+# /home/mike/Dropbox/GIT/MD_workflow_py/MainDir2/Sim2_03
+# /home/mike/Dropbox/GIT/MD_workflow_py/MainDir2/Sim2_04
+# /home/mike/Dropbox/GIT/MD_workflow_py/MainDir2/Sim2_05

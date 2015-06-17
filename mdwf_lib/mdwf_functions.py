@@ -117,6 +117,27 @@ def read_namd_job_details(targetfile):
         print "{} {} file not found.{}".format(darkred,targetfile,defaultcolour)
     return jdd, jdpl
 
+def harvest_jobs():
+    """function to create a convenient input file to viewing trajectory data"""
+
+    global dcdlist
+    with open("Analysis/Dcd_inputfile.txt", "w+") as dcdlist:
+        execute_function_in_job_tree(harvest_list)
+        dcdlist.close()  
+
+def harvest_list():
+    """function to create list of output files from OutputFiles folder""" 
+    # list dcd files in /OutputFiles folder
+    line = "# " + os.getcwd() + "\n"  
+    dcdlist.write(line)
+
+    if os.path.isdir("OutputFiles"):
+        list = (sorted(os.listdir("OutputFiles"))) 
+        for l in list:
+            if ".dcd" in l:
+                dcdline = l + "\n"
+                dcdlist.write(dcdline)
+
 def get_atoms(psffile):
     """ function to estimate dcd frame size of simulation based on 
         the numbers of atoms. Assumes the psf file is in 
@@ -760,7 +781,7 @@ def get_current_dir_list(job_dir):
     """ Simple function to return a list of directories in a given path """
     file_list = []
     if os.path.isdir(job_dir):
-       file_list =  os.listdir(job_dir)
+       file_list =  (sorted(os.listdir(job_dir)))
     else:
         sys.stderr.write("No directories found in {}. Have you initialized?".format(job_dir))
  

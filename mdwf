@@ -20,6 +20,7 @@ Options: \033[0m
   -c --checkjob     Checks job input before running simulations.
   -b --benchmark    Setup benchmarking runs for job optimization. 
   -s --start        Start all jobs.
+  -z --harvest      Collect all Outputfiles.
   --restart         Restart all production jobs. 
   --clear_stops     Clear pausejob and stop flags. 
   --recover         Recover and cleanup stopped jobs. 
@@ -79,6 +80,10 @@ def process(action):
     if action == '--restart':
         print "{}restarting production jobs:{}".format( c6, c0 ) 
         mdwf.restart_all_production_jobs()
+
+    if action == '--harvest':
+        print "{}harvesting data files:{}".format( c6, c0 ) 
+        mdwf.harvest_jobs()
 
     if action == '--recover':
         print "{}recovering and restoring crashed jobs:{}".format( c6, c0 ) 
