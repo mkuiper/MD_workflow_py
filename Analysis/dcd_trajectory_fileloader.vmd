@@ -1,20 +1,5 @@
-# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_001
-# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_002
-# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_003
-# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_004
-# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_005
-# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_006
-# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_007
-# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_008
-# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_009
-# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_010
-mol addfile /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_010/test01.dcdtype dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
-mol addfile /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_010/test02.dcdtype dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
-mol addfile /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_010/test03.dcdtype dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
-mol addfile /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_010/test04.dcdtype dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
-mol addfile /home/mike/Dropbox/GIT/MD_workflow_py/MainJobdir1/Sim1_010/test05.dcdtype dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
-# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobDir2/Sim2_01
-# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobDir2/Sim2_02
-# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobDir2/Sim2_03
-# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobDir2/Sim2_04
-# /home/mike/Dropbox/GIT/MD_workflow_py/MainJobDir2/Sim2_05
+# /media/mike/Dropbox/GIT/MD_workflow_py/MainJobDir2/Sim2_01
+# /media/mike/Dropbox/GIT/MD_workflow_py/MainJobDir2/Sim2_02
+# /media/mike/Dropbox/GIT/MD_workflow_py/MainJobDir2/Sim2_03
+# /media/mike/Dropbox/GIT/MD_workflow_py/MainJobDir2/Sim2_04
+# /media/mike/Dropbox/GIT/MD_workflow_py/MainJobDir2/Sim2_05

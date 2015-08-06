@@ -138,6 +138,11 @@ def gather_jobs():
         execute_function_in_job_tree(gather_list)
         dcdlist.close()  
 
+
+def sorted_ls(path):
+    mtime = lambda f: os.stat(os.path.join(path, f)).st_mtime
+    return list(sorted(os.listdir(path), key=mtime))
+
 def gather_list():
     """function to create list of output files from OutputFiles folder""" 
     # list dcd files in /OutputFiles folder
@@ -146,11 +151,12 @@ def gather_list():
     dcdlist.write(line)
 
     if os.path.isdir("OutputFiles"):
-        list = (sorted(os.listdir("OutputFiles"))) 
+        f_list = sorted_ls("OutputFiles")
+
         # for creating vmd fileloader
         head = "mol addfile "
         tail = " type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all\n"
-        for l in list:
+        for l in f_list:
             if ".dcd" in l:
                 dcdline = head + cwd + "/OutputFiles/" + l + tail
                 dcdlist.write(dcdline)
