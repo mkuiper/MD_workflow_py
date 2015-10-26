@@ -1,0 +1,8 @@
+# ppmconv:
+# this is a script to mass convert a pnm file to jpg.
+
+for pic in *.ppm
+do
+pnmtojpeg "${pic}" > "${pic/%ppm/jpg}"
+done
+
