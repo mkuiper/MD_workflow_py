@@ -1,8 +1,8 @@
-{ 
+{
 "Comment0"     : "Master_Config_File v0.25",
 "Account"      : "VR0021",
 "Flavour"      : "Namd",
-"UserName"     : "mike", 
+"UserName"     : "mike",
 
 "Comment1"     : "BlueGene/Q Namd Job parameters:",
 "nodes"        : "2",
@@ -16,28 +16,26 @@
 
 
 "Comment2"      : "Job Details Section",
-"JobStreams"    : ["MainJobdir1","MainJobDir2"],
-"JobReplicates" : ["10","5"],
-"BaseDirNames"  : ["Sim1_","Sim2_" ],
-"JobBaseNames"  : ["MyJob1_","MyJob2" ],
-"Runs"          : ["5","3" ],
+"JobStreams"    : ["MainJobdir1"],
+"JobReplicates" : ["10"],
+"BaseDirNames"  : ["Sim1_" ],
+"JobBaseNames"  : ["MyJob1_" ],
+"Runs"          : ["5" ],
 
 "JobScheme"     : "simple",
 "Round"         : 1,
 
-"EquilibrateJobName"      : "equilibration_job_",
 "SbatchEquilibrateScript" : "sbatch_start_script",
 "EquilibrateConfScript"   : "namd_equilibration_script.conf",
- 
-"ProductionJobName"       : "production_job_",
+
 "SbatchProductionScript"  : "sbatch_production_script",
 "ProductionConfScript"    : "namd_production_script.conf",
 
 "custom_script1"     : "custom1.conf",
 "custom_script2"     : "custom2.conf",
 
-"Comment4"           : "Miscelaneous Parameters",
-"JobFailTime"        : 60, 
+"Comment4"           : "Miscellaneous Parameters",
+"JobFailTime"        : 60,
 "DiskSpaceCutOff"    : 95,
 "AutoAnalysis"       : "False"
 
