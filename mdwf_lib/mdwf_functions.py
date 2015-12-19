@@ -205,6 +205,7 @@ def check_pausejob_flag():
     pause = ljdf_t[ "PauseJobFlag" ]
     if pause != 0:
         open( "pausejob", 'a' ).close()
+        update_local_job_details( "JobStatus", "pausejob" )
 
 def check_disk_quota():
     """ function for checking that there is enough diskspace on the 
@@ -283,7 +284,7 @@ def check_run_counter():
     newrun = int( current ) + 1
     update_local_job_details( "LastJobId", jobid )
 
-    if  newrun > total:       # -stop jobs if current run equals totalruns
+    if  newrun >= total:       # -stop jobs if current run equals or greater than totalruns
         update_local_job_details( "JobStatus", "finished" )
         update_local_job_details( "JobMessage", "finished production runs" )
         update_local_job_details( "PauseJobFlag", "pausejob" )
