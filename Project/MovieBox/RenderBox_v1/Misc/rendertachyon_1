@@ -1,0 +1,13 @@
+#!/bin/bash
+cd movie_frames
+
+for i in Neu_mov1.*.dat 
+
+ do 
+# convert "$img" -resize 1280x720 "$img.jpg"
+# povray +W1280 +H720 -I$i -O$i.tga -D +X +A +FT  
+"/usr/local/vmd/1.8.7-gcc/lib/tachyon_LINUXAMD64" -aasamples 12  -res 1024 768 $i -format TARGA -o $i.tga
+
+
+ done
+

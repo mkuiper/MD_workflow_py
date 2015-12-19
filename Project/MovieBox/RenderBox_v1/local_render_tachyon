@@ -1,0 +1,45 @@
+#!/bin/bash
+##
+## local vmd render launching script          April 2011   MikeK
+##
+## This script is designed to run a local version of vmd to render frames 
+## for molecular animations using tachyon. 
+
+
+cd Inbox;
+
+for i in *
+ do
+  if [ -f "$i" ]; then
+   touch -f $i
+## move file to Temp directory:
+
+   mv $i ../Temp
+
+# modify file before processing: 
+## Tachyon Rendering Variables: 
+
+sed 's/^Resolution.*/Resolution 1280 720/' ../Temp/$i >../Temp/temp.dat
+sed 's/^    Samples.*/    Samples 16/' ../Temp/temp.dat >../Temp/temp_file.dat
+
+## render command: 
+
+"/usr/local/lib/vmd/tachyon_LINUXAMD64" ../Temp/temp_file.dat -format TARGA -o ../Frames/$i.tga
+
+#tachyon -aasamples $aas -res $xres $yres ../Temp/$i -format TARGA -o ../Frames/$i.tga
+##  post rendering processing: 
+# convert
+
+##  move plot file to OutBox
+mv ../Temp/$i ../Outbox
+  fi
+
+done
+
+#cleanup
+cd ../
+mv *.e* Errors/
+mv *.o* Output/
+
+
+

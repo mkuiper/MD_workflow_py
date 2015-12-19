@@ -1,0 +1,18 @@
+move_vp_render 1 2 1    movie_frames ren_mov1  200 smooth 200 0;
+move_vp_render 2 2 201  movie_frames ren_mov1  200 smooth 0   200;
+mol showrep    0 0 off;
+move_vp_render 2 2 1    movie_frames ren_mov2  200 smooth 0   200;
+move_vp_render 2 3 201  movie_frames ren_mov2  200 smooth 200 200;
+mol showrep    0 1 off;
+mol showrep    0 2 off;
+move_vp_render 2 3 1    movie_frames ren_mov3  200 smooth 200 200;
+move_vp_render 3 3 201  movie_frames ren_mov3  200 smooth 200 350;
+move_vp_render 3 4 401  movie_frames ren_mov3  120 smooth 350 350;
+mol showrep    0 1 on;
+mol showrep    0 2 on;
+move_vp_render 3 4 1    movie_frames ren_mov4  120 smooth 350 350;
+move_vp_render 4 4 121  movie_frames ren_mov4  200 smooth 350 501;
+move_vp_render 4 5 321  movie_frames ren_mov4  200 smooth 501 501;
+
+
+
