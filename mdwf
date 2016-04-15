@@ -21,6 +21,7 @@ Options: \033[0m
   -b --benchmark    Setup benchmarking runs for job optimization. 
   -s --start        Start all jobs.
   -g --gather       Collect all OutputFiles.
+  -e --extend       Extend or shorten the runs of simulations. 
   --restart         Restart all production jobs. 
   --clear_stops     Clear pausejob and stop flags. 
   --recover         Recover and cleanup stopped jobs. 
@@ -84,6 +85,14 @@ def process(action):
     if action == '--gather':
         print "{}gathering data files: (list under /Analysis) {}".format( c6, c0 ) 
         mdwf.gather_jobs()
+
+    if action == '--extend':
+        print "{}extend the runs: {}".format( c6, c0 ) 
+        try:
+            a = int(input("Enter number of runs extentions: "))
+        except ValueError:
+            print("Not an integer value...")
+        mdwf.extend_jobs(a)
 
     if action == '--recover':
         print "{}recovering and restoring crashed jobs:{}".format( c6, c0 ) 

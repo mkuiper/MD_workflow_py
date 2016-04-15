@@ -138,6 +138,16 @@ def gather_jobs():
         execute_function_in_job_tree(gather_list)
         dcdlist.close()  
 
+def extend_jobs(a):
+    execute_function_in_job_tree(extend_runs,a) 
+    
+def extend_runs(a):
+    ljdf_t  = read_local_job_details( ".", "local_job_details.json" )
+    total   = int( ljdf_t[ 'TotalRuns' ] )
+    # Update the total of runs. 
+    newtotal = int( total ) + a
+    update_local_job_details( "TotalRuns", newtotal )
+    
 
 def sorted_ls(path):
     mtime = lambda f: os.stat(os.path.join(path, f)).st_mtime
