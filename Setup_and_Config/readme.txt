@@ -9,6 +9,8 @@ There are 2 python scripts to do pre-processing and post-processing of the
 data which are specific to the NAMD workflow. These could be modified for any
 program. 
 
-
-
+This directory structure has a number of template files which are copied 
+and modified when the 'populate' flag is used in the top directory ie) 
+./mdwf -p
+This is defined in /mdwf_lib/mdwf_functions.py
 
