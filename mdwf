@@ -111,7 +111,7 @@ def process(action):
         mdwf.erase_all_data()
 
     if action == '--clone':
-        print "{}cloning job_directory:{}".format( c6, c0 ) 
+        print "{}cloning job_directory: (not implimented yet){}".format( c6, c0 ) 
         mdwf.clone()
 
 
