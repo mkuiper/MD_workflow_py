@@ -284,7 +284,7 @@ def check_run_counter():
     newrun = int( current ) + 1
     update_local_job_details( "LastJobId", jobid )
 
-    if  newrun >= total:       # -stop jobs if current run equals or greater than totalruns
+    if  newrun > total:       # -stop jobs if current run equals or greater than totalruns
         update_local_job_details( "JobStatus", "finished" )
         update_local_job_details( "JobMessage", "finished production runs" )
         update_local_job_details( "PauseJobFlag", "pausejob" )
@@ -421,12 +421,11 @@ def check_if_job_running():
     current_jobid     = ljdf_t[ "CurrentJobId" ]
     current_jobstatus = ljdf_t[ "JobStatus" ]
 
+#    
 #    status = running 
 #    status = submitted 
 #    status = processing 
 #    status = cancelled
-
-
 
 ## needs better way to efficient way to check queue here
 ## this method currently just relies on 'local_job_details'
@@ -457,17 +456,28 @@ def monitor_jobs():
                              "local_job_details.json") 
             jdn    = ljdf_t[ "JobDirName" ]
             qs     = ljdf_t[ "QueueStatus" ]
-            js     = ljdf_t[ "JobStatus" ]
-            jm     = ljdf_t[ "JobMessage" ]
+            js     = colour_jobstatus( ljdf_t[ "JobStatus" ] )
+	    jm     = ljdf_t[ "JobMessage" ]
             startT = ljdf_t[ "JobStartTime" ]
             T      = get_job_runtime( startT, js ) 
             cjid = str(ljdf_t[ "CurrentJobId" ])
             prog =  str( ljdf_t[ "CurrentRun" ] ) + "/" + \
                     str( ljdf_t[ "TotalRuns" ] ) 
-            print " {:<15s}{:>7s} {:>8s} {:>10s} {:>8s} {:<20s}"\
+            print " {:<15s}{:>7s} {:>8s} {:>10s} {:>8s} {:<20s} "\
                      .format(jdn[0:14], prog, cjid, js, T, jm) 
 
     print "\n{}done.".format(defaultcolour)
+
+def colour_jobstatus(js):
+    if js == "running":
+        js = darkgreen + js + defaultcolour
+    if js == "submitted":
+        js = OKBLUE + js + defaultcolour
+    if js == "error":
+        js = FAIL + js + defaultcolour
+    if js == "stopped":
+        js = darkblue + js + defaultcolour
+    return js
 
 def md5sum( filename, blocksize=65536 ):
     """function for returning md5 checksum"""
@@ -513,7 +523,7 @@ def initialize_job_directories():
     """ Function to setup and initialize job structure directories 
         as defined in the 'master_config_file'. This function copies 
         the job template from /Setup_and_Config """
-    
+
     cwd=os.getcwd()
     JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams,\
                 nReplicates, nBaseNames = check_job_structure() 
@@ -787,8 +797,13 @@ def benchmark():
 # read job details:        
     mcf = read_master_config_file()
     jd_opt,  jd_opt_pl  = read_namd_job_details(mcf[ "EquilibrateConfScript" ])    
-    print "{} Setting up jobs for benchmarking based on job config files.".format(defaultcolour)
+    print "{} Setting up jobs for benchmarking based on current job config files.".format(defaultcolour)
+
 # create temporary files/ figure out job size. 
+     
+
+
+
 
 # move files to /Setup_and_Config/Benchmarking / create dictionary/ json file.
 
@@ -999,7 +1014,8 @@ def recover_all_jobs():
     print "Typically we expect binary output files like .dcd to be the"
     print "same size using this workflow. If a job has crashed we can "
     print "restore the directory to the last known good point by entering" 
-    print "the name of the last good run. " 
+    print "the name of the first bad file. Files will be restored to this" 
+    print "point. " 
 
 
     execute_function_in_job_tree( recovery_function )
@@ -1037,10 +1053,11 @@ def recovery_function():
 
     if target == "q":
         sys.exit("exiting" )    
+
     if target != "": 
         # find index of target in dirlist. 
         if target in dirlist:
-            index = dirlist.index( target )
+     #       index = dirlist.index( target )
 
             # find index of target in dirlist. 
             index = dirlist.index( target )
@@ -1056,6 +1073,9 @@ def recovery_function():
                 print num, basename, index
         else:
             print target, " not found: "    
+
+
+
 
 
 

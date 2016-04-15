@@ -1,0 +1,29 @@
+#!/bin/bash
+##  sbatch launching script template                Jan 2015  MKuiper
+## -A generic script to launch a series of production namd runs
+## on the Avoca bluegene cluster at vlsci. 
+#--------------------------------------------------------------- 
+#         Make all changes in "master_config_file"             #
+#     -you shouldn't have to change anything in here!          #
+#---------------------------------------------------------------
+#-- Sbatch parameters:------------------------------------------
+#-- the X values will be substituted with a values 
+#-- from the master_config_file when you populate 
+#-- job directories with:  ./mdwf -p 
+
+#SBATCH --nodes=2
+#SBATCH --time=12:0:0
+#SBATCH --account=VR0021
+
+ntpn=8       # number of tasks per node 
+ppn=8       # processors per node    
+     
+module load namd-xl-pami-smp/2.10	# namd module file
+module load python-fe/2.7.3	        # python module file
+
+
+# submit job to the cluster:------------------------------------
+
+ srun  --ntasks-per-node $ntpn  namd2 +ppn $ppn namd_equilibration_script.conf >temp_working_outputfile.out 2> temp_working_errorsfile.err;
+
+#--------------------------------------------------------------------------------

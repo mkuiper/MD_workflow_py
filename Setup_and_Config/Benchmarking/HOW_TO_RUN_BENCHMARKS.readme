@@ -1,0 +1,53 @@
+
+#----------------------------------------------------------------------------
+ How to run NAMD benchmarks. 
+#----------------------------------------------------------------------------
+
+This is a quick guide to run namd benchmarks on Avoca. 
+#----------------------------------------------------------------------------
+
+Benchmarking your jobs on Avoca is very useful in order to get an idea of 
+where the optimal sweetspot of speed and performance is when running large 
+numbers of jobs. 
+
+The BlueGene/Q is different from most computer architectures; not only do 
+you pick the number of nodes to run, but also the numbers of tasks per node 
+(ntpn), and processors per node (ppn). It turns out that ntpn x ppn should 
+equal 64 in most cases. (or 32 if you need more memory per node)   
+
+As it is difficult to estimate what is an optimal configuration is, far
+easier to run a short series of simulations and plot the outcome. From there 
+the user can pick an optimal set, and propogate that through their 
+simulation set.   
+This directory is desiged for that purpose.  
+
+# Step 1. Generating some starting data. 
+
+For the benchmarking runs, we need to generate some rough input data from 
+where all the runs will start from. 
+
+To do this....
+
+
+# Step 2. Run the benchmarking scripts. 
+
+ Review the range of nodes you want to try in the script "run_my_benchmarks.py"
+ For example, if you have small systems, (say <30,000 atoms) you probably 
+ only need to look at the range 1,2,4 nodes. (any more and you may start 
+running slower!!)  Large systems might go to a much higher node count. 
+
+ Then simply run the python script:
+
+ python ./run_my_benchmarks.py 
+
+This may take awhile depending on availability. 
+
+
+
+
+
+
+
+
+
+

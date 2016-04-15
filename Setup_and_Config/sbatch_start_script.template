@@ -27,8 +27,10 @@ module load python-fe/2.7.3	# python module file
 ## pause if preprocessing script is not present. 
 
 if [ -f prejob_processing.py ];
- then python prejob_processing.py $SLURM_JOBID -optimize;
- else echo "No processing script" > pausejob;
+ then 
+      python prejob_processing.py $SLURM_JOBID -optimize;
+ else 
+      echo "No processing script" > pausejob;
 fi
 
 ## prevent job from running if pausejob is present
@@ -40,8 +42,10 @@ if [ -f pausejob ]; then exit; fi
 
 ## python script to cleanup and redirect data-------------------- 
 if [ -f postjob_processing.py ];
- then python postjob_processing.py $SLURM_JOBID -optimize;
- else echo "No processing script" > pausejob;
+ then 
+      python postjob_processing.py $SLURM_JOBID -optimize;
+ else 
+      echo "No processing script" > pausejob;
 fi
 
 ## prevent job from running if pausejob is present
