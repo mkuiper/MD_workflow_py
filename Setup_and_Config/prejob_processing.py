@@ -12,12 +12,6 @@ import mdwf_functions as mdwf
 jobid   = sys.argv[1]     # job id of submitted job.  
 jobtype = sys.argv[2]     # job type, 
 
-# ansi color variables for formatting purposes: 
-c0 = '\033[0m'        # default
-c1 = '\033[31;2m'     # dark red
-c3 = '\033[32;2m'     # dark green
-
-
 def main():
 
 ##  performs checks before launching the job:  

@@ -195,11 +195,10 @@ def pausejob_flag( directive ):
         if os.path.isfile( "pausejob" ): 
             os.remove( "pausejob" )    
     else:
-        ts = time.time()
-        timestamp = "pausejob" + datetime.datetime.fromtimestamp(ts)\
-                    .strftime('%Y_%h_%d_%H:%M')
         update_local_job_details( "PauseJobFlag", "pausejob" )
-        open( "pausejob", 'a' ).close()
+        f = open("pausejob", 'a')
+        f.write(directive)
+        f.close()
 
 def check_pausejob_flag():
     """ A simple check for the pausejob flag in local details file. 
@@ -208,7 +207,9 @@ def check_pausejob_flag():
     ljdf_t  = read_local_job_details( ".", "local_job_details.json" )
     pause = ljdf_t["PauseJobFlag"]
     if pause != 0:
-        open( "pausejob", 'a' ).close()
+        f = open( "pausejob", 'a' )
+        f.write("pauseflag already present")
+        f.close()
         update_local_job_details( "JobStatus", "pausejob" )
 
 def check_disk_quota():
@@ -468,7 +469,7 @@ def monitor_jobs():
             cjid = str(ljdf_t["CurrentJobId"])
             prog =  str( ljdf_t["CurrentRun"] ) + "/" + \
                     str( ljdf_t["TotalRuns"] ) 
-            print(" {:<15s}{:>7s} {:>8s} {:>10s} {:>8s} {:<20s} "\
+            print(" {:<15s} {:<7s}{:>8s}  {:<10s}  {:>8s}  {:<20s} "\
                      .format(jdn[0:14], prog, cjid, js, T, jm)) 
 
     print("\n{}done.".format(DEFAULTCOLOUR))
@@ -926,8 +927,9 @@ def start_jobs( startscript ):
         if "running" in jobstatus:
             print("A job appears to be running here: {} : jobid:{}".format( cwd[-20:], jobid ))
 
-        if jobrun >= 1:
-            print("Seems equilibration job already run here, don't you want to restart instead? (--restart)")
+        else: 
+	    if jobrun >= 1:
+                print("Seems equilibration job already run here, don't you want to restart instead? (--restart)")
 
 def clear_jobs():
     """ function for clearing all pausejob and stop flags """
@@ -956,25 +958,14 @@ def clear_all_jobs():
 def restart_all_production_jobs():
     """ -function to restart_all_production_jobs """
     print("-- restarting production jobs.")
-    print("You are about to restart production jobs.")
-    str = input( "Enter how many new runs to perform: ")
-    runs = int(str)   
-    if runs > 100:
-        confirm = input( "Mmm, that sounds like a lot of runs, are you sure? y/n ")
-        if confirm in ( "y", "Y", "yes", "Yes"): 
-            print("Ok, just checking.")
-        else:
-            print("ok then, aborting restart.")
-            return   
-
     mcf = read_master_config_file()
 
 ## check_job_status
 
     restartscript = mcf["SbatchProductionScript"]
-    execute_function_in_job_tree( restart_jobs, restartscript, runs )
+    execute_function_in_job_tree(restart_jobs, restartscript)
     
-def restart_jobs( restartscript, runs ):
+def restart_jobs(restartscript):
     """ function to restart production jobs """
 
     cwd = os.getcwd()
@@ -1055,7 +1046,7 @@ def recovery_function():
             else:
                 print("{}%-24s %12s -equilibration file {} ".format( BLUE, DEFAULTCOLOUR )  % ( i, size )) 
     print("Enter the name of the first bad file or") 
-    target = input(" ('q' to quit or enter to continue scanning): " ) 
+    target = raw_input(" ('q' to quit or enter to continue scanning): " ) 
 
     if target == "q":
         sys.exit("exiting" )    
@@ -1071,7 +1062,7 @@ def recovery_function():
             for i in range( index, int(len(dirlist))):         
                 print(dirlist[i])
             line = " {}confirm:{} y/n ".format( BLUE, DEFAULTCOLOUR ) 
-            confirm = input( line ) 
+            confirm = raw_input(line) 
             if confirm in { 'Y', 'y' }: 
                 # slice job number from dcd job name:      
                 num = int( target[-zf:-4] )
@@ -1085,7 +1076,20 @@ def recovery_function():
 def stop_jobs():
     """ -function to stop all jobs, -either immediately or gently."""
     print("-- stopping all jobs")
-    execute_function_in_job_tree( stop_all_jobs_immediately )
+    execute_function_in_job_tree(stop_all_jobs_immediately)
+
+def pause_jobs():
+    """ -function to stop all jobs, -either immediately or gently."""
+    print("-- pausing all jobs")
+    execute_function_in_job_tree(pause_all_jobs)
+
+def pause_all_jobs():
+    jobstatus, jobid, jobrun  = check_if_job_running()
+    if jobstatus in { "stopped", "cancelled", "processing" }:
+        update_local_job_details( "JobMessage", "no job running" )
+    else:
+        pausejob_flag( "Manual pausing of job." )
+        update_local_job_details( "JobMessage", "job paused" )
 
 def stop_all_jobs_immediately():
     """ function to stop all jobs immediately """

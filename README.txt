@@ -166,13 +166,18 @@ Once you have set up your job structures and populated them with files,
 you are ready to launch the jobs. You can do this with: 
 ./mdwf -s 
 
-This should submit the jobs in each directory one by one. 
+This submits the jobs in each directory one by one. 
 
 You can monitor the status of each job with the command:
 ./mdwf -m 
 
-Should you need to stop all the jobs you can do so with: 
+Should you need to stop all the jobs immediately you can do so with: 
 ./mdwf --stop_jobs
+
+If you prefer to pause the jobs, allowing current runs to finish, use
+./mdwf --pause
+This writes a 'pausejob' file in each directory which causes the runs to stop.  
+
 
 After all your jobs are finished, you will be interested to concatenate 
 and view your MD data with VMD.  This can be done with: 
