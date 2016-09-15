@@ -993,16 +993,8 @@ def restart_jobs(restartscript):
             update_local_job_details( "JobMessage", "production job restarted" )
             return 
 
-        if current == total: 
-            newtotal   = total + int( runs ) 
-            newcurrent = current + 1  
-            pausejob_flag( "remove" )
-            update_local_job_details( "CurrentRun", newcurrent )
-            update_local_job_details( "TotalRuns",  newtotal )
-           
-            subprocess.Popen(['sbatch', restartscript])
-            update_local_job_details( "JobStatus",  "submitted" )
-            update_local_job_details( "JobMessage", "production job restarted" )
+        if current >= total: 
+            print("Current run number equal or greater than total runs. Use './mdwf -e' to extend runs.")
             return 
 
 def recover_all_jobs():
@@ -1101,6 +1093,9 @@ def recovery_function():
                         print("copy /RestatFiles/{}{} to current_MD_run_files{}".format(basename, k, k)) 
                         shutil.copyfile(src, dst)           
                       
+                    print("-updating run number:") 
+                    update_local_job_details( "CurrentRun", num+1 )
+   
         else:
             print(target, " not found: ")    
 
