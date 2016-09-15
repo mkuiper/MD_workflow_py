@@ -22,7 +22,6 @@
 
 "CurrentRun"     : 0, 
 "TotalRuns"      : 0,
-"Runs"           : 0,
 
 "Temperature"    : "unassigned",
 "Pressure"       : "unassigned",
