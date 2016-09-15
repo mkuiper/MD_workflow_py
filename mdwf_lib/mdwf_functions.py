@@ -1025,8 +1025,6 @@ def recovery_function():
     # the following constructs a string to find the "equilibration" dcd file
     # (which is numbered 0, but with zfill padding) 
 
-
-
     total = ljdf["TotalRuns"]
     zf = len( str(total) ) + 1 + 4
     zf_bait = ".dcd".zfill( zf )
@@ -1045,8 +1043,8 @@ def recovery_function():
                 print("%-24s %12s " % ( i, size )) 
             else:
                 print("{}%-24s %12s -equilibration file {} ".format( BLUE, DEFAULTCOLOUR )  % ( i, size )) 
-    print("Enter the name of the first bad file or") 
-    target = raw_input(" ('q' to quit or enter to continue scanning): " ) 
+    print("Enter the name of the last {}good file{} or press 'enter' to continue scanning. ('q' to quit)".format(GREEN, DEFAULTCOLOUR )) 
+    target = raw_input() 
 
     if target == "q":
         sys.exit("exiting" )    
@@ -1054,20 +1052,55 @@ def recovery_function():
     if target != "": 
         # find index of target in dirlist. 
         if target in dirlist:
-     #       index = dirlist.index( target )
+     #      index = dirlist.index( target )
 
             # find index of target in dirlist. 
-            index = dirlist.index( target )
-            print("\n{}Files to delete:{}".format( BLUE, DEFAULTCOLOUR )) 
+            index = dirlist.index(target)+1
+            print("\n{}Files to delete:{}".format(BLUE, DEFAULTCOLOUR )) 
+            targetlist=[]
             for i in range( index, int(len(dirlist))):         
-                print(dirlist[i])
-            line = " {}confirm:{} y/n ".format( BLUE, DEFAULTCOLOUR ) 
+                 print(dirlist[i])
+                 targetlist.append(dirlist[i])
+
+            line = " {}Confirm:{} y/n ".format(BLUE, DEFAULTCOLOUR ) 
             confirm = raw_input(line) 
             if confirm in { 'Y', 'y' }: 
-                # slice job number from dcd job name:      
-                num = int( target[-zf:-4] )
-                basename = target[ :-4 ]
-                print(num, basename, index)
+		line = " {}Really? -this can't be undone! Confirm:{} y/n ".format(BLUE, DEFAULTCOLOUR )
+                confirm = raw_input(line)
+                if confirm in { 'Y', 'y' }:
+                    print("-deleting redundant output and restart files:")    
+                    for j in targetlist:
+                        targetfile=os.getcwd()+"/OutputFiles/"+j
+                        try:
+			    os.remove(targetfile)                     
+                        except OSError:
+                            pass
+                        #slice base name to remove other files: 
+                        basename = j[ :-4 ]
+                        targetfile=os.getcwd()+"/OutputText/" + basename + ".txt"
+
+                        try:
+                            os.remove(targetfile)    
+                        except OSError:
+                            pass
+
+                        for k in ['.vel', '.coor', '.xsc', '.xst']:
+                            targetfile=os.getcwd()+"/RestartFiles/" + basename + k
+                            try:
+                                os.remove(targetfile)    
+                            except OSError:
+                                pass
+
+                    # slice job number and basename from dcd job name:      
+                    num = int( target[-zf:-4] )
+                    basename = target[ :-4 ]
+                    print("-updating restart files:")    
+                    for k in ['.vel', '.coor', '.xsc', '.xst']:
+                        src=os.getcwd()+"/RestartFiles/" + basename + k
+                        dst=os.getcwd()+"/current_MD_run_files" + k 
+                        print("copy /RestatFiles/{}{} to current_MD_run_files{}".format(basename, k, k)) 
+                        shutil.copyfile(src, dst)           
+                      
         else:
             print(target, " not found: ")    
 
