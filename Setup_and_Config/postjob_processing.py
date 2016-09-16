@@ -22,11 +22,12 @@ def main():
     mdwf.check_job_runtime()       
 
     timestamp = "Finished: " + time.strftime("%d%b:%H:%M", time.localtime())
-    mdwf.update_local_job_details( "JobMessage",    timestamp )
+    mdwf.update_local_job_details("JobMessage", timestamp )
+    mdwf.update_local_job_details("JobStatus", stopped )
 
-    mdwf.redirect_namd_output( filename, jobtype )  # -redirect output
-    mdwf.check_run_counter()                        # -check job counter
-    mdwf.post_jobrun_cleanup()                      # -cleanup files 
+    mdwf.redirect_namd_output(filename, jobtype)  # -redirect output
+    mdwf.check_run_counter()                      # -check job counter
+    mdwf.post_jobrun_cleanup()                    # -cleanup files 
 
 if __name__ == "__main__":
     main()

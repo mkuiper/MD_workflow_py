@@ -17,10 +17,10 @@ import glob
 import re
 
 # ansi color variables for formatting purposes: 
-DEFAULTCOLOUR = '\033[0m'        
-RED           = '\033[34;3m'     
-GREEN         = '\033[32;2m'     
-BLUE          = '\033[31;2m'     
+DEFAULT = '\033[0m'        
+RED     = '\033[31m'     
+GREEN   = '\033[32m'     
+BLUE    = '\033[35m'     
 
 def read_master_config_file():  
     """ Reads the json file 'master_config_file' and
@@ -33,9 +33,9 @@ def read_master_config_file():
         return mcf  
     else:
         print("{}Can't see 'master_config_file' {} "\
-                .format(RED, DEFAULTCOLOUR)) 
+                .format(RED, DEFAULT)) 
         print("{}Have you populated the directory? (./mdwf -p){}"\
-                .format(RED, DEFAULTCOLOUR)) 
+                .format(RED, DEFAULT)) 
    
 
 def read_local_job_details(path="Setup_and_Config",
@@ -109,7 +109,7 @@ def read_namd_job_details(targetfile):
                     jdpl.append(nl[1])
         f.close()
     else: 
-        print("{} {} file not found.{}".format(RED,targetfile,DEFAULTCOLOUR))
+        print("{} {} file not found.{}".format(RED,targetfile,DEFAULT))
     return jdd, jdpl
 
 def gather_jobs():
@@ -181,7 +181,7 @@ def get_atoms(psffile):
         f.close()    
     else:
         print("{}Can't find {} in /InputFiles directory {}"\
-               .format(RED,psffile,DEFAULTCOLOUR))
+               .format(RED,psffile,DEFAULT))
     return atoms
 
 def pausejob_flag( directive ):
@@ -282,12 +282,16 @@ def check_run_counter():
         It also increment job run counters as necessary """
 
     ljdf_t  = read_local_job_details( ".", "local_job_details.json" )
-    current = ljdf_t[ 'CurrentRun' ] 
-    total   = int( ljdf_t[ 'TotalRuns' ] ) 
-    jobid   = ljdf_t[ 'CurrentJobId' ] 
+    current = ljdf_t['CurrentRun'] 
+    total   = int( ljdf_t['TotalRuns'] ) 
+    jobid   = ljdf_t['CurrentJobId' ] 
+    mesg    = ljdt_t['JobMessage']
 
-    newrun = int( current ) + 1
+    newrun = int(current) + 1
     update_local_job_details( "LastJobId", jobid )
+
+#   if  "paused" in mesg:
+#       update_local_job_details( "JobStatus", "paused" )
 
     if  newrun > total:       # -stop jobs if current run equals or greater than totalruns
         update_local_job_details( "JobStatus", "finished" )
@@ -455,7 +459,7 @@ def monitor_jobs():
     for i in range(0,nJobStreams): 
         JobDir = JobStreams[i]
         jobdirlist = get_current_dir_list(JobDir) 
-        print("%-24s " %( GREEN + JobDir + ":"+ DEFAULTCOLOUR ))
+        print("%-24s " %( GREEN + JobDir + ":"+ DEFAULT ))
         for j in jobdirlist:  
 	    dir_path = JobDir + "/" + j  
             ljdf_t = read_local_job_details(dir_path,\
@@ -472,17 +476,17 @@ def monitor_jobs():
             print(" {:<15s} {:<7s}{:>8s}  {:<10s}  {:>8s}  {:<20s} "\
                      .format(jdn[0:14], prog, cjid, js, T, jm)) 
 
-    print("\n{}done.".format(DEFAULTCOLOUR))
+    print("\n{}done.".format(DEFAULT))
 
 def colour_jobstatus(js):
     if js == "running":
-        js = GREEN + js + DEFAULTCOLOUR
+        js = GREEN + js + DEFAULT
     if js == "submitted":
-        js = BLUE + js + DEFAULTCOLOUR
+        js = BLUE + js + DEFAULT
     if js == "error":
-        js = RED + js + DEFAULTCOLOUR
+        js = RED + js + DEFAULT
     if js == "stopped":
-        js = BLUE + js + DEFAULTCOLOUR
+        js = BLUE + js + DEFAULT
     return js
 
 def md5sum( filename, blocksize=65536 ):
@@ -595,20 +599,20 @@ def populate_job_directories():
 
 ## list files to transfer:
     print("{}Job Files to transfer from /Setup_and_Config:{}"\
-           .format( GREEN, DEFAULTCOLOUR )) 
-    print("{}  {} \n  {} ".format( BLUE, startscript,\
-            productionscript ))
-    print("  local_job_details.json ")
+           .format(GREEN, DEFAULT)) 
+    print("{} {}\n {}".format(BLUE, startscript,\
+            productionscript))
+    print(" local_job_details.json ")
     for pyfile in glob.glob(r'Setup_and_Config/*.py' ):
-        print("  " + pyfile[17:])    
+        print(" " + pyfile[17:])    
     for conffile in glob.glob(r'Setup_and_Config/*.conf' ):
-        print("  " + conffile[17:])  
+        print(" " + conffile[17:])  
 
 ## descend through job structure and populate job directories:
     for i in range(0, nJobStreams):
         TargetJobDir = cwd + "/" + JobStreams[i]
         print("{}\nPopulating JobStream: {} {}".format( GREEN,
-                                      TargetJobDir, DEFAULTCOLOUR)) 
+                                      TargetJobDir, DEFAULT)) 
 
 ## check to see if there actually are any job directories to fill:
         if not os.path.exists( TargetJobDir ):
@@ -625,11 +629,10 @@ def populate_job_directories():
             sys.exit(error)
 
 ## modify replicate elements in staging dictionary file:
-        ljdf_t[ 'JOB_STREAM_DIR' ] = JobStreams[i]
-        ljdf_t[ 'CurrentRun' ]     = 0
-        ljdf_t[ 'TotalRuns' ]      = int( Runs[i] )
-######  ljdf_t[ 'Runs' ]           = int( Runs[i] ) 
-        ljdf_t[ 'JobBaseName' ]    = JobBaseNames[i]
+        ljdf_t['JOB_STREAM_DIR'] = JobStreams[i]
+        ljdf_t['CurrentRun']     = 0
+        ljdf_t['TotalRuns']      = int( Runs[i] )
+        ljdf_t['JobBaseName']    = JobBaseNames[i]
 
         nnodes   = "#SBATCH --nodes="   + mcf["nodes"]
         ntime    = "#SBATCH --time="    + mcf["Walltime"]
@@ -646,39 +649,38 @@ def populate_job_directories():
 ## replace lines in sbatch files:
         for f in ["sb_start_temp", "sb_prod_temp"]:
             for line in fileinput.FileInput( f, inplace=True ):
-                line = line.replace( '#SBATCH --nodes=X',   nnodes   )   
-                line = line.replace( '#SBATCH --time=X',    ntime    )   
-                line = line.replace( '#SBATCH --account=X', naccount )   
-                line = line.replace( 'ntpn=X',              nntpn    )   
-                line = line.replace( 'ppn=X',               nppn     )   
-                line = line.replace( 'module load X',       nmodule  )   
-                line = line.replace( 'optimize_script=X',   nopt     )   
-                line = line.replace( 'production_script=X', nprod    )   
+                line = line.replace('#SBATCH --nodes=X',   nnodes  )   
+                line = line.replace('#SBATCH --time=X',    ntime   )   
+                line = line.replace('#SBATCH --account=X', naccount)   
+                line = line.replace('ntpn=X',              nntpn   )   
+                line = line.replace('ppn=X',               nppn    )   
+                line = line.replace('module load X',       nmodule )   
+                line = line.replace('optimize_script=X',   nopt    )   
+                line = line.replace('production_script=X', nprod   )   
                 sys.stdout.write(line)   
 
 ## update local job details file:
         jobdirlist = get_current_dir_list(JobStreams[i])
         for j in jobdirlist:
-            print("{} -populating: {}{}".format(BLUE, j, DEFAULTCOLOUR ))
-            ljdf_t[ 'JobDirName' ] = j
+
+            print("{} -populating: {}{}".format(BLUE, j, DEFAULT))
+            ljdf_t['JobDirName'] = j
             ljdfile = JobStreams[i] + "/" + j + "/local_job_details.json"
          
-            if not os.path.isfile( ljdfile ):
+            if not os.path.isfile(ljdfile):
                 with open(ljdfile, 'w') as outfile:
                     json.dump(ljdf_t, outfile, indent=2)
                 outfile.close()
-                print("")
             else:
                 print(" skipping local_details_file: already exists ")
-
 
 ## copy across python scripts from /Setup_and_Config:
             jobpath  = JobStreams[i] + "/" + j + "/"
             sbs_path = jobpath       + "/" + startscript
             sbp_path = jobpath       + "/" + productionscript
 
-            shutil.copy( 'sb_start_temp', sbs_path )
-            shutil.copy( 'sb_prod_temp' , sbp_path )
+            shutil.copy('sb_start_temp', sbs_path)
+            shutil.copy('sb_prod_temp' , sbp_path)
 
             for pyfile in glob.glob(r'Setup_and_Config/*.py' ):
                 shutil.copy2( pyfile, jobpath )
@@ -701,15 +703,15 @@ def check_job():
 
 #   # checking if files in configuration exist where they are supposed to be. 
     print("{}--------------------------------------------------------------------------------".format(BLUE))
-    print("{}Checking configuration input files:{}".format(BLUE,DEFAULTCOLOUR))
+    print("{}Checking configuration input files:{}".format(BLUE,DEFAULT))
     print("{}--------------------------------------------------------------------------------".format( BLUE))
-    print("{}{}:{}".format(BLUE,mcf["EquilibrateConfScript"],DEFAULTCOLOUR))
+    print("{}{}:{}".format(BLUE,mcf["EquilibrateConfScript"],DEFAULT))
     check_file_exists(jd_opt["psffilepath"])
     check_file_exists(jd_opt["pdbfilepath"])
     for i in jd_opt_pl:
         check_file_exists(i)
 
-    print("{}{}:{}".format(BLUE,mcf["ProductionConfScript"],DEFAULTCOLOUR))
+    print("{}{}:{}".format(BLUE,mcf["ProductionConfScript"],DEFAULT))
     check_file_exists(jd_prod["psffilepath"])
     check_file_exists(jd_prod["pdbfilepath"])
     for i in jd_prod_pl:
@@ -718,15 +720,15 @@ def check_job():
     sr = 0             # Initalise no. of job repliates
     run = 0            # Initalise no. of runs in each replicate
     print("{}--------------------------------------------------------------------------------".format(BLUE))
-    print("{}Job check summary: ".format(BLUE,DEFAULTCOLOUR))
+    print("{}Job check summary: ".format(BLUE,DEFAULT))
     print("{}--------------------------------------------------------------------------------".format(BLUE))
-    print("{} Main Job Directory:        {}{}".format(RED, DEFAULTCOLOUR,          mcf["JobStreams"]))
-    print("{} Simulation basename:       {}{}".format(RED, DEFAULTCOLOUR,          mcf["BaseDirNames"]))
-    print("{} Sbatch start template:     {}{}.template".format(RED, DEFAULTCOLOUR, mcf["SbatchEquilibrateScript"]))
-    print("{} Sbatch prouction template: {}{}.template".format(RED, DEFAULTCOLOUR, mcf["SbatchProductionScript"]))
-    print("{} Optimization script:       {}{}".format(RED, DEFAULTCOLOUR,          mcf["EquilibrateConfScript"]))
-    print("{} Production script:         {}{}".format(RED, DEFAULTCOLOUR,          mcf["ProductionConfScript"]))
-    print("{} Namd modulefile:           {}{}".format(RED, DEFAULTCOLOUR,          mcf["ModuleFile"]))
+    print("{} Main Job Directory:        {}{}".format(RED, DEFAULT,          mcf["JobStreams"]))
+    print("{} Simulation basename:       {}{}".format(RED, DEFAULT,          mcf["BaseDirNames"]))
+    print("{} Sbatch start template:     {}{}.template".format(RED, DEFAULT, mcf["SbatchEquilibrateScript"]))
+    print("{} Sbatch prouction template: {}{}.template".format(RED, DEFAULT, mcf["SbatchProductionScript"]))
+    print("{} Optimization script:       {}{}".format(RED, DEFAULT,          mcf["EquilibrateConfScript"]))
+    print("{} Production script:         {}{}".format(RED, DEFAULT,          mcf["ProductionConfScript"]))
+    print("{} Namd modulefile:           {}{}".format(RED, DEFAULT,          mcf["ModuleFile"]))
 
     Replicates   = mcf["JobReplicates"]
     Runs         = mcf["Runs"]
@@ -749,47 +751,47 @@ def check_job():
     tst = (int(sr)*int(run)*int(jd_prod["timestep"])*int(spr))/1000000.0  # total simulated time
 
     print("{}--------------------------------------------------------------------------------".format(BLUE))
-    print("{}Estimation of data to be generated from the production run of this simulation:{}".format(BLUE, DEFAULTCOLOUR))
+    print("{}Estimation of data to be generated from the production run of this simulation:{}".format(BLUE, DEFAULT))
     print("{}--------------------------------------------------------------------------------".format(BLUE))
     print("{} Simulation directories:   {}%-8s      {}Runs per directory:   {}%-8s"\
-              .format(RED, DEFAULTCOLOUR, RED, DEFAULTCOLOUR) % (sr, run))
+              .format(RED, DEFAULT, RED, DEFAULT) % (sr, run))
     print("{} Steps per run:            {}%-8s      {}Dcdfreq in run:       {}%-8s"\
-              .format(RED, DEFAULTCOLOUR, RED, DEFAULTCOLOUR) % (spr, dcd))
+              .format(RED, DEFAULT, RED, DEFAULT) % (spr, dcd))
     print("{} Dcd frame size(MB)        {}%-8.3f      {}Total dcd frames:     {}%-8s"\
-              .format(RED, DEFAULTCOLOUR, RED, DEFAULTCOLOUR) % (dfs, tdf))
+              .format(RED, DEFAULT, RED, DEFAULT) % (dfs, tdf))
     print(" {} Total simulated time:{}  %12.2f nanoseconds"\
-              .format(GREEN, DEFAULTCOLOUR) %(tst))
+              .format(GREEN, DEFAULT) %(tst))
 
     if not (tpd==0):
         print(" {} Total production data:{} %12.2f GB"\
-                     .format(GREEN, DEFAULTCOLOUR) %(tpd)) 
+                     .format(GREEN, DEFAULT) %(tpd)) 
     else:
         print(" {}   Total production data:{} %12.2f {}GB - error in calculating \
-                frame size. No psf file?".format(RED, DEFAULTCOLOUR, RED) %(tpd)) 
+                frame size. No psf file?".format(RED, DEFAULT, RED) %(tpd)) 
     print("{}------------------------------------------------------------------------------".format(BLUE))
-    print("{}Node configuration:{}".format(BLUE, DEFAULTCOLOUR))
+    print("{}Node configuration:{}".format(BLUE, DEFAULT))
     print("{}------------------------------------------------------------------------------".format(BLUE))
-    print("{}Sbatch Scripts:     {} %s , %s  ".format(RED, DEFAULTCOLOUR) % \
+    print("{}Sbatch Scripts:     {} %s , %s  ".format(RED, DEFAULT) % \
            (mcf["SbatchEquilibrateScript"], mcf["SbatchProductionScript"]))      
-    print("{}nodes:              {} %-12s    ".format(RED, DEFAULTCOLOUR) % (mcf["nodes"]))
-    print("{}walltime:           {} %-12s    ".format(RED, DEFAULTCOLOUR) % (mcf["Walltime"]))
-    print("{}no. tasks per node: {} %-12s    ".format(RED, DEFAULTCOLOUR) % (mcf["ntpn"])) 
-    print("{}processes per node: {} %-12s    ".format(RED, DEFAULTCOLOUR) % (mcf["ppn"]))
+    print("{}nodes:              {} %-12s    ".format(RED, DEFAULT) % (mcf["nodes"]))
+    print("{}walltime:           {} %-12s    ".format(RED, DEFAULT) % (mcf["Walltime"]))
+    print("{}no. tasks per node: {} %-12s    ".format(RED, DEFAULT) % (mcf["ntpn"])) 
+    print("{}processes per node: {} %-12s    ".format(RED, DEFAULT) % (mcf["ppn"]))
     if not mcf["Account"] == "VR0000":
-        print("{}account:            {} %-12s    ".format(RED, DEFAULTCOLOUR) % (mcf["Account"]))
+        print("{}account:            {} %-12s    ".format(RED, DEFAULT) % (mcf["Account"]))
     else:
         print("{}account:               %-12s  -have you set your account?{} "\
-          .format(RED, DEFAULTCOLOUR) % (mcf["Account"]))
+          .format(RED, DEFAULT) % (mcf["Account"]))
 
 
 def check_file_exists(target):
-    mesg1 = "{} found {} -ok!{}".format(DEFAULTCOLOUR, GREEN, DEFAULTCOLOUR)
-    mesg2 = "{} found {} -ok!{} -example file?".format(DEFAULTCOLOUR, GREEN, DEFAULTCOLOUR)
-    mesg3 = "{} not found.{} -Check config file.{}".format(DEFAULTCOLOUR, RED, DEFAULTCOLOUR) 
+    mesg1 = "{} found {} -ok!{}".format(DEFAULT, GREEN, DEFAULT)
+    mesg2 = "{} found {} -ok!{} -example file?".format(DEFAULT, GREEN, DEFAULT)
+    mesg3 = "{} not found.{} -Check config file.{}".format(DEFAULT, RED, DEFAULT) 
 
     ntarget = target[6:]        # strip off "../../"
     if not "../../" in target[0:6]:
-        print("{}unexpected path structure to input files:{}".format(RED, DEFAULTCOLOUR))
+        print("{}unexpected path structure to input files:{}".format(RED, DEFAULT))
 
     if os.path.exists(ntarget):
         if "example" in target:
@@ -804,7 +806,7 @@ def benchmark():
 # read job details:        
     mcf = read_master_config_file()
     jd_opt,  jd_opt_pl  = read_namd_job_details(mcf["EquilibrateConfScript"])    
-    print("{} Setting up jobs for benchmarking based on current job config files.".format(DEFAULTCOLOUR))
+    print("{} Setting up jobs for benchmarking based on current job config files.".format(DEFAULT))
 
 # create temporary files/ figure out job size. 
      
@@ -923,13 +925,12 @@ def start_jobs( startscript ):
 
     else:
         if jobstatus == "cancelled":
-            print("Appears this job was cancelled. Clear flags before restart. {}".format( cwd[-20:], jobid ))   
+            print("{}:jobid{} Appears this job was cancelled. Clear pauseflags before restart. (./mdwf --clear)".format(cwd[-20:], jobid ))   
         if "running" in jobstatus:
-            print("A job appears to be running here: {} : jobid:{}".format( cwd[-20:], jobid ))
-
+            print("{}:jobid: {} --A job appears to be already running here.".format(cwd[-20:], jobid))
         else: 
 	    if jobrun >= 1:
-                print("Seems equilibration job already run here, don't you want to restart instead? (--restart)")
+                print("{}{} Seems equilibration job already run here, don't you want to restart instead? (./mdwf --restart)".format(cwd[-20:], jobid))
 
 def clear_jobs():
     """ function for clearing all pausejob and stop flags """
@@ -949,7 +950,7 @@ def clear_all_jobs():
          ## remove explicit flag file:    
         if  os.path.isfile( "pausejob" ):
             os.remove( "pausejob" )
-        print("{} cleared stop flags in: {} {}".format( GREEN, cwd, DEFAULTCOLOUR ))
+        print("{} cleared stop flags in: {} {}".format( GREEN, cwd, DEFAULT ))
 
     else:
         print("A job appears to be running here:..{} : jobstatus:{}".format( cwd[-20:], jobid ))
@@ -971,30 +972,32 @@ def restart_jobs(restartscript):
     cwd = os.getcwd()
     jobstatus, jobid, jobrun = check_if_job_running()
     ljdf_t = read_local_job_details( ".", "local_job_details.json" )
-    current = ljdf_t["CurrentRun"]
-    jobid   = ljdf_t["CurrentJobId"]
-    total   = ljdf_t["TotalRuns"] 
-    message = ljdf_t["JobMessage"] 
+    current   = ljdf_t["CurrentRun"]
+    jobid     = ljdf_t["CurrentJobId"]
+    total     = ljdf_t["TotalRuns"] 
+    message   = ljdf_t["JobMessage"] 
+    pauseflag = ljdf_t["PauseJobFlag"]
  
     time.sleep( 0.1 )
 
-    if jobstatus in { "running", "submittied" }:
-        print("A job appears to be submitted or running here:..{} : jobid:{}".format( cwd[-20:], jobid ))
+    if jobstatus in {"running", "submittied"}:
+        print("{}{}:{}{}  A job appears to be submitted or running here alread.".format(RED, cwd[-20:], jobid, DEFAULT ))
         return
-    if  "cancelled" in jobstatus:
-        print("Job was abruptly cancelled. Clear pause flags first. (--clear) {}".format( cwd[-20:]))
+
+    if  jobstatus in {"cancelled", "stopped"} or pauseflag=="pausejob":
+        print("{}{}:{} Job was abruptly cancelled or stopped. Clear pauseflags first. (./mdwf --clear)".format(RED, cwd[-20:], DEFAULT))
         return
-    if jobstatus in { "finished", "ready" }:
-        
+
+    if jobstatus in {"finished", "ready"}:
         if "cleared" in message:           # assume restarting from cancelled job.   
-            pausejob_flag( "remove" )      # -so we don't increment CurrentRun number
+            pausejob_flag("remove")      # -so we don't increment CurrentRun number
             subprocess.Popen(['sbatch', restartscript])
-            update_local_job_details( "JobStatus",  "submitted" )
-            update_local_job_details( "JobMessage", "production job restarted" )
+            update_local_job_details("JobStatus",  "submitted")
+            update_local_job_details("JobMessage", "production job restarted")
             return 
 
         if current >= total: 
-            print("Current run number equal or greater than total runs. Use './mdwf -e' to extend runs.")
+            print("{}{}:{} Current run number equal or greater than total runs. Use './mdwf -e' to extend runs.".format(RED, cwd[-20:],DEFAULT))
             return 
 
 def recover_all_jobs():
@@ -1023,7 +1026,7 @@ def recovery_function():
 
     dirlist = get_current_dir_list( "OutputFiles" )
     line = ljdf["JOB_STREAM_DIR"] + "/" + ljdf["JobDirName"] + "/" +  "OutputFiles:"
-    print("\n{}{}{}".format( GREEN, line, DEFAULTCOLOUR ))
+    print("\n{}{}{}".format( GREEN, line, DEFAULT ))
 
     #### while 
 
@@ -1034,8 +1037,8 @@ def recovery_function():
             if not zf_bait in i:
                 print("%-24s %12s " % ( i, size )) 
             else:
-                print("{}%-24s %12s -equilibration file {} ".format( BLUE, DEFAULTCOLOUR )  % ( i, size )) 
-    print("Enter the name of the last {}good file{} or press 'enter' to continue scanning. ('q' to quit)".format(GREEN, DEFAULTCOLOUR )) 
+                print("{}%-24s %12s -equilibration file {} ".format( BLUE, DEFAULT )  % ( i, size )) 
+    print("Enter the name of the last {}good file{} or press 'enter' to continue scanning. ('q' to quit)".format(GREEN, DEFAULT )) 
     target = raw_input() 
 
     if target == "q":
@@ -1048,16 +1051,16 @@ def recovery_function():
 
             # find index of target in dirlist. 
             index = dirlist.index(target)+1
-            print("\n{}Files to delete:{}".format(BLUE, DEFAULTCOLOUR )) 
+            print("\n{}Files to delete:{}".format(BLUE, DEFAULT )) 
             targetlist=[]
             for i in range( index, int(len(dirlist))):         
                  print(dirlist[i])
                  targetlist.append(dirlist[i])
 
-            line = " {}Confirm:{} y/n ".format(BLUE, DEFAULTCOLOUR ) 
+            line = " {}Confirm:{} y/n ".format(BLUE, DEFAULT ) 
             confirm = raw_input(line) 
             if confirm in { 'Y', 'y' }: 
-		line = " {}Really? -this can't be undone! Confirm:{} y/n ".format(BLUE, DEFAULTCOLOUR )
+		line = " {}Really? -this can't be undone! Confirm:{} y/n ".format(BLUE, DEFAULT )
                 confirm = raw_input(line)
                 if confirm in { 'Y', 'y' }:
                     print("-deleting redundant output and restart files:")    
@@ -1113,11 +1116,11 @@ def pause_jobs():
 
 def pause_all_jobs():
     jobstatus, jobid, jobrun  = check_if_job_running()
-    if jobstatus in { "stopped", "cancelled", "processing" }:
-        update_local_job_details( "JobMessage", "no job running" )
+    if jobstatus in {"stopped", "cancelled", "processing"}:
+        update_local_job_details("JobMessage", "no job running")
     else:
-        pausejob_flag( "Manual pausing of job." )
-        update_local_job_details( "JobMessage", "job paused" )
+        pausejob_flag("Manual pausing of job.")
+        update_local_job_details("JobMessage", "-pausejob request sent")
 
 def stop_all_jobs_immediately():
     """ function to stop all jobs immediately """
@@ -1150,13 +1153,13 @@ def erase_all_data():
     cwd = os.getcwd()
     print("\nWe are about to erase all data in this directory, which can be useful") 
     print("for making a clean start, but disasterous if this is the wrong folder!")
-    print("{}Proceed with caution!{}".format(RED, DEFAULTCOLOUR))
+    print("{}Proceed with caution!{}".format(RED, DEFAULT))
     print("This operation will delete all data in the folders:\n")
-    print("/{}                              ".format(JobStreams,DEFAULTCOLOUR)) 
+    print("/{}                              ".format(JobStreams,DEFAULT)) 
     print("/JobLog/                         - Job logs.") 
     print("/Setup_and_Config/Benchmarking/  - Benchmarking data.") 
 
-    strg = raw_input("\n Press enter to quit or type: {}'erase all my data' {}: ".format(GREEN, DEFAULTCOLOUR))
+    strg = raw_input("\n Press enter to quit or type: {}'erase all my data' {}: ".format(GREEN, DEFAULT))
     print (strg) 
  
     if strg in ['erase all my data']: 
