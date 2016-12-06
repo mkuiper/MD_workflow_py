@@ -5,10 +5,10 @@
 "UserName"     : "mike",
 
 "Comment1"     : "BlueGene/Q Namd Job parameters:",
-"nodes"        : "2",
+"nodes"        : "1",
 "ntpn"         : "8",
 "ppn"          : "8",
-"Walltime"     : "24:0:0",
+"Walltime"     : "2:0:0",
 
 "ModuleFile"   :"namd-xl-pami-smp/2.10",
 "PsfFileName"  : "ChangeMe.psf",
@@ -35,7 +35,7 @@
 "custom_script2"     : "custom2.conf",
 
 "Comment4"           : "Miscellaneous Parameters",
-"JobFailTime"        : 300,
+"JobFailTime"        : 60,
 "DiskSpaceCutOff"    : 95,
 "AutoAnalysis"       : "False"
 

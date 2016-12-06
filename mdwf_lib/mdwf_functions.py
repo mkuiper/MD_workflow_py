@@ -285,7 +285,7 @@ def check_run_counter():
     current = ljdf_t['CurrentRun'] 
     total   = int( ljdf_t['TotalRuns'] ) 
     jobid   = ljdf_t['CurrentJobId' ] 
-    mesg    = ljdt_t['JobMessage']
+    mesg    = ljdf_t['JobMessage']
 
     newrun = int(current) + 1
     update_local_job_details( "LastJobId", jobid )

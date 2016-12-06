@@ -1,5 +1,35 @@
-# /media/mike/Dropbox/GIT/MD_workflow_py/MainJobDir2/Sim2_01
-# /media/mike/Dropbox/GIT/MD_workflow_py/MainJobDir2/Sim2_02
-# /media/mike/Dropbox/GIT/MD_workflow_py/MainJobDir2/Sim2_03
-# /media/mike/Dropbox/GIT/MD_workflow_py/MainJobDir2/Sim2_04
-# /media/mike/Dropbox/GIT/MD_workflow_py/MainJobDir2/Sim2_05
+# /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_01
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_01/OutputFiles/2016_06Dec_MyJob1_run_00.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_01/OutputFiles/2016_06Dec_MyJob1_run_01.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_01/OutputFiles/2016_06Dec_MyJob1_run_02.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_01/OutputFiles/2016_06Dec_MyJob1_run_03.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_01/OutputFiles/2016_06Dec_MyJob1_run_04.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_01/OutputFiles/2016_06Dec_MyJob1_run_05.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+# /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_02
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_02/OutputFiles/2016_06Dec_MyJob1_run_00.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_02/OutputFiles/2016_06Dec_MyJob1_run_01.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_02/OutputFiles/2016_06Dec_MyJob1_run_02.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_02/OutputFiles/2016_06Dec_MyJob1_run_03.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_02/OutputFiles/2016_06Dec_MyJob1_run_04.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_02/OutputFiles/2016_06Dec_MyJob1_run_05.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+# /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_03
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_03/OutputFiles/2016_06Dec_MyJob1_run_00.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_03/OutputFiles/2016_06Dec_MyJob1_run_01.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_03/OutputFiles/2016_06Dec_MyJob1_run_02.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_03/OutputFiles/2016_06Dec_MyJob1_run_03.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_03/OutputFiles/2016_06Dec_MyJob1_run_04.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_03/OutputFiles/2016_06Dec_MyJob1_run_05.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+# /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_04
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_04/OutputFiles/2016_06Dec_MyJob1_run_00.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_04/OutputFiles/2016_06Dec_MyJob1_run_01.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_04/OutputFiles/2016_06Dec_MyJob1_run_02.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_04/OutputFiles/2016_06Dec_MyJob1_run_03.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_04/OutputFiles/2016_06Dec_MyJob1_run_04.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_04/OutputFiles/2016_06Dec_MyJob1_run_05.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+# /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_05
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_05/OutputFiles/2016_06Dec_MyJob1_run_00.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_05/OutputFiles/2016_06Dec_MyJob1_run_01.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_05/OutputFiles/2016_06Dec_MyJob1_run_02.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_05/OutputFiles/2016_06Dec_MyJob1_run_03.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_05/OutputFiles/2016_06Dec_MyJob1_run_04.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/MainJobdir1/Sim1_05/OutputFiles/2016_06Dec_MyJob1_run_05.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
