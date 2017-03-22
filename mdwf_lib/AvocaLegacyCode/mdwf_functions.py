@@ -583,8 +583,8 @@ def populate_job_directories():
     ljdf_t[ 'CurrentRound' ]    = mcf["Round"]
     ljdf_t[ 'Account' ]         = mcf["Account"]
     ljdf_t[ 'Nodes' ]           = mcf["nodes"]
-##    ljdf_t[ 'ntpn' ]            = mcf["ntpn"]
-##    ljdf_t[ 'ppn' ]             = mcf["ppn"]
+    ljdf_t[ 'ntpn' ]            = mcf["ntpn"]
+    ljdf_t[ 'ppn' ]             = mcf["ppn"]
     ljdf_t[ 'Walltime' ]        = mcf["Walltime"]
     ljdf_t[ 'JobFailTime' ]     = mcf["JobFailTime"]
     ljdf_t[ 'DiskSpaceCutOff' ] = mcf["DiskSpaceCutOff"]
@@ -636,8 +636,8 @@ def populate_job_directories():
         nnodes   = "#SBATCH --nodes="   + mcf["nodes"]
         ntime    = "#SBATCH --time="    + mcf["Walltime"]
         naccount = "#SBATCH --account=" + mcf["Account"]
-##        nntpn    = "ntpn="              + mcf["ntpn"]
-##        nppn     = "ppn="               + mcf["ppn"]
+        nntpn    = "ntpn="              + mcf["ntpn"]
+        nppn     = "ppn="               + mcf["ppn"]
         nmodule  = "module load "       + ModuleFile
         nopt     = "optimize_script="   + OptScript
         nprod    = "production_script=" + ProdScript
@@ -651,8 +651,8 @@ def populate_job_directories():
                 line = line.replace('#SBATCH --nodes=X',   nnodes  )   
                 line = line.replace('#SBATCH --time=X',    ntime   )   
                 line = line.replace('#SBATCH --account=X', naccount)   
-##                line = line.replace('ntpn=X',              nntpn   )   
-##                line = line.replace('ppn=X',               nppn    )   
+                line = line.replace('ntpn=X',              nntpn   )   
+                line = line.replace('ppn=X',               nppn    )   
                 line = line.replace('module load X',       nmodule )   
                 line = line.replace('optimize_script=X',   nopt    )   
                 line = line.replace('production_script=X', nprod   )   
@@ -774,8 +774,8 @@ def check_job():
            (mcf["SbatchEquilibrateScript"], mcf["SbatchProductionScript"])))      
     print(("{}nodes:              {} %-12s    ".format(RED, DEFAULT) % (mcf["nodes"])))
     print(("{}walltime:           {} %-12s    ".format(RED, DEFAULT) % (mcf["Walltime"])))
-##    print(("{}no. tasks per node: {} %-12s    ".format(RED, DEFAULT) % (mcf["ntpn"]))) 
-##    print(("{}processes per node: {} %-12s    ".format(RED, DEFAULT) % (mcf["ppn"])))
+    print(("{}no. tasks per node: {} %-12s    ".format(RED, DEFAULT) % (mcf["ntpn"]))) 
+    print(("{}processes per node: {} %-12s    ".format(RED, DEFAULT) % (mcf["ppn"])))
     if not mcf["Account"] == "VR0000":
         print(("{}account:            {} %-12s    ".format(RED, DEFAULT) % (mcf["Account"])))
     else:
@@ -808,6 +808,10 @@ def benchmark():
     print(("{} Setting up jobs for benchmarking based on current job config files.".format(DEFAULT)))
 
 # create temporary files/ figure out job size. 
+     
+
+
+
 
 # move files to /Setup_and_Config/Benchmarking / create dictionary/ json file.
 
@@ -826,7 +830,7 @@ def get_current_dir_list(job_dir):
     if os.path.isdir(job_dir):
        file_list =  (sorted(os.listdir(job_dir)))
     else:
-        sys.stderr.write("No directories found in {}. Have you initialized?\n".format(job_dir))
+        sys.stderr.write("No directories found in {}. Have you initialized?".format(job_dir))
  
     return file_list
 

@@ -16,8 +16,6 @@
 "JobMessage"     : "not started",
 "ErrorsMessages" : 0,
 "Nodes"          : 0,
-"ntpn"           : 0,
-"ppn"            : 0,
 "Walltime"       : 0,
 
 "CurrentRun"     : 0, 

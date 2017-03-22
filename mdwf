@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/local/python/3.6.0-gcc/bin/python3
 #
 #  Michael Kuiper <kuiper.mike@gmail.com>
 #
@@ -33,91 +33,87 @@ Options: \033[0m
 
 import sys
 import os 
+import argparse
+
 from mdwf_lib import mdwf_functions as mdwf
-from mdwf_lib import docopt
 
 # ansi color variables for formatting purposes: 
-DEFAULT = '\033[0m'
-RED     = '\033[31m'
-GREEN   = '\033[32m'
-BLUE    = '\033[0;34m'
+DEFAULT ='\033[0m'
+RED     ='\033[31m'
+GREEN   ='\033[32m'
+YELLOW  ='\033[33m'
+BLUE    ='\033[1;34m'
 
 def main():
-    args = docopt(__doc__, version=0.1)  # create argument dictionary
-    arg_list = list(args.keys())   
-    action = '--help'                    # default action 
-    for i in arg_list: 
-        if args[i] == True:
-            print("{}mdwf action:{}{}".format(GREEN,DEFAULT,i))
-            action = i 
-    if action == '--help':
-        print(__doc__)
-    else:
-        process(action)
+    parser = argparse.ArgumentParser(description=GREEN+'mdwf -molecular dynamics workflow: a tool for controlling multiple MD jobs on a cluster'+DEFAULT)
 
-def process(action):
-    if action == '--monitor': 
-        print("{}monitoring job status:{}".format( BLUE, DEFAULT ))
+    parser.add_argument("-m","--monitor",    help="monitor running jobs", action="store_true")
+    parser.add_argument("-i","--initialize", help="initialize directories", action="store_true")
+    parser.add_argument("-p","--populate",   help="populate directories with scripts", action="store_true")
+    parser.add_argument("-c","--checkjob",   help="check job inputs", action="store_true")
+    parser.add_argument("-b","--benchmark",  help="benchmark jobs", action="store_true")
+    parser.add_argument("-s","--start",      help="start all jobs", action="store_true")
+    parser.add_argument("-r","--restart",    help="restart all jobs", action="store_true")
+    parser.add_argument("-g","--gather",     help="gather data files in /Analysis", action="store_true")
+    parser.add_argument("-e","--extend",     help="extend runs", action="store_true")
+    parser.add_argument("--recover",         help="recover corrupted data", action="store_true")
+    parser.add_argument("--clearflags",     help="clear stop flags in all job directories", action="store_true")
+    parser.add_argument("--stop",            help="stop all jobs", action="store_true")
+    parser.add_argument("--pause",           help="pause all jobs", action="store_true")
+    parser.add_argument("--erasedata",      help="erase all data, use with caution", action="store_true")
+    parser.add_argument("--clone",           help="clone directories", action="store_true")
+
+
+    args = parser.parse_args()
+
+    if args.monitor: 
+        print((BLUE+"Monitoring job status:"+DEFAULT))
         mdwf.monitor_jobs()
-
-    if action == '--initialize': 
-        print("{}initializing job directories:{}".format( BLUE, DEFAULT ))
+    if args.initialize: 
+        print((BLUE+"Initializing job directories:"+DEFAULT))
         mdwf.initialize_job_directories()
-
-    if action == '--populate': 
-        print("{}populating job directories:{}".format( BLUE, DEFAULT ))
+    if args.populate: 
+        print((BLUE+"Populating job directories:"+DEFAULT))
         mdwf.populate_job_directories()
-
-    if action == '--checkjob':
-        print("{}checking job input:{}".format( BLUE, DEFAULT )) 
+    if args.checkjob: 
+        print((BLUE+"Checking job input:"+DEFAULT))
         mdwf.check_job()
-
-    if action == '--benchmark':
-        print("{}benchmarking job:{}".format( BLUE, DEFAULT )) 
+    if args.benchmark: 
+        print((BLUE+"Benchmarking job:"+DEFAULT))
         mdwf.benchmark()
-
-    if action == '--start':
-        print("{}starting jobs:{}".format( BLUE, DEFAULT )) 
+    if args.start: 
+        print((BLUE+"Starting all jobs:"+DEFAULT))
         mdwf.start_all_jobs()
-
-    if action == '--restart':
-        print("{}restarting production jobs:{}".format( BLUE, DEFAULT )) 
+    if args.restart: 
+        print((BLUE+"Restarting production jobs:"+DEFAULT))
         mdwf.restart_all_production_jobs()
-
-    if action == '--gather':
-        print("{}gathering data files: (list under /Analysis) {}".format( BLUE, DEFAULT )) 
+    if args.gather: 
+        print((BLUE+"Gathering data files: (list under /Analysis"+DEFAULT))
         mdwf.gather_jobs()
-
-    if action == '--extend':
-        print("{}extend the runs: {}".format( BLUE, DEFAULT )) 
+    if args.extend: 
+        print((BLUE+"Extending production runs:"+DEFAULT))
         try:
-            a = int(eval(raw_input("Enter number of runs extentions: ")))
+            a = int(eval(input((GREEN+"Enter number of runs extentions: "+DEFAULT))))
         except ValueError:
             print("Not an integer value...")
         mdwf.extend_jobs(a)
-
-    if action == '--recover':
-        print("{}recovering and restoring crashed jobs:{}".format( BLUE, DEFAULT )) 
+    if args.recover: 
+        print((BLUE+"Recovering crashed jobs:"+DEFAULT))
         mdwf.recover_all_jobs()
-
-    if action == '--clear_stops':
-        print("{}clearing pausejob flags:{}".format( BLUE, DEFAULT )) 
+    if args.clearflags: 
+        print((BLUE+"Clearing pausejob flags:"+DEFAULT))
         mdwf.clear_jobs()
-
-    if action == '--stop_jobs':
-        print("{}stopping all jobs:{}".format( BLUE, DEFAULT )) 
+    if args.stop: 
+        print((BLUE+"Stopping all jobs:"+DEFAULT))
         mdwf.stop_jobs()
-
-    if action == '--pause':
-        print("{}pausing all jobs:{}".format( BLUE, DEFAULT )) 
+    if args.pause: 
+        print((BLUE+"Pausing all jobs:"+DEFAULT))
         mdwf.pause_jobs()
-
-    if action == '--erase_all_data':
-        print("{}erasing data:{}".format( BLUE, DEFAULT ))
+    if args.erasedata: 
+        print((RED+"Erasing data:"+DEFAULT))
         mdwf.erase_all_data()
-
-    if action == '--clone':
-        print("{}cloning job_directory: (not implimented yet){}".format( BLUE, DEFAULT )) 
+    if args.clone: 
+        print((BLUE+"Cloning job directory:"+DEFAULT))
         mdwf.clone()
 
 if __name__ == '__main__':

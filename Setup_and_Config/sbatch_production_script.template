@@ -14,18 +14,15 @@
 #SBATCH --time=X
 #SBATCH --account=X
 
-ntpn=X         # number of tasks per node: 
-ppn=X          # processors per node: 
-
 production_script=X
 
 module load X                # module file:
-module load python-fe/2.7.3  # python module file
+module load python-gcc/3.6.0 # python module file
 
 #--------------------------------------------------------------------------------
 # python script for preprocessing data
 if [ -f prejob_processing.py ]; 
- then python prejob_processing.py $SLURM_JOBID -production;
+ then python3 prejob_processing.py $SLURM_JOBID -production;
  else echo "No processing script" > pausejob
 fi 
 
@@ -33,12 +30,12 @@ fi
 if [ -f pausejob ]; then exit; fi
 
 # run optimization job.
- srun  --ntasks-per-node $ntpn  namd2 +ppn $ppn $production_script >temp_working_outputfile.out 2>temp_working_errorsfile.err;
+ srun namd2 $production_script >temp_working_outputfile.out 2>temp_working_errorsfile.err;
 
 # --------------------------------------------------------------------------------------------
 # python script for postprocessing data
 if [ -f postjob_processing.py ]; 
- then python postjob_processing.py $SLURM_JOBID -production;
+ then python3 postjob_processing.py $SLURM_JOBID -production;
  else echo "No processing script" > pausejob
 fi
 

@@ -1,9 +1,9 @@
 ﻿### MD_workflow_py
 
 ==================================================
- Molecular dynamics workflow framework in python.
+ Molecular dynamics workflow framework in python3.
 ==================================================
-## working draft document 1/04/2016
+## working draft document 21/03/2017
 Note: This is a reworking of the MD workflow directory structure which 
 was originally written in bash scripts.
 
@@ -52,9 +52,9 @@ with a single function, './mdwf' which can do things like start and stop jobs
 on a cluster, monitor progress and even gather all the data for analysis. 
 
 Requirements: 
-The scripts used in this directory structure are written in python 2.7 
-so you will need to have python 2.7 somewhere in your path. On clusters 
-systems, you may need to load a python2.7 module. 
+The scripts used in this directory structure are written in python 3.6 
+so you will need to have python 3.6 somewhere in your path. On clusters 
+systems, you may need to load the python-gcc/3.6.0 module. 
 
 A note before we start. This folder structure is just one way of organising 
 running of multiple NAMD jobs on a cluster. It may not be the best for your

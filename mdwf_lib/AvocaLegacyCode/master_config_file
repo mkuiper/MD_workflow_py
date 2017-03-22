@@ -1,18 +1,21 @@
 {
-"Comment0"     : "Master_Config_File v0.5",
+"Comment0"     : "Master_Config_File v0.25",
 "Account"      : "VR0002",
 "Flavour"      : "Namd",
-"UserName"     : "anon",
-"Walltime"     : "2:0:0",
-"nodes"        : "4",
+"UserName"     : "mike",
 
-"ModuleFile"   : "namd-intel/2.12",
+"Comment1"     : "BlueGene/Q Namd Job parameters:",
+"nodes"        : "1",
+"ntpn"         : "8",
+"ppn"          : "8",
+"Walltime"     : "2:0:0",
+
+"ModuleFile"   :"namd-xl-pami-smp/2.10",
 "PsfFileName"  : "ChangeMe.psf",
 "PdbFileName"  : "ChangeMe.pdb",
 
 
-"Comment1"      : "Job Details Section",
-
+"Comment2"      : "Job Details Section",
 "JobStreams"    : ["MainJobdir1"],
 "JobReplicates" : ["5"],
 "BaseDirNames"  : ["Sim1_" ],
@@ -31,8 +34,7 @@
 "custom_script1"     : "custom1.conf",
 "custom_script2"     : "custom2.conf",
 
-"Comment2"           : "Miscellaneous Parameters",
-
+"Comment4"           : "Miscellaneous Parameters",
 "JobFailTime"        : 60,
 "DiskSpaceCutOff"    : 95,
 "AutoAnalysis"       : "False"

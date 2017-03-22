@@ -15,20 +15,17 @@
 #SBATCH --time=X
 #SBATCH --account=X
 
-ntpn=X       # number of tasks per node 
-ppn=X        # processors per node    
-
 optimize_script=X      
 
 module load X			# namd module file
-module load python-fe/2.7.3	# python module file
+module load python-gcc/3.6.0 	# python module file
 
 ## python script to initiate job and setup variables.-----------
 ## pause if preprocessing script is not present. 
 
 if [ -f prejob_processing.py ];
  then 
-      python prejob_processing.py $SLURM_JOBID -optimize;
+      python3 prejob_processing.py $SLURM_JOBID -optimize;
  else 
       echo "No processing script" > pausejob;
 fi
@@ -38,12 +35,12 @@ if [ -f pausejob ]; then exit; fi
 
 # submit job to the cluster:------------------------------------
 
- srun  --ntasks-per-node $ntpn  namd2 +ppn $ppn $optimize_script >temp_working_outputfile.out 2> temp_working_errorsfile.err;
+ srun namd2 $optimize_script >temp_working_outputfile.out 2> temp_working_errorsfile.err;
 
 ## python script to cleanup and redirect data-------------------- 
 if [ -f postjob_processing.py ];
  then 
-      python postjob_processing.py $SLURM_JOBID -optimize;
+      python3 postjob_processing.py $SLURM_JOBID -optimize;
  else 
       echo "No processing script" > pausejob;
 fi
