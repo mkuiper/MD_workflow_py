@@ -41,6 +41,7 @@ simulations with a good deal of reproducibility.
   |-Benchmarking
 /<JOBSTREAM>         	<- created at initialization, defined in master_config_file
                            (directory to contain simulation data, can have any name) 
+
 master_config_file      <- file to control set-up and running
 mdwf                    <- master python script to control running 
 project_plan.txt	<- to help you plan your simulations 

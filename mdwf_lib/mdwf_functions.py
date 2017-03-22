@@ -20,7 +20,8 @@ import re
 DEFAULT = '\033[0m'        
 RED     = '\033[31m'     
 GREEN   = '\033[32m'     
-BLUE    = '\033[35m'     
+YELLOW  = '\033[33m'     
+BLUE    = '\033[34m'     
 
 def read_master_config_file():  
     """ Reads the json file 'master_config_file' and
@@ -208,7 +209,7 @@ def check_pausejob_flag():
     pause = ljdf_t["PauseJobFlag"]
     if pause != 0:
         f = open( "pausejob", 'a' )
-        f.write("pauseflag already present")
+        f.write(" pauseflag already present")
         f.close()
         update_local_job_details( "JobStatus", "pausejob" )
 
@@ -298,7 +299,7 @@ def check_run_counter():
         update_local_job_details( "JobMessage", "finished production runs" )
         update_local_job_details( "PauseJobFlag", "pausejob" )
         update_local_job_details( "CurrentJobId", -1 )
-        pausejob_flag( "Job run number greater than total specified." )
+        pausejob_flag( "Job runs finished." )
         final_job_cleanup()     
         return None
 
@@ -982,15 +983,16 @@ def restart_jobs(restartscript):
         return
  
     if  jobstatus in status2 or pauseflag=="pausejob":
-        print(("{}{}:{} Job was abruptly cancelled or stopped. Clear pauseflags first. (./mdwf --clear)".format(RED, cwd[-20:], DEFAULT)))
+        print(("{}{}:{} Job is finished or was stopped. Clear pauseflags first. (./mdwf --clear)".format(RED, cwd[-20:], DEFAULT)))
         return
 
     if jobstatus in status3:
         if "cleared" in message:        # assume restarting from cancelled job.   
             pausejob_flag("remove")     # -so we don't increment CurrentRun number
-            subprocess.Popen(['sbatch', restartscript])
+            update_local_job_details("CurrentRun",  (current+1))
             update_local_job_details("JobStatus",  "submitted")
             update_local_job_details("JobMessage", "production job restarted")
+            subprocess.Popen(['sbatch', restartscript])
             return 
 
         if current >= total: 
@@ -1025,7 +1027,7 @@ def recovery_function():
     line = ljdf["JOB_STREAM_DIR"] + "/" + ljdf["JobDirName"] + "/" +  "OutputFiles:"
     print(("\n{}{}{}".format( GREEN, line, DEFAULT )))
 
-    #### while 
+    #### 
 
     for i in dirlist:
         if "dcd" in i:
@@ -1095,7 +1097,7 @@ def recovery_function():
                         shutil.copyfile(src, dst)           
                       
                     print("-updating run number:") 
-                    update_local_job_details( "CurrentRun", num+1 )
+                    update_local_job_details( "CurrentRun", num )
    
         else:
             print((target, " not found: "))    
@@ -1135,13 +1137,14 @@ def cancel_job( jobid ):
 
     print((" stopping job: {}".format( jobid )))
     message = " scancel jobid: %s" % jobid 
-    pausejob_flag( "scancel commnad sent." )         
-    update_local_job_details( "JobMessage", "sent scancel command" )
-    update_local_job_details( "JobStatus", "stopped" )
-    update_local_job_details( "PauseJobFlag", "cancelled" )
-    if jobid > 0:
-        subprocess.Popen([ 'scancel', jobid ])
-        update_local_job_details( "CurrentJobId",  -1 )
+    pausejob_flag( "scancel command sent. " )         
+    update_local_job_details("JobFinishTime", time.time())
+    update_local_job_details("JobMessage", "sent scancel command")
+    update_local_job_details("JobStatus", "stopped")
+    update_local_job_details("PauseJobFlag", "cancelled")
+        
+    subprocess.Popen([ 'scancel', jobid ])
+    update_local_job_details( "CurrentJobId",  -1 )
         
 def erase_all_data():
     """ -function to erase all data for a clean start.  Use with caution!"""
@@ -1158,7 +1161,7 @@ def erase_all_data():
     print("/JobLog/                         - Job logs.") 
     print("/Setup_and_Config/Benchmarking/  - Benchmarking data.") 
 
-    strg = input("\n Press enter to quit or type: {}'erase all my data' {}: ".format(GREEN, DEFAULT))
+    strg = input("\n Press enter to quit or type: '{}erase all my data{}': ".format(YELLOW, DEFAULT))
     print (strg) 
  
     if strg in ['erase all my data']: 
@@ -1172,9 +1175,9 @@ def erase_all_data():
             else:
                 print((" Couldn't see {}".format(TargetDir)))
 
-        print("\n Oh the humanity. I sure hope that wasn't anything important.")
+        print("\nOh the humanity. I sure hope that wasn't anything important.")
     else: 
-        print(" Phew! Nothing erased.")
+        print("Phew! Nothing erased.")
 
 def create_dcd_file_loader( first = 0, last = -1, step =1):
     """ A function to create an easyfile loader to be able to read in a

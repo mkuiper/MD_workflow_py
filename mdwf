@@ -45,7 +45,7 @@ YELLOW  ='\033[33m'
 BLUE    ='\033[1;34m'
 
 def main():
-    parser = argparse.ArgumentParser(description=GREEN+'mdwf -molecular dynamics workflow: a tool for controlling multiple MD jobs on a cluster'+DEFAULT)
+    parser = argparse.ArgumentParser(description=GREEN+'mdwf -molecular dynamics workflow:'+DEFAULT+' a tool for controlling multiple MD jobs on a cluster')
 
     parser.add_argument("-m","--monitor",    help="monitor running jobs", action="store_true")
     parser.add_argument("-i","--initialize", help="initialize directories", action="store_true")
@@ -57,10 +57,10 @@ def main():
     parser.add_argument("-g","--gather",     help="gather data files in /Analysis", action="store_true")
     parser.add_argument("-e","--extend",     help="extend runs", action="store_true")
     parser.add_argument("--recover",         help="recover corrupted data", action="store_true")
-    parser.add_argument("--clearflags",     help="clear stop flags in all job directories", action="store_true")
+    parser.add_argument("--clearflags",      help="clear stop flags in all job directories", action="store_true")
     parser.add_argument("--stop",            help="stop all jobs", action="store_true")
     parser.add_argument("--pause",           help="pause all jobs", action="store_true")
-    parser.add_argument("--erasedata",      help="erase all data, use with caution", action="store_true")
+    parser.add_argument("--erasedata",       help="erase all data, use with caution", action="store_true")
     parser.add_argument("--clone",           help="clone directories", action="store_true")
 
 
