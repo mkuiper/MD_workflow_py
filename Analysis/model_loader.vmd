@@ -1,3 +1,0 @@
-# Basic vmd model loader 
-mol new     /vlsci/VR0021/mike/GIT/MD_workflow_py/InputFiles/ChangeMe.psf type psf first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
-mol addfile /vlsci/VR0021/mike/GIT/MD_workflow_py/InputFiles/ChangeMe.pdb type pdb first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
