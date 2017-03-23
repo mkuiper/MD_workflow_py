@@ -454,8 +454,8 @@ def monitor_jobs():
     JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams,\
                 nReplicates, nBaseNames = check_job_structure() 
     print((" Account: %6s    nodes: %-6s " % (account, nodes)))
-    print(" Job Name:      |Count |JobId   |Status    |Runtime |Job_messages:")
-    print((" ---------------|------|--------|----------|-%6s-|------------ " % walltime[:-2]))
+    print( " Job Name:      |Count    |JobId    |Status     |Runtime |Job_messages:")
+    print((" ---------------|---------|---------|-----------|{:^7} |------------ ".format( walltime[:-2])))
 
     for i in range(0,nJobStreams): 
         JobDir = JobStreams[i]
@@ -466,28 +466,17 @@ def monitor_jobs():
             ljdf_t = read_local_job_details(dir_path, "local_job_details.json")
             jdn    = ljdf_t["JobDirName"]
             qs     = ljdf_t["QueueStatus"]
-            js     = colour_jobstatus( ljdf_t["JobStatus"] )
+            js     = ljdf_t["JobStatus"] 
             jm     = ljdf_t["JobMessage"]
             startT = ljdf_t["JobStartTime"]
             T      = get_job_runtime( startT, js )
             cjid = str(ljdf_t["CurrentJobId"])
             prog =  str( ljdf_t["CurrentRun"] ) + "/" + \
                     str( ljdf_t["TotalRuns"] )
-            print((" {:<15s} {:<7s}{:>8s}  {:<10s}  {:>8s}  {:<20s} "\
-                     .format(jdn[0:14], prog, cjid, js, T, jm)))
+            print(("{:16}|{:>8} |{:>8} | {: <10}|{:^8}| {:<20} "\
+                     .format(jdn[0:15], prog, cjid, js, T, jm)))
 
     print(("\n{}done.".format(DEFAULT)))
-
-def colour_jobstatus(js):
-    if js == "running":
-        js = GREEN + js + DEFAULT
-    if js == "submitted":
-        js = BLUE + js + DEFAULT
-    if js == "error":
-        js = RED + js + DEFAULT
-    if js == "stopped":
-        js = BLUE + js + DEFAULT
-    return js
 
 def md5sum( filename, blocksize=65536 ):
     """function for returning md5 checksum"""
