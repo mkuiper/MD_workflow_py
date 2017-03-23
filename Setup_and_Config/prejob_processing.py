@@ -23,7 +23,7 @@ def main():
     mdwf.update_local_job_details( "CurrentJobId", jobid )
     mdwf.update_local_job_details( "JobStatus", "running" )
  
-    timestamp = "started: " + time.strftime( "%d%b:%H:%M", time.localtime() )
+    timestamp = "Started: " + time.strftime( "%d%b:%H:%M", time.localtime() )
     mdwf.update_local_job_details( "JobMessage",   timestamp  )
     mdwf.update_local_job_details( "JobStartTime", time.time()) 
 

@@ -70,53 +70,53 @@ def main():
     args = parser.parse_args()
 
     if args.monitor: 
-        print((BLUE+"Monitoring job status:"+DEFAULT))
+        print((YELLOW+"Monitoring job status:"+DEFAULT))
         mdwf.monitor_jobs()
     if args.initialize: 
-        print((BLUE+"Initializing job directories:"+DEFAULT))
+        print((YELLOW+"Initializing job directories:"+DEFAULT))
         mdwf.initialize_job_directories()
     if args.populate: 
-        print((BLUE+"Populating job directories:"+DEFAULT))
+        print((YELLOW+"Populating job directories:"+DEFAULT))
         mdwf.populate_job_directories()
     if args.checkjob: 
-        print((BLUE+"Checking job input:"+DEFAULT))
+        print((YELLOW+"Checking job input:"+DEFAULT))
         mdwf.check_job()
     if args.benchmark: 
-        print((BLUE+"Benchmarking job:"+DEFAULT))
+        print((YELLOW+"Benchmarking job:"+DEFAULT))
         mdwf.benchmark()
     if args.start: 
-        print((BLUE+"Starting all jobs:"+DEFAULT))
+        print((YELLOW+"Starting all jobs:"+DEFAULT))
         mdwf.start_all_jobs()
     if args.restart: 
-        print((BLUE+"Restarting production jobs:"+DEFAULT))
+        print((YELLOW+"Restarting production jobs:"+DEFAULT))
         mdwf.restart_all_production_jobs()
     if args.gather: 
-        print((BLUE+"Gathering data files: (list under /Analysis"+DEFAULT))
+        print((YELLOW+"Gathering data files: (list under /Analysis"+DEFAULT))
         mdwf.gather_jobs()
     if args.extend: 
-        print((BLUE+"Extending production runs:"+DEFAULT))
+        print((YELLOW+"Extending production runs:"+DEFAULT))
         try:
             a = int(eval(input((GREEN+"Enter number of runs extentions: "+DEFAULT))))
         except ValueError:
             print("Not an integer value...")
         mdwf.extend_jobs(a)
     if args.recover: 
-        print((BLUE+"Recovering crashed jobs:"+DEFAULT))
+        print((YELLOW+"Recovering crashed jobs:"+DEFAULT))
         mdwf.recover_all_jobs()
     if args.clearflags: 
-        print((BLUE+"Clearing pausejob flags:"+DEFAULT))
+        print((YELLOW+"Clearing pausejob flags:"+DEFAULT))
         mdwf.clear_jobs()
     if args.stop: 
-        print((BLUE+"Stopping all jobs:"+DEFAULT))
+        print((YELLOW+"Stopping all jobs:"+DEFAULT))
         mdwf.stop_jobs()
     if args.pause: 
-        print((BLUE+"Pausing all jobs:"+DEFAULT))
+        print((YELLOW+"Pausing all jobs:"+DEFAULT))
         mdwf.pause_jobs()
     if args.erasedata: 
         print((RED+"Erasing data:"+DEFAULT))
         mdwf.erase_all_data()
     if args.clone: 
-        print((BLUE+"Cloning job directory:"+DEFAULT))
+        print((YELLOW+"Cloning job directory:"+DEFAULT))
         mdwf.clone()
 
 if __name__ == '__main__':

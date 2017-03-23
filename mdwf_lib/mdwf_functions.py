@@ -66,9 +66,9 @@ def read_namd_job_details(targetfile):
         f = open(target,'r')
         for lline in f:
             line = lline[0:18]         # strip line to avoid artifacts
-            if not "#" in line[0:2]:   # leave out commented lines
+            if not  "#" in line[0:2]:   # leave out commented lines
                 if 'structure ' in line:
-                    pl = lline.split()
+                    pl = lline.split( )
                     jdd["psffilepath"] = pl[1]
                     nl = re.split(('\s+|/|'),lline)
                     for i in nl:
@@ -78,7 +78,7 @@ def read_namd_job_details(targetfile):
                             jdd["natom"] = natom
 
                 if 'coordinates ' in line:
-                    pl = lline.split()
+                    pl = lline.split( )
                     jdd["pdbfilepath"] = pl[1]
                     nl = re.split(('\s+|/|'),lline)
                     for i in nl:
@@ -86,27 +86,27 @@ def read_namd_job_details(targetfile):
                             jdd["pdbfile"] = i
 
                 if 'timestep ' in line:
-                    nl = lline.split()
+                    nl = lline.split( )
                     jdd["timestep"] = nl[1]
 
                 if 'NumberSteps ' in line:
-                    nl = lline.split()
+                    nl = lline.split( )
                     jdd["steps"] = nl[2]
 
                 if 'dcdfreq ' in line:
-                    nl = lline.split()
+                    nl = lline.split( )
                     jdd["dcdfreq"] = nl[1]
 
                 if 'run ' in line:
-                    nl = lline.split()
+                    nl = lline.split( )
                     jdd["runsteps"] = nl[1]
 
                 if 'restartfreq ' in line:
-                    nl = lline.split()
+                    nl = lline.split( )
                     jdd["restartfreq"] = nl[1]
 
                 if 'parameters ' in line:
-                    nl = lline.split()
+                    nl = lline.split( )
                     jdpl.append(nl[1])
         f.close()
     else: 
@@ -177,7 +177,7 @@ def get_atoms(psffile):
         f = open(target,'r')
         for line in f:
             if 'NATOM' in line:     # extract number of atoms from !NATOM line
-                nl = line.split()
+                nl = line.split( )
                 atoms = nl[0]
         f.close()    
     else:
@@ -228,7 +228,7 @@ def check_disk_quota():
         dline = disk.split("\n")
         for i in dline:       
             if account in i:   # looks for account number
-                usage = int( i.split()[-1][:-1] ) 
+                usage = int( i.split( )[-1][:-1] ) 
         if usage > diskspc:
             print(("Warning: Account {} disk space quota low. Usage: {} % "\
                   .format(account,a)))          
@@ -236,7 +236,7 @@ def check_disk_quota():
                   .format(a,b))) 
             update_local_job_details("JobStatus", "stopping" )
             update_local_job_details("PauseJobFlag", "low disk" )
-            update_local_job_details("JobMessage", "stopped: Disk quota low.")
+            update_local_job_details("JobMessage", "Stopped: Disk quota low.")
             pausejob_flag( "Low Disk Quota detected." )
     except:
         print(("Can't run 'mydisk'. Can't check disk quota for account {}."\
@@ -274,7 +274,7 @@ def check_job_runtime():
 
     if runtime < limit:
         update_local_job_details( "JobStatus",  "stopped" )
-        update_local_job_details( "JobMessage", "short run time detected" )
+        update_local_job_details( "JobMessage", "Short run time detected" )
         pausejob_flag( "Short runtime detected - job fail??" )
 
 def check_run_counter():
@@ -296,7 +296,7 @@ def check_run_counter():
 
     if  newrun > total:       # -stop jobs if current run equals or greater than totalruns
         update_local_job_details( "JobStatus", "finished" )
-        update_local_job_details( "JobMessage", "finished production runs" )
+        update_local_job_details( "JobMessage", "Finished production runs" )
         update_local_job_details( "PauseJobFlag", "pausejob" )
         update_local_job_details( "CurrentJobId", -1 )
         pausejob_flag( "Job runs finished." )
@@ -358,7 +358,7 @@ def redirect_namd_output( CurrentWorkingName = "current_MD_run_files",
             or not os.path.isfile(cwf_xsc):
         pausejob_flag( "Missing input files." )
         update_local_job_details( "JobStatus", "stopping" )
-        update_local_job_details( "JobMessage", "no namd outputfiles generated" )
+        update_local_job_details( "JobMessage", "No namd outputfiles generated" )
 
     # copy CurrentWorking (restart) files to LastRestart/ directory 
     shutil.copy(cwf_coor, 'LastRestart/' + cwf_coor)
@@ -692,7 +692,7 @@ def check_job():
 
 #   # checking if files in configuration exist where they are supposed to be. 
     print(("{}--------------------------------------------------------------------------------".format(BLUE)))
-    print(("{}Checking configuration input files:{}".format(BLUE,DEFAULT)))
+    print(("{}Checking configuration input files:{}".format(YELLOW, DEFAULT)))
     print(("{}--------------------------------------------------------------------------------".format( BLUE)))
     print(("{}{}:{}".format(BLUE,mcf["EquilibrateConfScript"],DEFAULT)))
     check_file_exists(jd_opt["psffilepath"])
@@ -708,8 +708,22 @@ def check_job():
 
     sr = 0             # Initalise no. of job repliates
     run = 0            # Initalise no. of runs in each replicate
-    print(("{}--------------------------------------------------------------------------------".format(BLUE)))
-    print(("{}Job check summary: ".format(BLUE,DEFAULT)))
+
+    print(("{}------------------------------------------------------------------------------".format(BLUE)))
+    print(("{}Node configuration:{}".format(YELLOW, DEFAULT)))
+    print(("{}------------------------------------------------------------------------------".format(BLUE)))
+    print(("{}Sbatch Scripts:     {} %s , %s  ".format(RED, DEFAULT) % \
+           (mcf["SbatchEquilibrateScript"], mcf["SbatchProductionScript"])))      
+    print(("{}Nodes:              {} %-12s    ".format(RED, DEFAULT) % (mcf["nodes"])))
+    print(("{}Walltime:           {} %-12s    ".format(RED, DEFAULT) % (mcf["Walltime"])))
+    if not mcf["Account"] == "VR0000":
+        print(("{}Account:            {} %-12s    ".format(RED, DEFAULT) % (mcf["Account"])))
+    else:
+        print(("{}Account:               %-12s  -have you set your account?{} "\
+          .format(RED, DEFAULT) % (mcf["Account"])))
+
+    print(("\n{}--------------------------------------------------------------------------------".format(BLUE)))
+    print(("{}Job check summary: ".format(YELLOW, DEFAULT)))
     print(("{}--------------------------------------------------------------------------------".format(BLUE)))
     print(("{} Main Job Directory:        {}{}".format(RED, DEFAULT,          mcf["JobStreams"])))
     print(("{} Simulation basename:       {}{}".format(RED, DEFAULT,          mcf["BaseDirNames"])))
@@ -717,7 +731,7 @@ def check_job():
     print(("{} Sbatch prouction template: {}{}.template".format(RED, DEFAULT, mcf["SbatchProductionScript"])))
     print(("{} Optimization script:       {}{}".format(RED, DEFAULT,          mcf["EquilibrateConfScript"])))
     print(("{} Production script:         {}{}".format(RED, DEFAULT,          mcf["ProductionConfScript"])))
-    print(("{} Namd modulefile:           {}{}".format(RED, DEFAULT,          mcf["ModuleFile"])))
+    print(("{} Module file:               {}{}".format(RED, DEFAULT,          mcf["ModuleFile"])))
 
     Replicates   = mcf["JobReplicates"]
     Runs         = mcf["Runs"]
@@ -740,15 +754,15 @@ def check_job():
     tst = (int(sr)*int(run)*int(jd_prod["timestep"])*int(spr))/1000000.0  # total simulated time
 
     print(("{}--------------------------------------------------------------------------------".format(BLUE)))
-    print(("{}Estimation of data to be generated from the production run of this simulation:{}".format(BLUE, DEFAULT)))
+    print(("{}Estimation of data to be generated from the production run of this simulation:{}".format(YELLOW, DEFAULT)))
     print(("{}--------------------------------------------------------------------------------".format(BLUE)))
     print(("{} Simulation directories:   {}%-8s      {}Runs per directory:   {}%-8s"\
-              .format(RED, DEFAULT, RED, DEFAULT) % (sr, run)))
+              .format(BLUE, DEFAULT, BLUE, DEFAULT) % (sr, run)))
     print(("{} Steps per run:            {}%-8s      {}Dcdfreq in run:       {}%-8s"\
-              .format(RED, DEFAULT, RED, DEFAULT) % (spr, dcd)))
+              .format(BLUE, DEFAULT, BLUE, DEFAULT) % (spr, dcd)))
     print(("{} Dcd frame size(MB)        {}%-8.3f      {}Total dcd frames:     {}%-8s"\
-              .format(RED, DEFAULT, RED, DEFAULT) % (dfs, tdf)))
-    print((" {} Total simulated time:{}  %12.2f nanoseconds"\
+              .format(BLUE, DEFAULT, BLUE, DEFAULT) % (dfs, tdf)))
+    print(("\n {} Total simulated time:{}  %12.2f nanoseconds"\
               .format(GREEN, DEFAULT) %(tst)))
 
     if not (tpd==0):
@@ -757,20 +771,7 @@ def check_job():
     else:
         print((" {}   Total production data:{} %12.2f {}GB - error in calculating \
                 frame size. No psf file?".format(RED, DEFAULT, RED) %(tpd))) 
-    print(("{}------------------------------------------------------------------------------".format(BLUE)))
-    print(("{}Node configuration:{}".format(BLUE, DEFAULT)))
-    print(("{}------------------------------------------------------------------------------".format(BLUE)))
-    print(("{}Sbatch Scripts:     {} %s , %s  ".format(RED, DEFAULT) % \
-           (mcf["SbatchEquilibrateScript"], mcf["SbatchProductionScript"])))      
-    print(("{}nodes:              {} %-12s    ".format(RED, DEFAULT) % (mcf["nodes"])))
-    print(("{}walltime:           {} %-12s    ".format(RED, DEFAULT) % (mcf["Walltime"])))
-##    print(("{}no. tasks per node: {} %-12s    ".format(RED, DEFAULT) % (mcf["ntpn"]))) 
-##    print(("{}processes per node: {} %-12s    ".format(RED, DEFAULT) % (mcf["ppn"])))
-    if not mcf["Account"] == "VR0000":
-        print(("{}account:            {} %-12s    ".format(RED, DEFAULT) % (mcf["Account"])))
-    else:
-        print(("{}account:               %-12s  -have you set your account?{} "\
-          .format(RED, DEFAULT) % (mcf["Account"])))
+    print(("{}--------------------------------------------------------------------------------".format(BLUE)))
 
 
 def check_file_exists(target):
@@ -906,7 +907,7 @@ def start_jobs( startscript ):
     if  jobstatus == "ready" and jobid == 0 and jobrun == 0:
         subprocess.Popen(['sbatch', startscript])
         update_local_job_details( "JobStatus",  "submitted" )
-        update_local_job_details( "JobMessage", "submitted to queue" )
+        update_local_job_details( "JobMessage", "Submitted to queue" )
 
     else:
         if jobstatus == "cancelled":
@@ -929,7 +930,7 @@ def clear_all_jobs():
     if not "running" in jobstatus:
         update_local_job_details( "JobStatus", "ready" )
         update_local_job_details( "CurrentJobId", 0 )
-        update_local_job_details( "JobMessage", "cleared stop flags" )
+        update_local_job_details( "JobMessage", "Cleared stop flags" )
         update_local_job_details( "PauseJobFlag", 0 )
 
          ## remove explicit flag file:    
@@ -980,7 +981,7 @@ def restart_jobs(restartscript):
             pausejob_flag("remove")     # -so we don't increment CurrentRun number
             update_local_job_details("CurrentRun",  (current+1))
             update_local_job_details("JobStatus",  "submitted")
-            update_local_job_details("JobMessage", "production job restarted")
+            update_local_job_details("JobMessage", "Production job restarted")
             subprocess.Popen(['sbatch', restartscript])
             return 
 
@@ -1107,17 +1108,17 @@ def pause_all_jobs():
     jobstatus, jobid, jobrun  = check_if_job_running()
     status4 = ["stopped", "cancelled", "processing"]
     if jobstatus in ["stopped", "cancelled", "processing"]:
-        update_local_job_details("JobMessage", "no job running")
+        update_local_job_details("JobMessage", "No job running")
     else:
         pausejob_flag("Manual pausing of job.")
-        update_local_job_details("JobMessage", "-pausejob request sent")
+        update_local_job_details("JobMessage", "Pausejob request sent")
 
 def stop_all_jobs_immediately():
     """ function to stop all jobs immediately """
 
     jobstatus, jobid, jobrun  = check_if_job_running()
     if jobstatus in [ "stopped", "cancelled", "processing" ]:
-        update_local_job_details( "JobMessage", "no job running" ) 
+        update_local_job_details( "JobMessage", "No job running" ) 
     else:
         cancel_job( jobid )
 
@@ -1128,7 +1129,7 @@ def cancel_job( jobid ):
     message = " scancel jobid: %s" % jobid 
     pausejob_flag( "scancel command sent. " )         
     update_local_job_details("JobFinishTime", time.time())
-    update_local_job_details("JobMessage", "sent scancel command")
+    update_local_job_details("JobMessage", "Sent scancel command")
     update_local_job_details("JobStatus", "stopped")
     update_local_job_details("PauseJobFlag", "cancelled")
         
