@@ -1,5 +1,5 @@
 #------------------------------------------------------------------------------|
-#  Project Planning:                                      March 2014           |
+#  Project Planning:                                      March 2017           |
 |------------------------------------------------------------------------------|
 | This document is designed to help the user properly plan their molecular     |
 | dynamics experiments.  We encourage users to fill this out prior to a        |
@@ -16,7 +16,6 @@ Project title:
 Members:
 
 VLSCI Project:
-
 
 #-Heilmeier-catechisms---------------------------------------------------------|
 1) What are you trying to do? 
