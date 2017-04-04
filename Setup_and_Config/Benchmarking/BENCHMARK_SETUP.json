@@ -1,0 +1,26 @@
+{
+"Comment0"       : "BENCHMARK setup file.   Mar 2017",
+"Comment1"       : "psf and pdb file should be found in /InputFiles",
+
+"PSFFILE"        : "example.psf",
+"PDBFILE"        : "example.pdb",
+
+"Comment2"       : "Periodic boundary conditions dimensions:",
+"PBC_X"          : "48",
+"PBC_Y"          : "48",
+"PBC_Z"          : "48",
+
+"ACCOUNT"        : "VR0021",
+"NODELIST"       : [1,2,4,8,16],
+"MODULEFILE"     : "namd-intel/2.12",
+"RUNTIME"        : "2:0:0",
+
+
+"Comment3"       : "number of nodes for short equilibration run",
+"EquilNodes"     : "8",
+
+
+"CustomFlag3"    : 0
+
+}
+

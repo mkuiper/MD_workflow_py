@@ -1,46 +1,84 @@
-
 #----------------------------------------------------------------------------
- How to run NAMD benchmarks. 
-#----------------------------------------------------------------------------
-
-This is a quick guide to run namd benchmarks on Avoca. 
+ How to run benchmarks. 
 #----------------------------------------------------------------------------
 
-Benchmarking your jobs on Avoca is very useful in order to get an idea of 
-where the optimal sweetspot of speed and performance is when running large 
-numbers of jobs. 
-
-The BlueGene/Q is different from most computer architectures; not only do 
-you pick the number of nodes to run, but also the numbers of tasks per node 
-(ntpn), and processors per node (ppn). It turns out that ntpn x ppn should 
-equal 64 in most cases. (or 32 if you need more memory per node)   
-
-As it is difficult to estimate what is an optimal configuration is, far
-easier to run a short series of simulations and plot the outcome. From there 
-the user can pick an optimal set, and propogate that through their 
-simulation set.   
-This directory is desiged for that purpose.  
-
-# Step 1. Generating some starting data. 
-
-For the benchmarking runs, we need to generate some rough input data from 
-where all the runs will start from. 
-
-To do this....
+### WORK IN PROGRESS
 
 
-# Step 2. Run the benchmarking scripts. 
+Benchmarking molecular dynamics jobs is useful to find the optimal sweetspot 
+of speed and performance for a given node count. 
 
- Review the range of nodes you want to try in the script "run_my_benchmarks.py"
- For example, if you have small systems, (say <30,000 atoms) you probably 
- only need to look at the range 1,2,4 nodes. (any more and you may start 
-running slower!!)  Large systems might go to a much higher node count. 
+Hardware differences make it difficult to assume what optimal configurations 
+are; it is far easier to run a short series of simulations with different 
+numbers of nodes and plot the results. 
 
- Then simply run the python script:
+By running the same short job with different numbers of nodes, we can 
+compare the relative performance. We typically find speed increases 
+with more nodes but usually not linearly. At some point, the more nodes 
+we use the significantly worse the performance gets. A common misconception
+people make is "more nodes is faster"  - not strictly true!
 
- python ./run_my_benchmarks.py 
 
-This may take awhile depending on availability. 
+To run benchmarks we need to generate initial input from our files and 
+then use that to runs a series of short jobs with different amounts of nodes. 
+
+# Step 1. Generating initial benchmark starting points. 
+#------------------------------------------------------------------------------
+Edit the file: 
+
+ BENCHMARK_SETUP.json
+
+to list your input files and general setup parameters (such as account and nodelist).
+Next run the python benchmark setup script: 
+ie) 
+
+ python Benchmark_setup.py 
+
+
+This should generate some restart files which will be used in the benchmarking:  
+bm_input.vel
+bm_input.coor
+bm_input.xsc
+bm_input.xst
+
+
+# Step 2. Run the benchmark set. 
+#------------------------------------------------------------------------------
+
+
+
+Edit the file:
+ run_my_benchmarks.py
+
+To include a nodelist and account number, ie) 
+ nodelist = [1,2,4,8,16]
+ account  = "VR1234"
+
+- this example will benchmark using 1, 2, 4, 8, 16 nodes, using account number VR1234
+(make sure to use your own account) 
+
+Launch the benchmarking jobs with:
+
+ python run_my_benchmarks 
+ 
+This will launch a series of jobs running with the number of nodes you specified. 
+
+Raw timing output will be written to "raw_benchmark_data.txt"
+Which will give a list of 'nodes' and corresponding 'nanoseconds per day' and 'Nanoseconds per Node' 
+the latter being a measure of efficiency. 
+
+Generally, the more 'nanoseconds per day' the better, however not if the efficiency is 
+terrible, as it is a poor use of resources. 
+
+
+
+
+
+
+
+
+
+
 
 
 

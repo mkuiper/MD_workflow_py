@@ -1,0 +1,25 @@
+#!/bin/bash
+##  sbatch benchmarking script template            Jan 2015  MKuiper
+## -A generic script to launch a series of benchmarking namd runs
+
+#-- Sbatch parameters:------------------------------------------
+#-- the XXX values will be substituted from the run_mybenchamrk script
+
+#SBATCH --nodes=XXXnodes
+#SBATCH --time=XXXtime
+#SBATCH --account=XXXaccount
+
+module load XXXmodule     # namd module file
+
+# submit benchmark job to the cluster:------------------------------------
+
+ srun  namd2 generic_benchmark.conf >BenchmarkOutput.XXXnodes.out 2> BenchmarkOutput.XXXnodes.err;
+
+#---------------------------------------------------------------
+# Process data: 
+
+ python Templates/bm_data_processing.py BenchmarkOutput.XXXnodes.out 
+
+ mv BenchmarkOutput.XXXnodes.* OLDRUNS/
+ mv slurm-$SLURM_JOBID.out OLDRUNS/ 
+

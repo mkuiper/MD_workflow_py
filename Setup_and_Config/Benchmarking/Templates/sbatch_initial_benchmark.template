@@ -1,0 +1,27 @@
+#!/bin/bash
+## sbatch initial benchmark setup                Mar 2017  MKuiper
+## 
+## Simple sbatch script to launch the initial short equilibration script, 
+## -designed to generate input restart files for the benchmarking runs. 
+##
+
+
+#SBATCH --nodes=XXXnode
+#SBATCH --time=XXXtime
+#SBATCH --account=XXXaccount
+     
+module load XXXmodule
+
+
+# submit to the cluster:------------------------------------
+
+ srun namd2 namd_equilibration_script.conf >temp_working_outputfile.out 2> temp_working_errorsfile.err;
+
+#---------------------------------------------------------------
+# clean up: 
+
+ rm namd_equilibration_script.conf
+ rm sbatch_initial_benchmark
+ mv slurm-$SLURM_JOBID.out OLDRUNS/
+ mv temp_working_outputfile.* OLDRUNS/
+

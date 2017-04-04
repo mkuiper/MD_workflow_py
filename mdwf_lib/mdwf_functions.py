@@ -775,8 +775,8 @@ def check_job():
 
 
 def check_file_exists(target):
-    mesg1 = "{} found {} -ok!{}".format(DEFAULT, GREEN, DEFAULT)
-    mesg2 = "{} found {} -ok!{} -example file?".format(DEFAULT, GREEN, DEFAULT)
+    mesg1 = "{} found {} -ok{}".format(DEFAULT, GREEN, DEFAULT)
+    mesg2 = "{} found {} -ok{} -example file?".format(DEFAULT, GREEN, DEFAULT)
     mesg3 = "{} not found.{} -Check config file.{}".format(DEFAULT, RED, DEFAULT) 
 
     ntarget = target[6:]        # strip off "../../"
@@ -795,19 +795,14 @@ def benchmark():
     """ -function to benchmark job """
 # read job details:        
     mcf = read_master_config_file()
-    jd_opt,  jd_opt_pl  = read_namd_job_details(mcf["EquilibrateConfScript"])    
+    jd_opt, jd_opt_pl = read_namd_job_details(mcf["EquilibrateConfScript"])    
     print(("{} Setting up jobs for benchmarking based on current job config files.".format(DEFAULT)))
 
 # create temporary files/ figure out job size. 
-
 # move files to /Setup_and_Config/Benchmarking / create dictionary/ json file.
-
 # optimize job/ create sbatch_files. 
-
 # start benchmarking jobs: 
-
 # extract results 
-
 # plot results. 
 
 
@@ -1137,7 +1132,7 @@ def cancel_job( jobid ):
     update_local_job_details( "CurrentJobId",  -1 )
         
 def erase_all_data():
-    """ -function to erase all data for a clean start.  Use with caution!"""
+    """ -function to erase all data for a clean start. Use with caution!"""
 
     JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, \
                 nJobStreams, nReplicates, nBaseNames = check_job_structure()
@@ -1148,7 +1143,6 @@ def erase_all_data():
     print(("{}Proceed with caution!{}".format(RED, DEFAULT)))
     print("This operation will delete all data in the folders:\n")
     print(("/{}                              ".format(JobStreams,DEFAULT))) 
-    print("/JobLog/                         - Job logs.") 
     print("/Setup_and_Config/Benchmarking/  - Benchmarking data.") 
 
     strg = input("\n Press enter to quit or type: '{}erase all my data{}': ".format(YELLOW, DEFAULT))
@@ -1164,6 +1158,14 @@ def erase_all_data():
                 shutil.rmtree( TargetDir )
             else:
                 print((" Couldn't see {}".format(TargetDir)))
+        # cleanup benchmark files:
+        benchmark_delete = ["current_MD_run_files.*", "slurm*", "bm_config.*" ,"FFTW_*", "temp_working_errors", "bm_input.*"] 
+        for j in benchmark_delete:
+            filetarget = cwd + "/Setup_and_Config/Benchmarking/" + j
+            p = glob.glob(filetarget)
+            for m in p:
+                os.remove(m)  
+
 
         print("\nOh the humanity. I sure hope that wasn't anything important.")
     else: 
@@ -1184,7 +1186,7 @@ def create_dcd_file_loader( first = 0, last = -1, step =1):
 
 def clone():
     """ -function to clone directory without data, but preserving input files."""
-    print("-- cloning data directory!!") 
+    print("-- cloning data directory. Not implimented yet.") 
 
 
 

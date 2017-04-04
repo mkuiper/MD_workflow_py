@@ -54,7 +54,7 @@ def main():
     parser.add_argument("-i","--initialize", help="initialize directories", action="store_true")
     parser.add_argument("-p","--populate",   help="populate directories with scripts", action="store_true")
     parser.add_argument("-c","--checkjob",   help="check job inputs", action="store_true")
-    parser.add_argument("-b","--benchmark",  help="benchmark jobs", action="store_true")
+#   parser.add_argument("-b","--benchmark",  help="benchmark jobs", action="store_true")
     parser.add_argument("-s","--start",      help="start all jobs", action="store_true")
     parser.add_argument("-r","--restart",    help="restart all jobs", action="store_true")
     parser.add_argument("-g","--gather",     help="gather data files in /Analysis", action="store_true")
@@ -81,9 +81,9 @@ def main():
     if args.checkjob: 
         print((YELLOW+"Checking job input:"+DEFAULT))
         mdwf.check_job()
-    if args.benchmark: 
-        print((YELLOW+"Benchmarking job:"+DEFAULT))
-        mdwf.benchmark()
+#   if args.benchmark: 
+#       print((YELLOW+"Benchmarking job:"+DEFAULT))
+#       mdwf.benchmark()
     if args.start: 
         print((YELLOW+"Starting all jobs:"+DEFAULT))
         mdwf.start_all_jobs()

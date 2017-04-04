@@ -3,39 +3,49 @@
 import os
 import sys 
 import shutil
+import json
 import subprocess
 import fileinput
+from datetime import datetime
+from Benchmark_setup import read_benchmark_parameters
 
-""" A python script to help run benchmarking runs on avoca."""
-
-# number of nodes to try for job (must be a multiple of 2 (or 1)):
-nodelist = [1,2,4,8,16]
-# nodelist = [1,2,4,8,16,32,64]        # -use a longer node list for bigger test jobs. 
-
-# processors per node:
-ppn = [1,4,8,16,64] 
-
-# -------------------------------------------------------------
+""" A python script to help run benchmarking runs on barcoo"""
 def run_benchmark():
-    for i in nodelist:
-	for j in ppn:
-	    ntpn = 64/j
-            bm_script = write_benchmark_config(i,j,ntpn)
-            
-            subprocess.Popen(['sbatch', bm_script])
-            
+    # check if input files exists.
+    if not os.path.exists("bm_input.coor"):
+        print("Input files not found. Have you run the benchmark setup to generate input files? \n(python Benchmark_setup.py)")
+        exit()
 
-def write_benchmark_config(i,j,ntpn):
+    # read benchmark parameters:
+    bmp = read_benchmark_parameters()
+    nodelist = bmp["NODELIST"]
+    account  = bmp["ACCOUNT"]
+    runtime  = bmp["RUNTIME"]
+    module   = bmp["MODULEFILE"]
+
+    date = datetime.now().strftime("%d:%m:%Y %H:%M ")
+    p = "Starting new benchmark run: " + date + "\nNodes  \tns/day\tns/node            (ns- nanoseconds)"    
+    with open("raw_benchmark_data.txt", "a") as f:
+            f.write(p)
+            f.write("\n")
+            f.close
+    
+    for i in nodelist:
+        bm_script = write_benchmark_config(i, account, runtime, module)
+        subprocess.Popen(['sbatch', bm_script])
+
+def write_benchmark_config(i, account, runtime, module):
     '''simple script to substitute values into benchmarking config script'''
     
-    bm_name = 'bm_config.' + str(i) + '.' + str(j) + '.' + 'sbatch'
+    bm_name = 'bm_config.' + str(i) + '.sbatch'
     name = bm_name
-    shutil.copy( 'sbatch_benchmark_template', 'temp_bm_config')
+    shutil.copy( 'Templates/sbatch_benchmark_template', 'temp_bm_config')
     
     for line in fileinput.FileInput( 'temp_bm_config', inplace=True ):
-        line = line.replace( 'XXXnodes', str(i)    )
-        line = line.replace( 'XXXppn',   str(j)    )
-        line = line.replace( 'XXXntpn',  str(ntpn) )
+        line = line.replace('XXXnodes', str(i)    )
+        line = line.replace('XXXaccount', account)
+        line = line.replace('XXXtime', runtime)
+        line = line.replace('XXXmodule', module)
         sys.stdout.write(line)
    
     shutil.copy( 'temp_bm_config', bm_name ) 

@@ -4,8 +4,8 @@
 # Generic equilibration NAMD script             M.Kuiper Mar 2017
 ######################################################################
 
-structure            ../../InputFiles/example.psf
-coordinates          ../../InputFiles/example.pdb
+structure            ../../InputFiles/XXX.psf
+coordinates          ../../InputFiles/XXX.pdb
 
 # OutputName is a generic name for moving files.
 outputName           bm_input
@@ -57,9 +57,9 @@ langevinHydrogen    off
 
 ##  Periodic Boundary Conditions: -----------------------------------
 # make sure to check that the cell dimensions match your input files! 
-cellBasisVector1     48        0.      0.
-cellBasisVector2     0.      48        0.
-cellBasisVector3     0.      0.      48
+cellBasisVector1     PBCX        0.      0.
+cellBasisVector2     0.      PBCY        0.
+cellBasisVector3     0.      0.      PBCZ
 cellOrigin           0       0       0
 wrapAll             on
 wrapWater           on
