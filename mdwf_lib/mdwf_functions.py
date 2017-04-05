@@ -531,8 +531,7 @@ def initialize_job_directories():
     for i in range(0, nJobStreams):
         TargetJobDir = cwd + "/" + JobStreams[i]
         if not os.path.exists(TargetJobDir):
-            print(("Job Stream directory /{} does not exist.\
-                   Making new directory.".format(TargetJobDir)))
+            print(("Job Stream directory /{} does not exist. \nMaking new directory.\n".format(TargetJobDir)))
             os.makedirs(JobStreams[i]) 
 
         # Copy directory structure from /Setup_and Config/JobTemplate
@@ -573,8 +572,6 @@ def populate_job_directories():
     ljdf_t[ 'CurrentRound' ]    = mcf["Round"]
     ljdf_t[ 'Account' ]         = mcf["Account"]
     ljdf_t[ 'Nodes' ]           = mcf["nodes"]
-##    ljdf_t[ 'ntpn' ]            = mcf["ntpn"]
-##    ljdf_t[ 'ppn' ]             = mcf["ppn"]
     ljdf_t[ 'Walltime' ]        = mcf["Walltime"]
     ljdf_t[ 'JobFailTime' ]     = mcf["JobFailTime"]
     ljdf_t[ 'DiskSpaceCutOff' ] = mcf["DiskSpaceCutOff"]
@@ -626,8 +623,6 @@ def populate_job_directories():
         nnodes   = "#SBATCH --nodes="   + mcf["nodes"]
         ntime    = "#SBATCH --time="    + mcf["Walltime"]
         naccount = "#SBATCH --account=" + mcf["Account"]
-##        nntpn    = "ntpn="              + mcf["ntpn"]
-##        nppn     = "ppn="               + mcf["ppn"]
         nmodule  = "module load "       + ModuleFile
         nopt     = "optimize_script="   + OptScript
         nprod    = "production_script=" + ProdScript
@@ -641,8 +636,6 @@ def populate_job_directories():
                 line = line.replace('#SBATCH --nodes=X',   nnodes  )   
                 line = line.replace('#SBATCH --time=X',    ntime   )   
                 line = line.replace('#SBATCH --account=X', naccount)   
-##                line = line.replace('ntpn=X',              nntpn   )   
-##                line = line.replace('ppn=X',               nppn    )   
                 line = line.replace('module load X',       nmodule )   
                 line = line.replace('optimize_script=X',   nopt    )   
                 line = line.replace('production_script=X', nprod   )   
@@ -944,12 +937,11 @@ def restart_all_production_jobs():
 
 ## check_job_status
 
-    restartscript = mcf["SbatchProductionScript"]
-    execute_function_in_job_tree(restart_jobs, restartscript)
-    
-def restart_jobs(restartscript):
+    restart_script = mcf["SbatchProductionScript"]
+    execute_function_in_job_tree(restart_jobs, restart_script)
+ 
+def restart_jobs(restart_script):
     """ function to restart production jobs """
-
     cwd = os.getcwd()
     jobstatus, jobid, jobrun = check_if_job_running()
     ljdf_t = read_local_job_details( ".", "local_job_details.json" )
@@ -959,10 +951,11 @@ def restart_jobs(restartscript):
     message   = ljdf_t["JobMessage"] 
     pauseflag = ljdf_t["PauseJobFlag"]
  
-    time.sleep( 0.2 )
+    time.sleep(0.25)
     status1 = ["running", "submitted"]
     status2 = ["cancelled", "stopped"]
     status3 = ["finsihed", "ready"]
+    
     if jobstatus in status1:
         print(("{}:{}  A job appears to be submitted or running here already.".format(cwd[-20:], jobid)))
         return
@@ -972,13 +965,13 @@ def restart_jobs(restartscript):
         return
 
     if jobstatus in status3:
-        if "cleared" in message:        # assume restarting from cancelled job.   
+        if "Cleared" in message:        # assume restarting from cancelled job.   
             pausejob_flag("remove")     # -so we don't increment CurrentRun number
             update_local_job_details("CurrentRun",  (current+1))
             update_local_job_details("JobStatus",  "submitted")
             update_local_job_details("JobMessage", "Production job restarted")
-            subprocess.Popen(['sbatch', restartscript])
-            return 
+            subprocess.Popen(['sbatch', restart_script])
+        return 
 
         if current >= total: 
             print(("{}{}:{} Current run number equal or greater than total runs. Use './mdwf -e' to extend runs.".format(RED, cwd[-20:],DEFAULT)))

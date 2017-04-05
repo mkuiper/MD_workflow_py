@@ -11,9 +11,9 @@
 "PBC_Z"          : "48",
 
 "ACCOUNT"        : "VR0021",
-"NODELIST"       : [1,2,4,8,16],
+"NODELIST"       : [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,30,32],
 "MODULEFILE"     : "namd-intel/2.12",
-"RUNTIME"        : "2:0:0",
+"RUNTIME"        : "0:10:0",
 
 
 "Comment3"       : "number of nodes for short equilibration run",

@@ -25,7 +25,7 @@ def run_benchmark():
 
     date = datetime.now().strftime("%d:%m:%Y %H:%M ")
     p = "Starting new benchmark run: " + date + "\nNodes  \tns/day\tns/node            (ns- nanoseconds)"    
-    with open("raw_benchmark_data.txt", "a") as f:
+    with open("raw_benchmark_data.txt", "w") as f:
             f.write(p)
             f.write("\n")
             f.close
