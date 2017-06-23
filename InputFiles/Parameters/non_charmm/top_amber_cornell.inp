@@ -117,60 +117,60 @@
 !
 !  AMBER atom types and masses (from all_nuc94.in)
 !
-MASS    1  BR 79.90          !  bromine
-MASS    2  C  12.01          !  sp2 C carbonyl group 
-MASS    3  CA 12.01          !  sp2 C pure aromatic (benzene)
-MASS    4  CB 12.01          !  sp2 aromatic C, 5&6 membered ring junction
-MASS    5  CC 12.01          !  sp2 aromatic C, 5 memb. ring HIS
-MASS    6  CK 12.01          !  sp2 C 5 memb.ring in purines
-MASS    7  CM 12.01          !  sp2 C  pyrimidines in pos. 5 & 6
-MASS    8  CN 12.01          !  sp2 C aromatic 5&6 memb.ring junct.(TRP)
-MASS    9  CQ 12.01          !  sp2 C in 5 mem.ring of purines between 2 N
-MASS   10  CR 12.01          !  sp2 arom as CQ but in HIS
-MASS   11  CT 12.01          !  sp3 aliphatic C
-MASS   12  CV 12.01          !  sp2 arom. 5 memb.ring w/1 N and 1 H (HIS)
-MASS   13  CW 12.01          !  sp2 arom. 5 memb.ring w/1 N-H and 1 H (HIS)
-MASS   14  CS 12.01          !  sp2 arom. 5 memb.ring w/1 subst. (TRP)
-MASS   15  C0 40.08          !  calcium
-MASS   16  H  1.008          !  H bonded to nitrogen atoms
-MASS   17  HC 1.008          !  H aliph. bond. to C without electrwd.group
-MASS   18  H1 1.008          !  H aliph. bond. to C with 1 electrwd. group
-MASS   19  H2 1.008          !  H aliph. bond. to C with 2 electrwd.groups
-MASS   20  H3 1.008          !  H aliph. bond. to C with 3 eletrwd.groups
-MASS   21  HA 1.008          !  H arom. bond. to C without elctrwd. groups
-MASS   22  H4 1.008          !  H arom. bond. to C with 1 electrwd. group
-MASS   23  H5 1.008          !  H arom. bond. to C with 2 electrwd. groups
-MASS   24  HO 1.008          !  hydroxyl group
-MASS   25  HS 1.008          !  hydrogen bonded to sulphur
-MASS   26  HW 1.008          !  H in TIP3P water
-MASS   27  HP 1.008          !  H bonded to C next to positively charged gr
-MASS   28  F  19.00          !  fluorine
-MASS   29  I  126.9          !  iodine
-MASS   30  IM 35.45          !  assumed to be Cl-
-!MASS   31  IP 22.99          !  assumed to be Na+
-MASS   31  SOD 22.99          ! niu
-MASS   32  IB 131.0          !  'big ion w/ waters' for vacuum (Na+, 6H2O)
-MASS   33  MG 24.305         !  magnesium
-MASS   34  N  14.01          !  sp2 nitrogen in amide groups
-MASS   35  NA 14.01          !  sp2 N in 5 memb.ring w/H atom (HIS)
-MASS   36  NB 14.01          !  sp2 N in 5 memb.ring w/LP (HIS,ADE,GUA)
-MASS   37  NC 14.01          !  sp2 N in 6 memb.ring w/LP (ADE,GUA)
-MASS   38  N2 14.01          !  sp2 N in amino groups
-MASS   39  N3 14.01          !  sp3 N for charged amino groups (Lys, etc)
-MASS   40  NS 14.01          !  sp2 N; note N* --> NS to avoid confusion with wildcard
-MASS   41  O  16.00          !  carbonyl group oxygen
-MASS   42  OW 16.00          !  oxygen in TIP3P water
-MASS   43  OH 16.00          !  oxygen in hydroxyl group
-MASS   44  OS 16.00          !  ether and ester oxygen
-MASS   45  O2 16.00          !  carboxyl and phosphate group oxygen
-MASS   46  P  30.97          !  phosphate
-MASS   47  S  32.06          !  sulphur in disulfide linkage
-MASS   48  SH 32.06          !  sulphur in cystine
-MASS   49  CU 63.55          !  copper
-MASS   50  FE 55.00          !  iron
-MASS   51  Li  6.94          !  lithium
-MASS   52  K  39.10          !  potassium
-MASS   53  Rb 85.47          !  rubidium
+MASS  -1  BR        79.90000 !  bromine
+MASS  -1  C         12.01000 !  sp2 C carbonyl group 
+MASS  -1  CA        12.01000 !  sp2 C pure aromatic (benzene)
+MASS  -1  CB        12.01000 !  sp2 aromatic C, 5&6 membered ring junction
+MASS  -1  CC        12.01000 !  sp2 aromatic C, 5 memb. ring HIS
+MASS  -1  CK        12.01000 !  sp2 C 5 memb.ring in purines
+MASS  -1  CM        12.01000 !  sp2 C  pyrimidines in pos. 5 & 6
+MASS  -1  CN        12.01000 !  sp2 C aromatic 5&6 memb.ring junct.(TRP)
+MASS  -1  CQ        12.01000 !  sp2 C in 5 mem.ring of purines between 2 N
+MASS  -1  CR        12.01000 !  sp2 arom as CQ but in HIS
+MASS  -1  CT        12.01000 !  sp3 aliphatic C
+MASS  -1  CV        12.01000 !  sp2 arom. 5 memb.ring w/1 N and 1 H (HIS)
+MASS  -1  CW        12.01000 !  sp2 arom. 5 memb.ring w/1 N-H and 1 H (HIS)
+MASS  -1  CS        12.01000 !  sp2 arom. 5 memb.ring w/1 subst. (TRP)
+MASS  -1  C0        40.08000 !  calcium
+MASS  -1  H          1.00800 !  H bonded to nitrogen atoms
+MASS  -1  HC         1.00800 !  H aliph. bond. to C without electrwd.group
+MASS  -1  H1         1.00800 !  H aliph. bond. to C with 1 electrwd. group
+MASS  -1  H2         1.00800 !  H aliph. bond. to C with 2 electrwd.groups
+MASS  -1  H3         1.00800 !  H aliph. bond. to C with 3 eletrwd.groups
+MASS  -1  HA         1.00800 !  H arom. bond. to C without elctrwd. groups
+MASS  -1  H4         1.00800 !  H arom. bond. to C with 1 electrwd. group
+MASS  -1  H5         1.00800 !  H arom. bond. to C with 2 electrwd. groups
+MASS  -1  HO         1.00800 !  hydroxyl group
+MASS  -1  HS         1.00800 !  hydrogen bonded to sulphur
+MASS  -1  HW         1.00800 !  H in TIP3P water
+MASS  -1  HP         1.00800 !  H bonded to C next to positively charged gr
+MASS  -1  F         19.00000 !  fluorine
+MASS  -1  I        126.90000 !  iodine
+MASS  -1  IM        35.45000 !  assumed to be Cl-
+!MASS   -1  IP 22.99          !  assumed to be Na+
+MASS  -1  SOD       22.99000 ! niu
+MASS  -1  IB       131.00000 !  'big ion w/ waters' for vacuum (Na+, 6H2O)
+MASS  -1  MG        24.30500 !  magnesium
+MASS  -1  N         14.01000 !  sp2 nitrogen in amide groups
+MASS  -1  NA        14.01000 !  sp2 N in 5 memb.ring w/H atom (HIS)
+MASS  -1  NB        14.01000 !  sp2 N in 5 memb.ring w/LP (HIS,ADE,GUA)
+MASS  -1  NC        14.01000 !  sp2 N in 6 memb.ring w/LP (ADE,GUA)
+MASS  -1  N2        14.01000 !  sp2 N in amino groups
+MASS  -1  N3        14.01000 !  sp3 N for charged amino groups (Lys, etc)
+MASS  -1  NS        14.01000 !  sp2 N; note N* --> NS to avoid confusion with wildcard
+MASS  -1  O         16.00000 !  carbonyl group oxygen
+MASS  -1  OW        16.00000 !  oxygen in TIP3P water
+MASS  -1  OH        16.00000 !  oxygen in hydroxyl group
+MASS  -1  OS        16.00000 !  ether and ester oxygen
+MASS  -1  O2        16.00000 !  carboxyl and phosphate group oxygen
+MASS  -1  P         30.97000 !  phosphate
+MASS  -1  S         32.06000 !  sulphur in disulfide linkage
+MASS  -1  SH        32.06000 !  sulphur in cystine
+MASS  -1  CU        63.55000 !  copper
+MASS  -1  FE        55.00000 !  iron
+MASS  -1  Li         6.94000 !  lithium
+MASS  -1  K         39.10000 !  potassium
+MASS  -1  Rb        85.47000 !  rubidium
 
 DECL  -CA                    !  proteins
 DECL  -C

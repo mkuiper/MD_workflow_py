@@ -13,41 +13,41 @@
 !Energies in Molecular Systems, Journal of Chemical Physics, 1996, 105:
 !1902-21.
 
-MASS     1 H      1.00800 ! hydrogen which can h-bond to neutral atom
-MASS     2 HC     1.00800 !   -    "     -               charged atom
-MASS     3 HA     1.00800 ! aliphatic hydrogen
-MASS     4 HT     1.00800 ! TIPS3P WATER HYDROGEN
-MASS     5 LP     0.0     ! ST2 LONE PAIR
-MASS    10 CT    12.01100 ! aliphatic carbon
-MASS    11 C     12.01100 ! carbonyl carbon
-MASS    12 CH1E  13.01900 ! extended atom carbon w/ one hydrogen
-MASS    13 CH2E  14.02700 !   -    "    -           two
-MASS    14 CH3E  15.03500 !   -    "    -           three
-MASS    15 CR1E  13.01900 !   -    "    -        in aromatic ring w/ one H
-MASS    16 CM    12.01100 ! carbon in carbonmonoxide
-MASS    31 N     14.00670 ! peptide nitrogen with no hydrogens attached
-MASS    32 NR    14.00670 ! nitrogen in aromatic ring with no hydrogens
-MASS    33 NP    14.00670 ! pyrole nitrogen
+MASS  -1  H          1.00800 ! hydrogen which can h-bond to neutral atom
+MASS  -1  HC         1.00800 !   -    "     -               charged atom
+MASS  -1  HA         1.00800 ! aliphatic hydrogen
+MASS  -1  HT         1.00800 ! TIPS3P WATER HYDROGEN
+MASS  -1  LP         0.00000 ! ST2 LONE PAIR
+MASS  -1  CT        12.01100 ! aliphatic carbon
+MASS  -1  C         12.01100 ! carbonyl carbon
+MASS  -1  CH1E      13.01900 ! extended atom carbon w/ one hydrogen
+MASS  -1  CH2E      14.02700 !   -    "    -           two
+MASS  -1  CH3E      15.03500 !   -    "    -           three
+MASS  -1  CR1E      13.01900 !   -    "    -        in aromatic ring w/ one H
+MASS  -1  CM        12.01100 ! carbon in carbonmonoxide
+MASS  -1  N         14.00670 ! peptide nitrogen with no hydrogens attached
+MASS  -1  NR        14.00670 ! nitrogen in aromatic ring with no hydrogens
+MASS  -1  NP        14.00670 ! pyrole nitrogen
 !MASS    34 NH1E  15.01470 ! extended atom peptide nitrogen with one hydrogen
 !MASS    35 NH2E  16.02270 !  -       "        -                 two   -"-
 !MASS    36 NH3E  17.03070 !  -       "        -                 three -"-
 !MASS    37 NC2E  16.02270 ! extended atom charged guanidinium nitrogen w/ 2 H
-MASS    38 NH1   14.00670 ! peptide nitrogen bound to one hydrogen
-MASS    39 NH2   14.00670 !  -       "        -       two -"-
-MASS    40 NH3   14.00670 ! nitrogen bound to three hydrogens
-MASS    41 NC2   14.00670 ! charged guanidinuim nitrogen bound to two hydrogens
-MASS    51 O     15.99940 ! carbonyl oxygen
-MASS    52 OC    15.99940 ! carboxy oxygen
+MASS  -1  NH1       14.00670 ! peptide nitrogen bound to one hydrogen
+MASS  -1  NH2       14.00670 !  -       "        -       two -"-
+MASS  -1  NH3       14.00670 ! nitrogen bound to three hydrogens
+MASS  -1  NC2       14.00670 ! charged guanidinuim nitrogen bound to two hydrogens
+MASS  -1  O         15.99940 ! carbonyl oxygen
+MASS  -1  OC        15.99940 ! carboxy oxygen
 !MASS    53 OH1E  17.00740 ! extended atom hydroxy oxygen
 !MASS    54 OH2E  18.01540 ! extended atom water
-MASS    55 OH1   15.99940 ! hydroxy oxygen
-MASS    56 OH2   15.99940 ! ST2 water oxygen
-MASS    57 OM    15.99940 ! oxygen in carbonmonoxide
-MASS    58 OT    15.99940 ! TIPS3P WATER OXYGEN
-MASS    59 OS    15.99940 ! ester oxygen
-MASS    81 S     32.06000 ! sulphur
-MASS    82 SH1E  33.06800 ! extended atom sulphur with one hydrogen
-MASS    91 FE    55.84700 ! iron
+MASS  -1  OH1       15.99940 ! hydroxy oxygen
+MASS  -1  OH2       15.99940 ! ST2 water oxygen
+MASS  -1  OM        15.99940 ! oxygen in carbonmonoxide
+MASS  -1  OT        15.99940 ! TIPS3P WATER OXYGEN
+MASS  -1  OS        15.99940 ! ester oxygen
+MASS  -1  S         32.06000 ! sulphur
+MASS  -1  SH1E      33.06800 ! extended atom sulphur with one hydrogen
+MASS  -1  FE        55.84700 ! iron
 
 DECL -C
 DECL -O

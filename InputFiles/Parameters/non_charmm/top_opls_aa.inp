@@ -92,92 +92,92 @@
 !J. Chem. Phys., 115, 10758-10768 (2001).
 !
 
-MASS     1 C135  12.01100  C ! CH3 all-atom C: alkanes ALL-ATOM
-MASS     2 C136  12.01100  C ! CH2 all-atom C: alkanes PARAMETERS
-MASS     3 C137  12.01100  C ! CH all-atom C: alkanes FROM HERE ON
-MASS     4 C145  12.01100  C ! Benzene C - 12 site JACS,112,4768-90
-MASS     5 C149  12.01100  C ! all-atom C: CH2, ethyl benzene
-MASS     6 C157  12.01100  C ! all-atom C: CH3 & CH2, alcohols
-MASS     7 C158  12.01100  C ! all-atom C: CH, alcohols
-MASS     8 C166  12.01100  C ! C(OH) phenol Use with all
-MASS     9 C206  12.01100  C ! all-atom C: CH2, thiols
-MASS    10 C209  12.01100  C ! all-atom C: CH3, sulfides
-MASS    11 C210  12.01100  C ! all-atom C: CH2, sulfides
-MASS    12 C214  12.01100  C ! all-atom C: CH2, disulfides
-MASS    13 C223  12.01100  C ! C in RCH2NH2 and Gly CA (See 900 for amines)
-MASS    14 C224  12.01100  C ! C in R2CHNH2 and Ala CA
-MASS    15 C235  12.01100  C ! C: C=O in amide. Acyl R in amides
-MASS    16 C242  12.01100  C ! C on N: secondary N-Me amide
-MASS    17 C245  12.01100  C ! C on N: tertiary N-CH2R amide (Pro Cdelta)
-MASS    18 C246  12.01100  C ! C on N: tertiary N-CHR2 amide (Pro Calpha)
-MASS    19 C267  12.01100  C ! Co in CCOOH carboxylic acid
-MASS    20 C271  12.01100  C ! C in COO- carboxylate
-MASS    21 C274  12.01100  C ! C: CH2, carboxylate ion
-MASS    22 C283  12.01100  C ! AA C-alpha on C-terminal ALA
-MASS    23 C284  12.01100  C ! AA C-alpha on C-terminal GLY
-MASS    24 C285  12.01100  C ! AA C-alpha on C-terminal PRO
-MASS    25 C292  12.01100  C ! C in RCH2NH3+ & CA in N-term Gly
-MASS    26 C293  12.01100  C ! C in R2CHNH3+ & CA in N-term Ala, etc.
-MASS    27 C295  12.01100  C ! AA:C-alpha in N-term PRO
-MASS    28 C296  12.01100  C ! AA:C-delta in N-term PRO
-MASS    29 C302  12.01100  C ! C: guanidinium C+
-MASS    30 C307  12.01100  C ! C: CH2(D), ARG, ethylguanidinium
-MASS    31 C308  12.01100  C ! C: CH2(G), ARG
-MASS    32 C500  12.01100  C ! CG in TRP
-MASS    33 C501  12.01100  C ! CD C in TRP
-MASS    34 C502  12.01100  C ! CE C in TRP
-MASS    35 C505  12.01100  C ! CB in HIS
-MASS    36 C506  12.01100  C ! CE1 in HID, HIE
-MASS    37 C507  12.01100  C ! CD2 in HID, CG in HIE
-MASS    38 C508  12.01100  C ! CG in HID, CD2 in HIE
-MASS    39 C509  12.01100  C ! CE1 in HIP
-MASS    40 C510  12.01100  C ! CG, CD2 in HIP
-MASS    41 C514  12.01100  C ! CD1 in TRP
-MASS    42 C748  12.01100  C ! CD of neutral ARG
-MASS    43 C752  12.01100  C ! CZ " " "
-MASS    44 C906  12.01100  C ! CH2(N) primary aliphatic amines, H(C) type 911
-MASS    45 H140   1.00800  H ! H all-atom H: alkanes
-MASS    46 H146   1.00800  H ! Benzene H - 12 site "
-MASS    47 H155   1.00800  H ! all-atom H(O): mono alcohols
-MASS    48 H168   1.00800  H ! H phenol 145 & 146
-MASS    49 H204   1.00800  H ! all-atom H(S): thiols (mod 11/99)
-MASS    50 H240   1.00800  H ! H on N: primary amide
-MASS    51 H241   1.00800  H ! H on N: secondary amide
-MASS    52 H270   1.00800  H ! H in CCOOH
-MASS    53 H290   1.00800  H ! H (RNH3+) "
-MASS    54 H301   1.00800  H ! H: guanidinium NH2
-MASS    55 H304   1.00800  H ! H: guanidinium NHR
-MASS    56 H310   1.00800  H ! H (R2NH2+)
-MASS    57 H504   1.00800  H ! H on NE in TRP
-MASS    58 H513   1.00800  H ! H on N in HIP
-MASS    59 H909   1.00800  H ! H(N) primary amines
-MASS    60 H910   1.00800  H ! H(N) secondary amines
-MASS    61 H911   1.00800  H ! H(C) for Carbons directly bonded to N in amines, diamines
-MASS    62 N237  14.00700  N ! N: primary amide. alkane parameters.
-MASS    63 N238  14.00700  N ! N: secondary amide 279 for formyl H.
-MASS    64 N239  14.00700  N ! N: tertiary amide
-MASS    65 N287  14.00700  N ! N (RNH3+) "
-MASS    66 N300  14.00700  N ! N: guanidinium NH2
-MASS    67 N303  14.00700  N ! N: guanidinium NHR
-MASS    68 N309  14.00700  N ! N (R2NH2+)
-MASS    69 N503  14.00700  N ! NE in TRP
-MASS    70 N511  14.00700  N ! NE in HID, ND in HIE
-MASS    71 N512  14.00700  N ! N in HIP
-MASS    72 N749  14.00700  N ! NE "
-MASS    73 N750  14.00700  N ! N1 " " " (HN=CZ)
-MASS    74 N751  14.00700  N ! N2 " " " (H2N-CZ)
-MASS    75 N900  14.00700  N ! N primary amines
-MASS    76 O154  15.99940  O ! all-atom O: mono alcohols
-MASS    77 O167  15.99940  O ! O phenol atom C, H
-MASS    78 O236  15.99940  O ! O: C=O in amide. is neutral - use
-MASS    79 O268  15.99940  O ! Oh in CCOOH R in RCOOH is
-MASS    80 O269  15.99940  O ! Oc in CCOOH neutral; use 135-140
-MASS    81 O272  15.99940  O ! O: O in COO- carboxylate
-MASS    82 S200  32.06000  S ! all-atom S: thiols (mod 11/99)
-MASS    83 S202  32.06000  S ! all-atom S: sulfides
-MASS    84 S203  32.06000  S ! all-atom S: disulfides
-MASS    85 OT    15.99940  O
-MASS    86 HT     1.00800  H
+MASS  -1  C135      12.01100 C ! CH3 all-atom C: alkanes ALL-ATOM
+MASS  -1  C136      12.01100 C ! CH2 all-atom C: alkanes PARAMETERS
+MASS  -1  C137      12.01100 C ! CH all-atom C: alkanes FROM HERE ON
+MASS  -1  C145      12.01100 C ! Benzene C - 12 site JACS,112,4768-90
+MASS  -1  C149      12.01100 C ! all-atom C: CH2, ethyl benzene
+MASS  -1  C157      12.01100 C ! all-atom C: CH3 & CH2, alcohols
+MASS  -1  C158      12.01100 C ! all-atom C: CH, alcohols
+MASS  -1  C166      12.01100 C ! C(OH) phenol Use with all
+MASS  -1  C206      12.01100 C ! all-atom C: CH2, thiols
+MASS  -1  C209      12.01100 C ! all-atom C: CH3, sulfides
+MASS  -1  C210      12.01100 C ! all-atom C: CH2, sulfides
+MASS  -1  C214      12.01100 C ! all-atom C: CH2, disulfides
+MASS  -1  C223      12.01100 C ! C in RCH2NH2 and Gly CA (See 900 for amines)
+MASS  -1  C224      12.01100 C ! C in R2CHNH2 and Ala CA
+MASS  -1  C235      12.01100 C ! C: C=O in amide. Acyl R in amides
+MASS  -1  C242      12.01100 C ! C on N: secondary N-Me amide
+MASS  -1  C245      12.01100 C ! C on N: tertiary N-CH2R amide (Pro Cdelta)
+MASS  -1  C246      12.01100 C ! C on N: tertiary N-CHR2 amide (Pro Calpha)
+MASS  -1  C267      12.01100 C ! Co in CCOOH carboxylic acid
+MASS  -1  C271      12.01100 C ! C in COO- carboxylate
+MASS  -1  C274      12.01100 C ! C: CH2, carboxylate ion
+MASS  -1  C283      12.01100 C ! AA C-alpha on C-terminal ALA
+MASS  -1  C284      12.01100 C ! AA C-alpha on C-terminal GLY
+MASS  -1  C285      12.01100 C ! AA C-alpha on C-terminal PRO
+MASS  -1  C292      12.01100 C ! C in RCH2NH3+ & CA in N-term Gly
+MASS  -1  C293      12.01100 C ! C in R2CHNH3+ & CA in N-term Ala, etc.
+MASS  -1  C295      12.01100 C ! AA:C-alpha in N-term PRO
+MASS  -1  C296      12.01100 C ! AA:C-delta in N-term PRO
+MASS  -1  C302      12.01100 C ! C: guanidinium C+
+MASS  -1  C307      12.01100 C ! C: CH2(D), ARG, ethylguanidinium
+MASS  -1  C308      12.01100 C ! C: CH2(G), ARG
+MASS  -1  C500      12.01100 C ! CG in TRP
+MASS  -1  C501      12.01100 C ! CD C in TRP
+MASS  -1  C502      12.01100 C ! CE C in TRP
+MASS  -1  C505      12.01100 C ! CB in HIS
+MASS  -1  C506      12.01100 C ! CE1 in HID, HIE
+MASS  -1  C507      12.01100 C ! CD2 in HID, CG in HIE
+MASS  -1  C508      12.01100 C ! CG in HID, CD2 in HIE
+MASS  -1  C509      12.01100 C ! CE1 in HIP
+MASS  -1  C510      12.01100 C ! CG, CD2 in HIP
+MASS  -1  C514      12.01100 C ! CD1 in TRP
+MASS  -1  C748      12.01100 C ! CD of neutral ARG
+MASS  -1  C752      12.01100 C ! CZ " " "
+MASS  -1  C906      12.01100 C ! CH2(N) primary aliphatic amines, H(C) type 911
+MASS  -1  H140       1.00800 H ! H all-atom H: alkanes
+MASS  -1  H146       1.00800 H ! Benzene H - 12 site "
+MASS  -1  H155       1.00800 H ! all-atom H(O): mono alcohols
+MASS  -1  H168       1.00800 H ! H phenol 145 & 146
+MASS  -1  H204       1.00800 H ! all-atom H(S): thiols (mod 11/99)
+MASS  -1  H240       1.00800 H ! H on N: primary amide
+MASS  -1  H241       1.00800 H ! H on N: secondary amide
+MASS  -1  H270       1.00800 H ! H in CCOOH
+MASS  -1  H290       1.00800 H ! H (RNH3+) "
+MASS  -1  H301       1.00800 H ! H: guanidinium NH2
+MASS  -1  H304       1.00800 H ! H: guanidinium NHR
+MASS  -1  H310       1.00800 H ! H (R2NH2+)
+MASS  -1  H504       1.00800 H ! H on NE in TRP
+MASS  -1  H513       1.00800 H ! H on N in HIP
+MASS  -1  H909       1.00800 H ! H(N) primary amines
+MASS  -1  H910       1.00800 H ! H(N) secondary amines
+MASS  -1  H911       1.00800 H ! H(C) for Carbons directly bonded to N in amines, diamines
+MASS  -1  N237      14.00700 N ! N: primary amide. alkane parameters.
+MASS  -1  N238      14.00700 N ! N: secondary amide 279 for formyl H.
+MASS  -1  N239      14.00700 N ! N: tertiary amide
+MASS  -1  N287      14.00700 N ! N (RNH3+) "
+MASS  -1  N300      14.00700 N ! N: guanidinium NH2
+MASS  -1  N303      14.00700 N ! N: guanidinium NHR
+MASS  -1  N309      14.00700 N ! N (R2NH2+)
+MASS  -1  N503      14.00700 N ! NE in TRP
+MASS  -1  N511      14.00700 N ! NE in HID, ND in HIE
+MASS  -1  N512      14.00700 N ! N in HIP
+MASS  -1  N749      14.00700 N ! NE "
+MASS  -1  N750      14.00700 N ! N1 " " " (HN=CZ)
+MASS  -1  N751      14.00700 N ! N2 " " " (H2N-CZ)
+MASS  -1  N900      14.00700 N ! N primary amines
+MASS  -1  O154      15.99940 O ! all-atom O: mono alcohols
+MASS  -1  O167      15.99940 O ! O phenol atom C, H
+MASS  -1  O236      15.99940 O ! O: C=O in amide. is neutral - use
+MASS  -1  O268      15.99940 O ! Oh in CCOOH R in RCOOH is
+MASS  -1  O269      15.99940 O ! Oc in CCOOH neutral; use 135-140
+MASS  -1  O272      15.99940 O ! O: O in COO- carboxylate
+MASS  -1  S200      32.06000 S ! all-atom S: thiols (mod 11/99)
+MASS  -1  S202      32.06000 S ! all-atom S: sulfides
+MASS  -1  S203      32.06000 S ! all-atom S: disulfides
+MASS  -1  OT        15.99940 O 
+MASS  -1  HT         1.00800 H 
 
 DECL -CA
 DECL -C

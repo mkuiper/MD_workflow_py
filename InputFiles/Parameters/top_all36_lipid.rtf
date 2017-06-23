@@ -4,6 +4,8 @@
 *
 36  1
 
+!updated 2016/8. see toppar_all.history.
+
 !NOTE: Reordering of atoms in the choline region of the PC lipids as
 !requried for the domain decomposition code in CHARMM.  This will not
 !change the energies/forces, but PSFs generated with the previous
@@ -40,38 +42,38 @@
 !stream file does a RENAME conversion, which allows old coord sets to
 !be updated to the new "all36_lipid" convention.
 
-MASS 136  HL    1.008000 H ! polar H (equivalent to protein H)
-MASS 137  HCL   1.008000 H ! charged H for PE (equivalent to protein HC)
-MASS 138  HOL   1.008000 H ! Nucleic acid phosphate hydroxyl proton
-MASS 139  HAL1  1.008000 H ! alphatic proton
-MASS 140  HAL2  1.008000 H ! alphatic proton
-MASS 141  HAL3  1.008000 H ! alphatic proton
-MASS 142  HEL1  1.008000 H ! for alkene; RHC=CR
-MASS 143  HEL2  1.008000 H ! for alkene; H2C=CR. Currently unused.
-MASS 144  HBL   1.008000 H ! POPS SER backbone H
-MASS 145  CL   12.011000 C ! carbonyl C (acetic acid/methyl acetate)
-MASS 146  CTL1 12.011000 C ! sp3 carbon with 1 H  (-CH1-)
-MASS 147  CTL2 12.011000 C ! carbon of methylene group (-CH2-)
-MASS 148  CTL3 12.011000 C ! carbon of methyl group (-CH3)
-MASS 149  CTL5 12.011000 C ! carbon of methyl group (-CH3) for tetramethylammonium
-MASS 150  CEL1 12.011000 C ! for alkene; RHC=CR
-MASS 151  CEL2 12.011000 C ! for alkene; H2C=CR. Currently unused.
-MASS 152  CCL  12.011000 C ! for POPS
-MASS 153  NTL  14.007000 N ! ammonium nitrogen
-MASS 154  NH3L 14.007000 N ! nitrogen phosphatidylethanolamine
-MASS 155  OBL  15.999400 O ! acetic acid carboxyl oxygen (e. to protein OB)
-MASS 156  OCL  15.999400 O ! acetate oxygen
-MASS 157  OSL  15.999400 O ! ester oxygen
-MASS 158  O2L  15.999400 O ! Nucleic acid =O in phosphate or sulfate
-MASS 159  OHL  15.999400 O ! Nucleic acid phosphate hydroxyl oxygen
-MASS 160  OSLP 15.999400 O ! Phosphate oxygen, to avoid conflict with methylacetate type O
-MASS 161  PL   30.974000 P ! phosphorus
-MASS 162  SL   32.060000 S ! Sulfate sulfur
-MASS 163  CRL1 12.011000 C ! sp3 carbon with 1 H on a ring  (-CH1-) for sterols
-MASS 164  CRL2 12.011000 C ! carbon of methylene group on a ring (-CH2-) for sterols
+MASS  -1  HL         1.00800 H ! polar H (equivalent to protein H)
+MASS  -1  HCL        1.00800 H ! charged H for PE (equivalent to protein HC)
+MASS  -1  HOL        1.00800 H ! Nucleic acid phosphate hydroxyl proton
+MASS  -1  HAL1       1.00800 H ! alphatic proton
+MASS  -1  HAL2       1.00800 H ! alphatic proton
+MASS  -1  HAL3       1.00800 H ! alphatic proton
+MASS  -1  HEL1       1.00800 H ! for alkene; RHC=CR
+MASS  -1  HEL2       1.00800 H ! for alkene; H2C=CR. Currently unused.
+MASS  -1  HBL        1.00800 H ! POPS SER backbone H
+MASS  -1  CL        12.01100 C ! carbonyl C (acetic acid/methyl acetate)
+MASS  -1  CTL1      12.01100 C ! sp3 carbon with 1 H  (-CH1-)
+MASS  -1  CTL2      12.01100 C ! carbon of methylene group (-CH2-)
+MASS  -1  CTL3      12.01100 C ! carbon of methyl group (-CH3)
+MASS  -1  CTL5      12.01100 C ! carbon of methyl group (-CH3) for tetramethylammonium
+MASS  -1  CEL1      12.01100 C ! for alkene; RHC=CR
+MASS  -1  CEL2      12.01100 C ! for alkene; H2C=CR. Currently unused.
+MASS  -1  CCL       12.01100 C ! for POPS
+MASS  -1  NTL       14.00700 N ! ammonium nitrogen
+MASS  -1  NH3L      14.00700 N ! nitrogen phosphatidylethanolamine
+MASS  -1  OBL       15.99940 O ! acetic acid carboxyl oxygen (e. to protein OB)
+MASS  -1  OCL       15.99940 O ! acetate oxygen
+MASS  -1  OSL       15.99940 O ! ester oxygen
+MASS  -1  O2L       15.99940 O ! Nucleic acid =O in phosphate or sulfate
+MASS  -1  OHL       15.99940 O ! Nucleic acid phosphate hydroxyl oxygen
+MASS  -1  OSLP      15.99940 O ! Phosphate oxygen, to avoid conflict with methylacetate type O
+MASS  -1  PL        30.97400 P ! phosphorus
+MASS  -1  SL        32.06000 S ! Sulfate sulfur
+MASS  -1  CRL1      12.01100 C ! sp3 carbon with 1 H on a ring  (-CH1-) for sterols
+MASS  -1  CRL2      12.01100 C ! carbon of methylene group on a ring (-CH2-) for sterols
  
 DEFA FIRS none LAST none
-AUTOGENERATE ANGLES DIHEDRALS
+AUTOGENERATE ANGLES DIHEDRALS PATCH
 
 RESI LPPC        0.00 ! deoxylysophosphatidylcholine 
 ! Polar Head and glycerol backbone
@@ -261,123 +263,6 @@ IC H11X   C310   *C311  H11Y       1.1142  108.75 -116.77  108.84   1.1140
 IC C310   C311   C312   H12X       1.5338  113.19   60.40  110.44   1.1113
 IC H12X   C311   *C312  H12Y       1.1113  110.44 -119.80  110.43   1.1114
 IC H12X   C311   *C312  H12Z       1.1113  110.44  120.09  110.66   1.1113
-
-RESI SDS         -1.00 ! Dodecylsulphate
-GROUP
-ATOM S    SL      1.33 !           OS2(-1)
-ATOM OS1  OSL    -0.28 !             |
-ATOM OS2  O2L    -0.65 !   (-) OS3--S(+2)--OS4 (-)
-ATOM OS3  O2L    -0.65 !             |
-ATOM OS4  O2L    -0.65 !            OS1
-ATOM C1   CTL2   -0.28 !              \
-ATOM H11  HAL2    0.09 !          H11-C1-H12
-ATOM H12  HAL2    0.09 !               |
-GROUP                  !               |
-ATOM C2   CTL2   -0.18 !          H21-C2-H22
-ATOM H21  HAL2    0.09 !               |
-ATOM H22  HAL2    0.09 !               |
-GROUP                  !               |
-ATOM C3   CTL2   -0.18 !          H31-C3-H32
-ATOM H31  HAL2    0.09 !               |
-ATOM H32  HAL2    0.09 !               |
-GROUP                  !               |
-ATOM C4   CTL2   -0.18 !          H41-C4-H42
-ATOM H41  HAL2    0.09 !               |
-ATOM H42  HAL2    0.09 !               |
-GROUP                  !               |
-ATOM C5   CTL2   -0.18 !          H51-C5-H52
-ATOM H51  HAL2    0.09 !               |
-ATOM H52  HAL2    0.09 !               |
-GROUP                  !               |
-ATOM C6   CTL2   -0.18 !          H61-C6-H62
-ATOM H61  HAL2    0.09 !               |
-ATOM H62  HAL2    0.09 !               |
-GROUP                  !               |
-ATOM C7   CTL2   -0.18 !          H71-C7-H72
-ATOM H71  HAL2    0.09 !               |
-ATOM H72  HAL2    0.09 !               |
-GROUP                  !               |
-ATOM C8   CTL2   -0.18 !          H81-C8-H82
-ATOM H81  HAL2    0.09 !               |
-ATOM H82  HAL2    0.09 !               |
-GROUP                  !               |
-ATOM C9   CTL2   -0.18 !          H91-C9-H92
-ATOM H91  HAL2    0.09 !               |
-ATOM H92  HAL2    0.09 !               |
-GROUP                  !               |
-ATOM C10  CTL2   -0.18 !         H101-C10-H102
-ATOM H101 HAL2    0.09 !               |
-ATOM H102 HAL2    0.09 !               |
-GROUP                  !               |
-ATOM C11  CTL2   -0.18 !         H111-C11-H112
-ATOM H111 HAL2    0.09 !               |
-ATOM H112 HAL2    0.09 !               |
-GROUP                  !               |
-ATOM C12  CTL3   -0.27 !         H121-C12-H123
-ATOM H121 HAL3    0.09 !               |
-ATOM H122 HAL3    0.09 !             H122
-ATOM H123 HAL3    0.09 !
-
-BOND  S   OS1 S   OS2  S   OS3  S  OS4 
-BOND  OS1 C1  C1  H11  C1  H12  
-BOND  C1  C2  C2  H21  C2  H22
-BOND  C2  C3  C3  H31  C3  H32
-BOND  C3  C4  C4  H41  C4  H42
-BOND  C4  C5  C5  H51  C5  H52
-BOND  C5  C6  C6  H61  C6  H62
-BOND  C6  C7  C7  H71  C7  H72
-BOND  C7  C8  C8  H81  C8  H82
-BOND  C8  C9  C9  H91  C9  H92
-BOND  C9  C10 C10 H101 C10 H102
-BOND  C10 C11 C11 H111 C11 H112
-BOND  C11 C12 C12 H121 C12 H122 C12 H123
-
-ACCE  OS1
-ACCE  OS2
-ACCE  OS3
-ACCE  OS4
-
-!IC table from IC generate, minimized geometry
-IC  OS4    S      OS1    C1         1.4528  105.54   60.48  114.12   1.4238
-IC  OS2    OS1    *S     OS3        1.4521  103.32  119.41  105.53   1.4528
-IC  OS2    OS1    *S     OS4        1.4521  103.32 -119.41  105.54   1.4528
-IC  OS2    S      OS1    C1         1.4521  103.32  179.90  114.12   1.4238
-IC  S      OS1    C1     C2         1.5670  114.12  179.86  108.48   1.5337
-IC  C2     OS1    *C1    H11        1.5337  108.48 -119.30  111.15   1.1167
-IC  H11    OS1    *C1    H12        1.1167  111.15 -121.39  111.13   1.1167
-IC  OS1    C1     C2     C3         1.4238  108.48 -179.98  112.43   1.5340
-IC  C3     C1     *C2    H21        1.5340  112.43 -121.50  108.71   1.1129
-IC  H21    C1     *C2    H22        1.1129  108.71 -117.02  108.70   1.1129
-IC  C1     C2     C3     C4         1.5337  112.43  179.90  112.76   1.5346
-IC  C4     C2     *C3    H31        1.5346  112.76 -121.58  108.61   1.1129
-IC  H31    C2     *C3    H32        1.1129  108.61 -116.82  108.62   1.1129
-IC  C2     C3     C4     C5         1.5340  112.76 -179.96  112.67   1.5346
-IC  C5     C3     *C4    H41        1.5346  112.67 -121.47  108.80   1.1130
-IC  H41    C3     *C4    H42        1.1130  108.80 -117.09  108.78   1.1130
-IC  C3     C4     C5     C6         1.5346  112.67  179.84  112.66   1.5346
-IC  C6     C4     *C5    H51        1.5346  112.66 -121.41  108.87   1.1131
-IC  H51    C4     *C5    H52        1.1131  108.87 -117.14  108.89   1.1131
-IC  C4     C5     C6     C7         1.5346  112.66 -179.93  112.63   1.5346
-IC  C7     C5     *C6    H61        1.5346  112.63 -121.40  108.95   1.1131
-IC  H61    C5     *C6    H62        1.1131  108.95 -117.23  108.93   1.1131
-IC  C5     C6     C7     C8         1.5346  112.63  179.86  112.65   1.5346
-IC  C8     C6     *C7    H71        1.5346  112.65 -121.36  108.97   1.1132
-IC  H71    C6     *C7    H72        1.1132  108.97 -117.25  108.98   1.1132
-IC  C6     C7     C8     C9         1.5346  112.65 -179.96  112.62   1.5346
-IC  C9     C7     *C8    H81        1.5346  112.62 -121.36  109.02   1.1132
-IC  H81    C7     *C8    H82        1.1132  109.02 -117.30  109.00   1.1132
-IC  C7     C8     C9     C10        1.5346  112.62  179.91  112.64   1.5347
-IC  C10    C8     *C9    H91        1.5347  112.64 -121.34  109.01   1.1132
-IC  H91    C8     *C9    H92        1.1132  109.01 -117.30  109.02   1.1132
-IC  C8     C9     C10    C11        1.5346  112.64 -179.97  112.68   1.5339
-IC  C11    C9     *C10   H101       1.5339  112.68 -121.35  109.07   1.1132
-IC  H101   C9     *C10   H102       1.1132  109.07 -117.32  109.06   1.1132
-IC  C9     C10    C11    C12        1.5347  112.68  179.95  113.31   1.5309
-IC  C12    C10    *C11   H111       1.5309  113.31 -121.69  108.71   1.1141
-IC  H111   C10    *C11   H112       1.1141  108.71 -116.61  108.71   1.1141
-IC  C10    C11    C12    H121       1.5339  113.31  -59.91  110.42   1.1113
-IC  H121   C11    *C12   H122       1.1113  110.42  119.82  110.42   1.1113
-IC  H121   C11    *C12   H123       1.1113  110.42 -120.09  110.61   1.1111
 
 RESI DLPC         0.00 ! 2,3 dilauroyl-D-glycero-1-Phosphatidylcholine
 !

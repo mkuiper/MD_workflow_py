@@ -1,4 +1,8 @@
 
+Summary of the changes to the CHARMM toppar files since ca. 1995.  The
+text gives a good overview of the expansion and improvements in the
+CHARMM force field as a function of the versions of charmm.
+
 Recent advances in the development of empirical force field parameters
 have led to frequent updates of the all-hydrogen (all22) parameter
 sets supplied with charmm.  Currently, the all-hydrogen parameters are
@@ -818,5 +822,107 @@ par_all36_na.prm included in distribution version.
      i) PUFA based alkene parameters modified (will change energies)
      ii) New cholesterol parameters (toppar_all36_lipid_cholesterol.str, will change energies)
      iii) Additional bacterial lipids added (toppar_all36_lipid_bacterial.str)
+
+Summary of changes in version C38, 2015/8
+
+  1) Parameter bugfixes, including conversion of nonbond truncation default to
+  fshift, vfswitch in select toppar file
+
+  2) Stream file for reactive RNA added (toppar_all36_na_reactive_rna.str)
+
+  3) Stream file for neutral arginine added (toppar_all36_prot_arg0.str)
+
+  4) polarizable SWM6 water parameters and test cases added to the drude directory
+
+  5) Update of Drude documentation
+
+  6) Sodium NBFIX parameters added to toppar_water_ions.str (Sep. 2013)
+
+  7) Ceramide/sphingomyelin stream file (Sep. 2013)
+ 
+  8) Cholesterol atom reordering for Domdec (Dec. 2013)
+
+  9) Update of carbohydrate patches and 1,6 glycosidic linkage parameters (Dec. 2013)
+
+ 10) Correction of CTD1 LJ parameters and Proline D CMAP in toppar_all36_prot_d_aminoacids.str
+
+Summary of changes in version C39/40
+
+  1) Minor bug fixes
+
+  2) CHARMM36 FFs in Gromacs format ( http://mackerell.umaryland.edu/charmm_ff.shtml#gromacs )
+
+  3) Addition of various water models in non_charmm subdirectory
+
+  4) stream files moved to subdirectories ( toppar/stream/*/*.str )
+
+  5) Addition of a collection of lipids, glycolipids and lipid-modified amino acids in the stream/lipid subdirectory
+
+  6) Addition of glycoprotein linkages in stream/prot subdirectory
+
+  7) Release of polarizable classical Drude-2013 oscililator model for proteins, DNA, 
+     DPPC lipids and carbohydrates (polyols and hexapyranoses).
+
+  8) Patches for ionized cysteine and serine added to protein parent files
+
+  9) Addition of posttranslation patches in stream/prot subdirectory in toppar_all36_prot_modify_res.str
+
+ 10) Extensive set of ions (coverage of periodic table) in misc/toppar_ions_won.str
+
+ 11) New AAM version of the OPLS protein FF in non_charmm directory: top_opls_aam.inp and par_opls_aam.inp
+
+ 12) Amber parm14sb_all.rtf and .prm added to non_charmm directory: includes proteins and nucleic acids
+
+
+Summary of changes in version C41/42, 2016/8
+
+  1) 'AUTOGENERATE ANGLE DIHEDRAl PATCH' added to all parent toppar
+  files (including the Drude) to avoid missing parameters with
+  patches.  Some issues with Heme patches dealt with using "noangle
+  nodihedral" in the patch command.
+
+  2) Lipid and carbohydrate stream files reorganized to avoid
+  overlapping residues and parameters.  All glycolipids now in
+  toppar_all36_carb_glycolipid.str.
+
+  3) Fatty acids added to toppar_all36_lipid_detergent.str
+
+  4) Modified RNA toppar file added
+  (toppar_all36_na_rna_modified.str).  Includes an extensive set of
+  modifications present in tRNA and other non-canonical RNAs.
+
+  5) Extension of CGenFF to include the following.  This will yield a
+  new verison of the CGenFF program in which the charge model will be
+  updated. This leads to small variations in the charges assigned by
+  the CGenFF program.
+
+      i) New heterocycle parameters associated with the modified RNAs and to deal with new atom type
+introduced in the modified RNA (In progress).
+      ii) New halogen parameters that treat halogen bonds via a virtual particle.  NOTE: use "COOR SHAKe" 
+following compound generation to build lone pairs
+      iii) Addition miscellaneous model compounds.
+
+  6) Patch DEOR added to top_all36_na.rtf to allow for RNA nucleotide
+  in a DNA oligonucleotide.
+
+  7) Correction to toppar_all36_prot_d_aminoacids.str.
+
+  8) Modified version of the C36 protein force field to correct for
+  oversampling of the alphaL conformation.  See par_all36m_prot.prm.
+  No changes in top_all36_prot.rtf.  In addition,
+  toppar_all36m_prot_d_aminoacids.str has been added to stream/prot to
+  treat d amino acids with the modified version of c36m
+
+  9) Sulfamate parameters added to the carbohydrates to allow for
+  simulation of heparin and related systems.
+
+  10) Conversin of MASS/atom type numbers to -1.  Takes advantage of
+  the use of XPLOR format PSF files as the default as they don't
+  require MASS numbers. This will avoid issues with repeated MASS
+  numbers and allow for arrays to be adjusted based on the number of
+  atom types actually used. As non-profit users can get new versions
+  of the program, they will be able to use these files as needed. An
+  old version of the files from the 2016/8 release will be maintained,
+  but they will be discontinuted after that version.
 
 

@@ -8,19 +8,19 @@
 ! 
 !topology for development of quartz and kaolinite parameters
 !
-MASS   1  HT      1.008000 H ! TIPS3P WATER HYDROGEN
-MASS   2  OT      15.99940 O ! TIPS3P WATER OXYGEN
-MASS   3  DUM     1.008000 H ! dummy atom
-MASS 100  HSiO    1.008000 H ! Si hydroxyl hydrogen; 
-MASS 101  HSiA    1.008000 H ! Si aliphatic hydrogen; 
-MASS 102  HAl     1.008000 H ! Si aliphatic hydrogen; 
-MASS 103  OSiH   15.999000 O ! Si Hydroxyl Oxygen; 
-MASS 104  OSiE   15.999000 O ! Si Ester Oxygen; 
-MASS 105  OSiA   15.999000 O ! Si Ester Oxygen; 
-MASS 106  OAl    15.999000 O ! Si Hydroxyl Oxygen; 
-MASS 107  Si     28.085500 Si ! Si Atom; 
-MASS 108  Sih3   28.085500 Si ! Si Atom; 
-MASS 110  Al     26.981540 AL ! Aluminum Atom;
+MASS  -1  HT         1.00800 H ! TIPS3P WATER HYDROGEN
+MASS  -1  OT        15.99940 O ! TIPS3P WATER OXYGEN
+MASS  -1  DUM        1.00800 H ! dummy atom
+MASS  -1  HSiO       1.00800 H ! Si hydroxyl hydrogen; 
+MASS  -1  HSiA       1.00800 H ! Si aliphatic hydrogen; 
+MASS  -1  HAl        1.00800 H ! Si aliphatic hydrogen; 
+MASS  -1  OSiH      15.99900 O ! Si Hydroxyl Oxygen; 
+MASS  -1  OSiE      15.99900 O ! Si Ester Oxygen; 
+MASS  -1  OSiA      15.99900 O ! Si Ester Oxygen; 
+MASS  -1  OAl       15.99900 O ! Si Hydroxyl Oxygen; 
+MASS  -1  Si        28.08550 Si ! Si Atom; 
+MASS  -1  Sih3      28.08550 Si ! Si Atom; 
+MASS  -1  Al        26.98154 AL ! Aluminum Atom;
 
 AUTO ANGLES DIHE   
 

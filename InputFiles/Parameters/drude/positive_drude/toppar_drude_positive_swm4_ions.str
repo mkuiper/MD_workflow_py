@@ -17,21 +17,21 @@ read rtf card
 32    1
 
 !postive Drude
-MASS    40 OWP   15.99940 ! water oxygen
-MASS    41 HWP    1.00800 ! water hydrogen
-MASS    42 LP     0.00000 ! water M site
-MASS    43 DOH2   0.00000 ! Drude for oxygen
+MASS  -1  OWP       15.99940 ! water oxygen
+MASS  -1  HWP        1.00800 ! water hydrogen
+MASS  -1  LP         0.00000 ! water M site
+MASS  -1  DOH2       0.00000 ! Drude for oxygen
 !ions of Lamoureux and Roux
-MASS    60 LIT    6.94100 ! Lithium Ion
-MASS    61 SOD   22.98977 ! Sodium Ion
-MASS    62 POT   39.10200 ! Potassium Ion
-MASS    63 RUB   85.46780 ! Rubidium Ion
-MASS    64 CES  132.90540 ! Cesium Ion
-MASS    65 FLU   18.99840 ! Fluoride Ion
-MASS    66 CLA   35.45300 ! Chloride Ion
-MASS    67 BRO   79.90400 ! Bromide Ion
-MASS    68 IOD  126.90450 ! Iodine Ion
-MASS   100 DRUD   0.00000 ! Drude wildcard
+MASS  -1  LIT        6.94100 ! Lithium Ion
+MASS  -1  SOD       22.98977 ! Sodium Ion
+MASS  -1  POT       39.10200 ! Potassium Ion
+MASS  -1  RUB       85.46780 ! Rubidium Ion
+MASS  -1  CES      132.90540 ! Cesium Ion
+MASS  -1  FLU       18.99840 ! Fluoride Ion
+MASS  -1  CLA       35.45300 ! Chloride Ion
+MASS  -1  BRO       79.90400 ! Bromide Ion
+MASS  -1  IOD      126.90450 ! Iodine Ion
+MASS  -1  DRUD       0.00000 ! Drude wildcard
 
 DEFA FIRS NONE LAST NONE
 AUTO ANGLES DIHE DRUDE  !note use of DRUDE

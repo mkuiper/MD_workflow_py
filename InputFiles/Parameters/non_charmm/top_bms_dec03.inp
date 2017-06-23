@@ -21,62 +21,62 @@
 *
  
 22 1
-MASS  1   CA   12.011000 ! Nucleic acid aromatic carbon to amide
-MASS  2   CB   12.011000 ! Nucleic acid purine C4 and C5
-MASS  3   CE   12.011000 ! Nucleic acid purine C8 and ADE C2
-MASS  4   CF   12.011000 ! Nucleic acid aromatic carbon
-MASS  5   CK   12.011000 ! Nucleic acid carbonyl carbon
-MASS  6   CT5  12.011000 ! Nucleic acid sp3 ribose ring carbon
-MASS  7   CTT  12.011000 ! Nucleic acid carbon (equivalent to protein CT3)
-MASS  8   CT   12.011000 ! ethanol
-MASS  9   CF3  12.011000 ! trifloroethanol 
+MASS  -1  CA        12.01100 ! Nucleic acid aromatic carbon to amide
+MASS  -1  CB        12.01100 ! Nucleic acid purine C4 and C5
+MASS  -1  CE        12.01100 ! Nucleic acid purine C8 and ADE C2
+MASS  -1  CF        12.01100 ! Nucleic acid aromatic carbon
+MASS  -1  CK        12.01100 ! Nucleic acid carbonyl carbon
+MASS  -1  CT5       12.01100 ! Nucleic acid sp3 ribose ring carbon
+MASS  -1  CTT       12.01100 ! Nucleic acid carbon (equivalent to protein CT3)
+MASS  -1  CT        12.01100 ! ethanol
+MASS  -1  CF3       12.01100 ! trifloroethanol 
 
-MASS 10   HA    1.008000 ! ethanol and trifloroethanol
-MASS 11   HA5   1.008000 ! Nucleic acid ribose aliphatic proton
-MASS 12   HAR   1.008000 ! Nucleic acid aromatic carbon proton
-MASS 13   HAT   1.008000 ! Nucleic acid proton (equivalent to protein HA)
-MASS 14   HB    1.008000 ! Nucleic acid ring nitrogen proton
-MASS 15   HNA   1.008000 ! Nucleic acid amine proton
-MASS 16   HO    1.008000 ! Nucleic acid ribose hydroxyl proton
-MASS 17   HOP   1.008000 ! Nucleic acid phosphate hydroxyl proton
-MASS 18   HT    1.008000 ! TIPS3P WATER HYDROGEN
+MASS  -1  HA         1.00800 ! ethanol and trifloroethanol
+MASS  -1  HA5        1.00800 ! Nucleic acid ribose aliphatic proton
+MASS  -1  HAR        1.00800 ! Nucleic acid aromatic carbon proton
+MASS  -1  HAT        1.00800 ! Nucleic acid proton (equivalent to protein HA)
+MASS  -1  HB         1.00800 ! Nucleic acid ring nitrogen proton
+MASS  -1  HNA        1.00800 ! Nucleic acid amine proton
+MASS  -1  HO         1.00800 ! Nucleic acid ribose hydroxyl proton
+MASS  -1  HOP        1.00800 ! Nucleic acid phosphate hydroxyl proton
+MASS  -1  HT         1.00800 ! TIPS3P WATER HYDROGEN
 
-MASS 19   NAN  14.007000 ! Nucleic acid amide nitrogen
-MASS 20   NAG  14.007000 ! Nucleic acid protonated ring nitrogen, gua N1
-MASS 21   NAT  14.007000 ! Nucleic acid protonated ring nitrogen, ura N3
-MASS 22   NB   14.007000 ! Nucleic acid purine ADE N7
-MASS 23   NBG  14.007000 ! Nucleic acid purine GUA N7
-MASS 24   NC   14.007000 ! Nucleic acid unprotonated ring nitrogen
-MASS 25   NCA  14.007000 ! Nucleic acid unprotonated ring nitrogen, ade N1 and N3
-MASS 26   NS   14.007000 ! Nucleic acid protonated ring nitrogen (N9 of ADE,GUA)
-MASS 27   NSP  14.007000 ! Nucleic acid protonated ring nitrogen (N1 of THY,CYT)
-MASS 28   NSR  14.007000 ! RNA Nucleic acid protonated ring nitrogen (N1 of URA,CYT or N9 of ADE, GUA)
+MASS  -1  NAN       14.00700 ! Nucleic acid amide nitrogen
+MASS  -1  NAG       14.00700 ! Nucleic acid protonated ring nitrogen, gua N1
+MASS  -1  NAT       14.00700 ! Nucleic acid protonated ring nitrogen, ura N3
+MASS  -1  NB        14.00700 ! Nucleic acid purine ADE N7
+MASS  -1  NBG       14.00700 ! Nucleic acid purine GUA N7
+MASS  -1  NC        14.00700 ! Nucleic acid unprotonated ring nitrogen
+MASS  -1  NCA       14.00700 ! Nucleic acid unprotonated ring nitrogen, ade N1 and N3
+MASS  -1  NS        14.00700 ! Nucleic acid protonated ring nitrogen (N9 of ADE,GUA)
+MASS  -1  NSP       14.00700 ! Nucleic acid protonated ring nitrogen (N1 of THY,CYT)
+MASS  -1  NSR       14.00700 ! RNA Nucleic acid protonated ring nitrogen (N1 of URA,CYT or N9 of ADE, GUA)
 
-MASS 29   OCP  15.999400 ! Nucleic acid =O in phosphate
-MASS 30   OE   15.999400 ! Nucleic acid ribose ring oxygen
-MASS 31   OH   15.999400 ! Nucleic acid ribose hydroxyl oxygen
-MASS 32   OHP  15.999400 ! Nucleic acid phosphate hydroxyl oxygen
-MASS 33   OK   15.999400 ! Nucleic acid carbonyl oxygen
-MASS 34   OKC  15.999400 ! Nucleic acid carbonyl oxygen, CYT O2
-MASS 35   OKG  15.999400 ! Nucleic acid carbonyl oxygen, GUA O6
-MASS 36   OS   15.999400 ! Nucleic acid phosphate ester oxygen
-MASS 37   OT   15.999400 ! TIPS3P WATER OXYGEN
+MASS  -1  OCP       15.99940 ! Nucleic acid =O in phosphate
+MASS  -1  OE        15.99940 ! Nucleic acid ribose ring oxygen
+MASS  -1  OH        15.99940 ! Nucleic acid ribose hydroxyl oxygen
+MASS  -1  OHP       15.99940 ! Nucleic acid phosphate hydroxyl oxygen
+MASS  -1  OK        15.99940 ! Nucleic acid carbonyl oxygen
+MASS  -1  OKC       15.99940 ! Nucleic acid carbonyl oxygen, CYT O2
+MASS  -1  OKG       15.99940 ! Nucleic acid carbonyl oxygen, GUA O6
+MASS  -1  OS        15.99940 ! Nucleic acid phosphate ester oxygen
+MASS  -1  OT        15.99940 ! TIPS3P WATER OXYGEN
 
-MASS 38   S    32.06     ! Nucleic acid sulphur in 6-thioguanine
+MASS  -1  S         32.06000 ! Nucleic acid sulphur in 6-thioguanine
 
-MASS 39   P    30.974000 ! phosphorus
-MASS 40   MG   24.305000 ! Magnesium Ion
-MASS 41   SOD  22.989770 ! Sodium Ion
-MASS 42   XCL  35.45300  ! Chlorine Ion
-MASS 43   XF   18.998403 ! Fluorine, trifloroethanol
-MASS 44   K    39.0983   ! potassium
-MASS 45   HE    4.0026   ! Helium
-MASS 46   NE   20.179    ! Neon
-MASS 47   AR   39.948    ! Argon
-MASS 100  DUM   0.001    ! dummy atom
+MASS  -1  P         30.97400 ! phosphorus
+MASS  -1  MG        24.30500 ! Magnesium Ion
+MASS  -1  SOD       22.98977 ! Sodium Ion
+MASS  -1  XCL       35.45300 ! Chlorine Ion
+MASS  -1  XF        18.99840 ! Fluorine, trifloroethanol
+MASS  -1  K         39.09830 ! potassium
+MASS  -1  HE         4.00260 ! Helium
+MASS  -1  NE        20.17900 ! Neon
+MASS  -1  AR        39.94800 ! Argon
+MASS  -1  DUM        0.00100 ! dummy atom
 
-MASS 101  OW   15.999400 ! TIP3P water model, J. Chem. Phys., 79, 926, 1983.
-MASS 102  HW    1.008000 ! TIP3P water model, J. Chem. Phys., 79, 926, 1983.
+MASS  -1  OW        15.99940 ! TIP3P water model, J. Chem. Phys., 79, 926, 1983.
+MASS  -1  HW         1.00800 ! TIP3P water model, J. Chem. Phys., 79, 926, 1983.
 
 DECL  +P
 DECL  +O1P
