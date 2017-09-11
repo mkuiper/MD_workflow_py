@@ -4,7 +4,8 @@
 "Flavour"      : "Namd",
 "UserName"     : "anon",
 "Walltime"     : "2:0:0",
-"nodes"        : "4",
+"Nodes"        : "1",
+"TaskPerNode"  : "4",
 "GPUsPerNode"  : "1",
 
 "ModuleFile"   : "namd/2.12-ibverbs-smp-cuda",

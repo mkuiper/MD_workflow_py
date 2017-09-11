@@ -449,7 +449,7 @@ def monitor_jobs():
     mcf = read_master_config_file()
     account  = mcf["Account"]
     walltime = mcf["Walltime"]
-    nodes    = mcf["nodes"]
+    nodes    = mcf["Nodes"]
     cwd = os.getcwd()
     JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams,\
                 nReplicates, nBaseNames = check_job_structure() 
@@ -571,7 +571,7 @@ def populate_job_directories():
     ljdf_t[ 'BASE_DIR' ]        = cwd
     ljdf_t[ 'CurrentRound' ]    = mcf["Round"]
     ljdf_t[ 'Account' ]         = mcf["Account"]
-    ljdf_t[ 'Nodes' ]           = mcf["nodes"]
+    ljdf_t[ 'Nodes' ]           = mcf["Nodes"]
     ljdf_t[ 'Walltime' ]        = mcf["Walltime"]
     ljdf_t[ 'JobFailTime' ]     = mcf["JobFailTime"]
     ljdf_t[ 'DiskSpaceCutOff' ] = mcf["DiskSpaceCutOff"]
@@ -620,9 +620,11 @@ def populate_job_directories():
         ljdf_t['TotalRuns']      = int( Runs[i] )
         ljdf_t['JobBaseName']    = JobBaseNames[i]
 
-        nnodes   = "#SBATCH --nodes="   + mcf["nodes"]
+        nnodes   = "#SBATCH --nodes="   + mcf["Nodes"]
         ntime    = "#SBATCH --time="    + mcf["Walltime"]
         naccount = "#SBATCH --account=" + mcf["Account"]
+        tpn      = "#SBATCH --tasks-per-node=" + mcf["TaskPerNode"]
+        gpus     = "#SBATCH --gres gpu:"   + mcf["GPUsPerNode"]
         nmodule  = "module load "       + ModuleFile
         nopt     = "optimize_script="   + OptScript
         nprod    = "production_script=" + ProdScript
@@ -636,6 +638,8 @@ def populate_job_directories():
                 line = line.replace('#SBATCH --nodes=X',   nnodes  )   
                 line = line.replace('#SBATCH --time=X',    ntime   )   
                 line = line.replace('#SBATCH --account=X', naccount)   
+                line = line.replace('#SBATCH --tasks-per-node=X', tpn)   
+                line = line.replace('#SBATCH --gres gpu:X', gpus)   
                 line = line.replace('module load X',       nmodule )   
                 line = line.replace('optimize_script=X',   nopt    )   
                 line = line.replace('production_script=X', nprod   )   
@@ -707,7 +711,7 @@ def check_job():
     print(("{}------------------------------------------------------------------------------".format(BLUE)))
     print(("{}Sbatch Scripts:     {} %s , %s  ".format(RED, DEFAULT) % \
            (mcf["SbatchEquilibrateScript"], mcf["SbatchProductionScript"])))      
-    print(("{}Nodes:              {} %-12s    ".format(RED, DEFAULT) % (mcf["nodes"])))
+    print(("{}Nodes:              {} %-12s    ".format(RED, DEFAULT) % (mcf["Nodes"])))
     print(("{}Walltime:           {} %-12s    ".format(RED, DEFAULT) % (mcf["Walltime"])))
     if not mcf["Account"] == "VR0000":
         print(("{}Account:            {} %-12s    ".format(RED, DEFAULT) % (mcf["Account"])))
