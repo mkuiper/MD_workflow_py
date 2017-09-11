@@ -1,12 +1,13 @@
 {
 "Comment0"     : "Master_Config_File v0.5",
-"Account"      : "VR0021",
+"Account"      : "AccountNo",
 "Flavour"      : "Namd",
 "UserName"     : "anon",
 "Walltime"     : "2:0:0",
 "nodes"        : "4",
+"GPUsPerNode"  : "1",
 
-"ModuleFile"   : "namd-intel/2.12",
+"ModuleFile"   : "namd/2.12-ibverbs-smp-cuda",
 "PsfFileName"  : "ChangeMe.psf",
 "PdbFileName"  : "ChangeMe.pdb",
 
