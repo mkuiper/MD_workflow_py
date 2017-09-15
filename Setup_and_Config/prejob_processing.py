@@ -15,7 +15,6 @@ jobtype = sys.argv[2]     # job type,
 def main():
 
 ##  performs checks before launching the job:  
-    mdwf.check_disk_quota()        # -checks disk quota on system 
     mdwf.check_pausejob_flag()     # -checks for pausejob flag
     mdwf.check_run_counter()       # -check job counter
  

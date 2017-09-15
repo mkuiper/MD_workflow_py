@@ -23,8 +23,8 @@ NNODE=$SLURM_JOB_NUM_NODES
 NTASKS=$SLURM_NTASKS_PER_NODE
 
 # calculate total processes (P) and processes per node (PPN) (for multinode jobs) 
-PPN=`expr $SLURM_NTASK_PER_NODE - 1`
-P="$(($PPN * $SLURM_NNODES))"
+# PPN=`expr $SLURM_NTASK_PER_NODE - 1`
+# P="$(($PPN * $SLURM_NNODES))"
 
 GPUS="+idlepoll +devices $CUDA_VISIBLE_DEVICES" 
 
@@ -43,7 +43,7 @@ if [ -f pausejob ]; then exit; fi
 
 # run production job:
 if [ $NNODES == 1 ]; then
-  namd2 +ppn $NTASKS $GPUS  $production_script >temp_working_outputfile.out 2>temp_working_errorsfile.err;
+ namd2 +ppn $NTASKS $GPUS  $production_script >temp_working_outputfile.out 2>temp_working_errorsfile.err;
 fi 
 
 

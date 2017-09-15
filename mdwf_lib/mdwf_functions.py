@@ -563,7 +563,7 @@ def populate_job_directories():
          with job scripts that are located in /Setup_and_Config """
 
     JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, \
-                nJobStreams, nReplicates, nBaseNames = check_job_structure() 
+    nJobStreams, nReplicates, nBaseNames = check_job_structure() 
 
     mcf    = read_master_config_file()
     ljdf_t = read_local_job_details()
