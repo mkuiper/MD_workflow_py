@@ -449,6 +449,9 @@ def monitor_jobs():
     """ -function to monitor jobs status on the cluster """ 
 
     mcf = read_master_config_file()
+    if not mcf:
+        return
+ 
     account  = mcf["Account"]
     walltime = mcf["Walltime"]
     nodes    = mcf["Nodes"]
@@ -460,16 +463,20 @@ def monitor_jobs():
     print((" ---------------|---------|---------|-----------|{:^7} |------------ ".format( walltime[:-2])))
 
     for i in range(0,nJobStreams): 
+        if not JobStreams[i]:
+            return
+        
         JobDir = JobStreams[i]
-
         jobdirlist = get_current_dir_list(JobDir) 
-          
-        print(JobDir, jobdirlist)
+
 
         print(("%-24s " %( GREEN + JobDir + ":"+ DEFAULT )))
         for j in jobdirlist:
             dir_path = JobDir + "/" + j
             ljdf_t = read_local_job_details(dir_path, "local_job_details.json")
+            if not ljdf_t:
+                return
+
             jdn    = ljdf_t["JobDirName"]
             qs     = ljdf_t["QueueStatus"]
             js     = ljdf_t["JobStatus"] 
