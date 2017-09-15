@@ -463,12 +463,10 @@ def monitor_jobs():
     print((" ---------------|---------|---------|-----------|{:^7} |------------ ".format( walltime[:-2])))
 
     for i in range(0,nJobStreams): 
-        if not JobStreams[i]:
-            return
-        
         JobDir = JobStreams[i]
         jobdirlist = get_current_dir_list(JobDir) 
-
+        if not jobdirlist:
+            return
 
         print(("%-24s " %( GREEN + JobDir + ":"+ DEFAULT )))
         for j in jobdirlist:
@@ -821,6 +819,10 @@ def benchmark():
 
 def get_current_dir_list(job_dir):
     """ Simple function to return a list of directories in a given path """
+
+    if not os.path.isdir(job_dir):
+        print("No directories found in {}. Have you initialized? \n".format(job_dir))
+        return
     dir_list=[f for f in os.listdir(job_dir) if os.path.isdir(os.path.join(job_dir, f))]
     if not dir_list:
         print("No directories found in {}. Have you initialized? \n".format(job_dir))

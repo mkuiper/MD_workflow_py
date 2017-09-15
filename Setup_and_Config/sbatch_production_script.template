@@ -33,8 +33,8 @@ GPUS="+idlepoll +devices $CUDA_VISIBLE_DEVICES"
 
 #--------------------------------------------------------------------------------------------
 # python script for preprocessing data
-if [ -f prejob_processing.py ]; 
- then python3 prejob_processing.py $SLURM_JOBID -production;
+if [ -f ../prejob_processing.py ]; 
+ then python3 ../prejob_processing.py $SLURM_JOBID -production;
  else echo "No processing script" > pausejob
 fi 
 
@@ -43,14 +43,14 @@ if [ -f pausejob ]; then exit; fi
 
 # run production job:
 if [ $NNODES == 1 ]; then
- namd2 +ppn $NTASKS $GPUS  $production_script >temp_working_outputfile.out 2>temp_working_errorsfile.err;
+ namd2 +ppn $NTASKS $GPUS ../$production_script >temp_working_outputfile.out 2>temp_working_errorsfile.err;
 fi 
 
 
 #--------------------------------------------------------------------------------------------
 # python script for postprocessing data
-if [ -f postjob_processing.py ]; 
- then python3 postjob_processing.py $SLURM_JOBID -production;
+if [ -f ../postjob_processing.py ]; 
+ then python3 ../postjob_processing.py $SLURM_JOBID -production;
  else echo "No processing script" > pausejob
 fi
 
