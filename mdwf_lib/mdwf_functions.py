@@ -814,10 +814,7 @@ def benchmark():
 
 def get_current_dir_list(job_dir):
     """ Simple function to return a list of directories in a given path """
-    jd = job_dir + "*/" 
-    # strip out job_dir path:
-    # dir_list=[p.replace(job_dir,'') for p in glob(jd)]    
-    dir_list= glob(jd)    
+    dir_list=[f for f in os.listdir(job_dir) if os.path.isdir(os.path.join(job_dir, f))]
     if not dir_list:
         print("No directories found in {}. Have you initialized? \n".format(job_dir))
     return dir_list
