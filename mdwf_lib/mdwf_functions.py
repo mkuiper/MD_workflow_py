@@ -6,14 +6,14 @@
 import os
 import subprocess
 import sys 
-from collections import OrderedDict
+from   collections import OrderedDict
 import json
 import shutil
 import fileinput
 import hashlib
 import time 
 import datetime
-import glob
+from   glob import glob
 import re
 
 # ansi color variables for formatting purposes: 
@@ -45,12 +45,14 @@ def read_local_job_details(path="Setup_and_Config",
         returns the dictionary  """  
 
     target = path + "/" + ljdf_target
+
     if os.path.isfile(target):
         local_json = open(target)
         ljdf = json.load(local_json,object_pairs_hook=OrderedDict)
         local_json.close()
     else:
         print(("Can't see {}  Have you populated job tree? ".format(target)))
+        return
     return ljdf
 
 def read_namd_job_details(targetfile):
@@ -376,11 +378,11 @@ def redirect_namd_output( CurrentWorkingName = "current_MD_run_files",
         
 def post_jobrun_cleanup():
     """ remove unwanted error, backup files, etc """
-    for file in glob.glob("slurm*"):
+    for file in glob("slurm*"):
         shutil.move(file, "JobLog/" )
-    for file in glob.glob("core*"):
+    for file in glob("core*"):
         shutil.move(file, "Errors/")
-    for file in glob.glob("*.restart.*"):
+    for file in glob("*.restart.*"):
         shutil.move(file, "LastRestart/")
 
     # reset timer / jobid flags: 
@@ -402,7 +404,7 @@ def update_local_dcd_list():
     f.write("set stepsize  1 \n\n")
     f.write("set cwd " + cwd + "\n\n")
     
-    dcdlist = glob.glob( "OutputFiles/*.dcd" ) 
+    dcdlist = glob( "OutputFiles/*.dcd" ) 
     for i in dcdlist:
         line = " mol addfile %s%s type dcd first %s last %s step %s filebonds 1 autobonds 1 waitfor all\n"\
                 % ( "$cwd/", i, "$firstframe", "$lastframe", "$stepsize")
@@ -413,7 +415,7 @@ def update_local_dcd_list():
 
 def final_job_cleanup():
     """ perform final cleanup once jobruns are finished. """
-    for file in glob.glob("*BAK"):
+    for file in glob("*BAK"):
         os.remove( file )
 
 def log_job_timing():
@@ -459,7 +461,11 @@ def monitor_jobs():
 
     for i in range(0,nJobStreams): 
         JobDir = JobStreams[i]
+
         jobdirlist = get_current_dir_list(JobDir) 
+          
+        print(JobDir, jobdirlist)
+
         print(("%-24s " %( GREEN + JobDir + ":"+ DEFAULT )))
         for j in jobdirlist:
             dir_path = JobDir + "/" + j
@@ -586,12 +592,12 @@ def populate_job_directories():
 ## list files to transfer:
     print(("{}Job Files to transfer from /Setup_and_Config:{}"\
            .format(GREEN, DEFAULT))) 
-    print(("{} {}\n {}".format(BLUE, startscript,\
+    print(("{} {}\n {}".format(DEFAULT, startscript,\
             productionscript)))
     print(" local_job_details.json ")
-    for pyfile in glob.glob(r'Setup_and_Config/*.py' ):
+    for pyfile in glob(r'Setup_and_Config/*.py' ):
         print((" " + pyfile[17:]))    
-    for conffile in glob.glob(r'Setup_and_Config/*.conf' ):
+    for conffile in glob(r'Setup_and_Config/*.conf' ):
         print((" " + conffile[17:]))  
 
 ## descend through job structure and populate job directories:
@@ -604,7 +610,7 @@ def populate_job_directories():
         if not os.path.exists( TargetJobDir ):
             print(("Job directory {} not found. Have you initialized?"\
                    .format(TargetJobDir)))
-            sys.exit(error)
+            sys.exit()
 
 ## create temporary sbatch scripts:
         sb_start_template = "Setup_and_Config/" + startscript + ".template"
@@ -612,7 +618,7 @@ def populate_job_directories():
         if not os.path.exists( sb_start_template ) \
                   or not os.path.exists( sb_prod_template ):
             print("Can't find sbatch template files in Settup_and_Config. Exiting.")
-            sys.exit(error)
+            sys.exit()
 
 ## modify replicate elements in staging dictionary file:
         ljdf_t['JOB_STREAM_DIR'] = JobStreams[i]
@@ -645,39 +651,42 @@ def populate_job_directories():
                 line = line.replace('production_script=X', nprod   )   
                 sys.stdout.write(line)   
 
-## update local job details file:
-        jobdirlist = get_current_dir_list(JobStreams[i])
-        for j in jobdirlist:
+## copy across python and config scripts from /Setup_and_Config to top of each job dir 
+        jobpath  = JobStreams[i] + "/"
+        for pyfile in glob(r'Setup_and_Config/*.py' ):
+            shutil.copy2( pyfile, jobpath )
+        for conffile in glob(r'Setup_and_Config/*.conf' ):
+            shutil.copy2(conffile, jobpath)
 
-            print(("{} -populating: {}{}".format(BLUE, j, DEFAULT)))
-            ljdf_t['JobDirName'] = j
-            ljdfile = JobStreams[i] + "/" + j + "/local_job_details.json"
+## populate job directories with local_job_details and sbatch files
+        jobdirlist = sorted(get_current_dir_list(jobpath))
+
+        if jobdirlist:
+            for j in jobdirlist:
+                print(("{} -populating: {}{}".format(DEFAULT, j, DEFAULT)))
+                ljdf_t['JobDirName'] = j
+                ljdfile = JobStreams[i] + "/" + j + "/local_job_details.json"
          
-            if not os.path.isfile(ljdfile):
-                with open(ljdfile, 'w') as outfile:
-                    json.dump(ljdf_t, outfile, indent=2)
-                outfile.close()
-            else:
-                print(" skipping local_details_file: already exists ")
+        
+                if not os.path.isfile(ljdfile):
+                    with open(ljdfile, 'w') as outfile:
+                        json.dump(ljdf_t, outfile, indent=2)
+                    outfile.close()
+                else:
+                    print(" skipping local_details_file: already exists ")
 
-## copy across python scripts from /Setup_and_Config:
-            jobpath  = JobStreams[i] + "/" + j + "/"
-            sbs_path = jobpath       + "/" + startscript
-            sbp_path = jobpath       + "/" + productionscript
+                jobpath  = JobStreams[i] + "/" + j + "/"
+                sbs_path = jobpath       + "/" + startscript
+                sbp_path = jobpath       + "/" + productionscript
 
-            shutil.copy('sb_start_temp', sbs_path)
-            shutil.copy('sb_prod_temp' , sbp_path)
-
-            for pyfile in glob.glob(r'Setup_and_Config/*.py' ):
-                shutil.copy2( pyfile, jobpath )
-
-            for conffile in glob.glob(r'Setup_and_Config/*.conf' ):
-                shutil.copy2(conffile, jobpath)
+                shutil.copy('sb_start_temp', sbs_path)
+                shutil.copy('sb_prod_temp' , sbp_path)
 
 ## remove tempfiles. 
     os.remove('sb_start_temp')
     os.remove('sb_prod_temp')
     print("\n -done populating directories")
+
 
 def check_job():
     """ Function to check the input of the current job and calculate 
@@ -805,14 +814,13 @@ def benchmark():
 
 def get_current_dir_list(job_dir):
     """ Simple function to return a list of directories in a given path """
-    file_list = []
-    if os.path.isdir(job_dir):
-       file_list =  (sorted(os.listdir(job_dir)))
-    else:
-        sys.stderr.write("No directories found in {}. Have you initialized?\n".format(job_dir))
- 
-    return file_list
-
+    jd = job_dir + "*/" 
+    # strip out job_dir path:
+    # dir_list=[p.replace(job_dir,'') for p in glob(jd)]    
+    dir_list= glob(jd)    
+    if not dir_list:
+        print("No directories found in {}. Have you initialized? \n".format(job_dir))
+    return dir_list
 
 
 def get_curr_job_list(job_dir):
@@ -1159,7 +1167,7 @@ def erase_all_data():
         benchmark_delete = ["current_MD_run_files.*", "slurm*", "bm_config.*" ,"FFTW_*", "temp_working_errors", "bm_input.*"] 
         for j in benchmark_delete:
             filetarget = cwd + "/Setup_and_Config/Benchmarking/" + j
-            p = glob.glob(filetarget)
+            p = glob(filetarget)
             for m in p:
                 os.remove(m)  
 
