@@ -1,0 +1,12 @@
+Charm++: standalone mode (not using charmrun)
+Converse/Charm++ Commit ID: v6.7.1-0-gbdf6a1b-namd-charm-6.7.1-build-2016-Nov-07-136676
+Charm++> scheduler running in netpoll mode.
+Charm++ communication thread will sleep due to single-process run.
+CharmLB> Load balancer assumes all CPUs are same.
+Charm++> Running on 1 unique compute nodes (28-way SMP).
+Charm++> cpu topology info is gathered in 0.016 seconds.
+Info: Built with CUDA version 8000
+Pe 0 physical rank 0 will use CUDA device of pe 2
+FATAL ERROR: CUDA error cudaSetDevice(dev) in file src/DeviceCUDA.C, function initialize
+ on Pe 0 (b001 device 0): invalid device ordinal
+FATAL ERROR: Pe 2 unable to bind to CUDA device 1 on b001 because only 1 devices are present

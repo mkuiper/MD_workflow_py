@@ -1,0 +1,4 @@
+------------- Processor 0 Exiting: Called CmiAbort ------------
+Reason: FATAL ERROR: CUDA error cudaSetDevice(dev) in file src/DeviceCUDA.C, function initialize
+ on Pe 0 (b001 device 0): invalid device ordinal
+

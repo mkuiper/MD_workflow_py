@@ -1,0 +1,8 @@
+------------- Processor 0 Exiting: Called CmiAbort ------------
+Reason: FATAL ERROR: UNABLE TO OPEN CHARMM PARAMETER FILE ../../InputFiles/Parameters/par_all36_prot.prm
+
+
+Charm++ fatal error:
+FATAL ERROR: UNABLE TO OPEN CHARMM PARAMETER FILE ../../InputFiles/Parameters/par_all36_prot.prm
+
+

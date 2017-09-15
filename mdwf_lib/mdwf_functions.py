@@ -826,7 +826,7 @@ def get_current_dir_list(job_dir):
     dir_list=[f for f in os.listdir(job_dir) if os.path.isdir(os.path.join(job_dir, f))]
     if not dir_list:
         print("No directories found in {}. Have you initialized? \n".format(job_dir))
-    return dir_list
+    return sorted(dir_list)
 
 
 def get_curr_job_list(job_dir):
