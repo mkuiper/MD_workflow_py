@@ -1033,8 +1033,9 @@ def recovery_function():
     zf = len( str(total) ) + 1 + 4
     zf_bait = ".dcd".zfill( zf )
 
-    FileList = get_current_file_list( "OutputFiles" )
-    print(FileList)
+    FList = get_current_file_list( "OutputFiles" )
+    FileList = filter(lambda k: '.dcd' in k, FList)
+
 
     line = ljdf["JOB_STREAM_DIR"] + "/" + ljdf["JobDirName"] + "/" +  "OutputFiles:"
     print(("\n{}{}{}".format( GREEN, line, DEFAULT )))
