@@ -284,6 +284,7 @@ def check_run_counter():
         a pausejob flag if they have exceeded the job run cuttoff value.
         It also increment job run counters as necessary """
 
+# read current state:
     ljdf_t  = read_local_job_details( ".", "local_job_details.json" )
     current = ljdf_t['CurrentRun'] 
     total   = int( ljdf_t['TotalRuns'] ) 
@@ -293,10 +294,7 @@ def check_run_counter():
     newrun = int(current) + 1
     update_local_job_details( "LastJobId", jobid )
 
-#   if  "paused" in mesg:
-#       update_local_job_details( "JobStatus", "paused" )
-
-    if  newrun > total:       # -stop jobs if current run equals or greater than totalruns
+    if  newrun >= total:       # -stop jobs if current run equals or greater than total runs.
         update_local_job_details( "JobStatus", "finished" )
         update_local_job_details( "JobMessage", "Finished production runs" )
         update_local_job_details( "PauseJobFlag", "pausejob" )
@@ -828,6 +826,16 @@ def get_current_dir_list(job_dir):
         print("No directories found in {}. Have you initialized? \n".format(job_dir))
     return sorted(dir_list)
 
+def get_current_file_list(job_dir):
+    """ Simple function to return a list of files in a given path """
+
+    if not os.path.isdir(job_dir):
+        print("No directories named {} found. Have you initialized? \n".format(job_dir))
+        return
+    dir_list=[f for f in os.listdir(job_dir) if os.path.isfile(os.path.join(job_dir, f))]
+    if not dir_list:
+        print("No files found in {}. \n".format(job_dir))
+    return sorted(dir_list)
 
 def get_curr_job_list(job_dir):
     """<high-level description of the function here>
@@ -885,8 +893,13 @@ def execute_function_in_job_tree( func, *args ):
         if os.path.isdir( CurrentJobStream ):
             JobStreamDirList = get_current_dir_list( CurrentJobStream ) 
 
+#debug            print(JobStreamDirList) 
+#debug            print(CurrentJobStream) 
+
             for j in JobStreamDirList:
                 CurrentJobDir = CurrentJobStream + '/' + j
+#debug            print (CurrentJobDir)
+
                 if os.path.isdir(CurrentJobDir):
                     os.chdir( CurrentJobDir )
                     func( *args ) 
@@ -1010,6 +1023,7 @@ def recover_all_jobs():
 def recovery_function():
     """ this function checks sizes and md5sums of outputfiles, giving the opportunity
         for a user to recover from the last known good file"""   
+
     ljdf = read_local_job_details( ".", "local_job_details.json" ) 
 
     # the following constructs a string to find the "equilibration" dcd file
@@ -1019,13 +1033,15 @@ def recovery_function():
     zf = len( str(total) ) + 1 + 4
     zf_bait = ".dcd".zfill( zf )
 
-    dirlist = get_current_dir_list( "OutputFiles" )
+    FileList = get_current_file_list( "OutputFiles" )
+    print(FileList)
+
     line = ljdf["JOB_STREAM_DIR"] + "/" + ljdf["JobDirName"] + "/" +  "OutputFiles:"
     print(("\n{}{}{}".format( GREEN, line, DEFAULT )))
 
     #### 
 
-    for i in dirlist:
+    for i in FileList:
         if "dcd" in i:
             path = 'OutputFiles/' + i  
             size = os.path.getsize( path ) 

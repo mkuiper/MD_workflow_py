@@ -16,7 +16,7 @@
 "Comment1"      : "Job Details Section",
 
 "JobStreams"    : ["MainJobDir1"],
-"JobReplicates" : ["3"],
+"JobReplicates" : ["5"],
 "BaseDirNames"  : ["Sim1_"],
 "JobBaseNames"  : ["MyJob1_"],
 "Runs"          : ["5" ],

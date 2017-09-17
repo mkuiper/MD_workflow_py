@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "../postjob_processing.py", line 33, in <module>
+    main()
+  File "../postjob_processing.py", line 30, in main
+    mdwf.post_jobrun_cleanup()                    # -cleanup files 
+  File "/flush1/kui00b/MD_workflow_py/mdwf_lib/mdwf_functions.py", line 386, in post_jobrun_cleanup
+    shutil.move(file, "LastRestart/")
+  File "/usr/lib64/python3.4/shutil.py", line 525, in move
+    raise Error("Destination path '%s' already exists" % real_dst)
+shutil.Error: Destination path 'LastRestart/current_MD_run_files.restart.coor.old' already exists
+Submitted batch job 8299265
