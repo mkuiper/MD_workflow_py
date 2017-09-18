@@ -1,4 +1,4 @@
-#!/usr/local/python/3.6.0-gcc/bin/python3
+#!/usr/bin/python3
 
 import os
 import sys 
@@ -26,7 +26,7 @@ def main():
     mdwf.update_local_job_details("JobStatus", "stopped")
 
     mdwf.redirect_namd_output(filename, jobtype)  # -redirect output
-    mdwf.check_run_counter()                      # -check job counter
+    mdwf.check_run_counter("post")                # -check job counter
     mdwf.post_jobrun_cleanup()                    # -cleanup files 
 
 if __name__ == "__main__":

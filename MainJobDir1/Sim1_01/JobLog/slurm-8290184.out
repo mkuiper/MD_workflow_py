@@ -1,9 +1,0 @@
-/cm/local/apps/slurm/var/spool/job8290184/slurm_script: line 48: [: ==: unary operator expected
-Traceback (most recent call last):
-  File "../postjob_processing.py", line 33, in <module>
-    main()
-  File "../postjob_processing.py", line 28, in main
-    mdwf.redirect_namd_output(filename, jobtype)  # -redirect output
-  File "/flush1/kui00b/MD_workflow_py/mdwf_lib/mdwf_functions.py", line 371, in redirect_namd_output
-    os.rename( cwf_dcd,    "OutputFiles/"  + basename + ".dcd"  )
-FileNotFoundError: [Errno 2] No such file or directory: 'current_MD_run_files.dcd' -> 'OutputFiles/2017_16Sep_MyJob1_run_02.dcd'

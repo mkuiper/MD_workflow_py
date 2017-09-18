@@ -209,11 +209,13 @@ def check_pausejob_flag():
 
     ljdf_t  = read_local_job_details( ".", "local_job_details.json" )
     pause = ljdf_t["PauseJobFlag"]
+    
     if pause != 0:
         f = open( "pausejob", 'a' )
         f.write(" pauseflag already present")
         f.close()
-        update_local_job_details( "JobStatus", "pausejob" )
+        update_local_job_details( "JobStatus",  "pausejob" )
+        update_local_job_details( "JobMessage", "paused" )
 
 def check_disk_quota():
     """ function for checking that there is enough diskspace on the 
@@ -279,31 +281,35 @@ def check_job_runtime():
         update_local_job_details( "JobMessage", "Short run time detected" )
         pausejob_flag( "Short runtime detected - job fail??" )
 
-def check_run_counter():
-    """ This function checks if the job runs are finished, and create 
-        a pausejob flag if they have exceeded the job run cuttoff value.
-        It also increment job run counters as necessary """
+def check_run_counter(processing="post"):
+    """ This function checks the run counter and create a pausejob flag 
+        if they have exceeded the total job run value.
+        Increments job run counter as necessary """
+  # read current state:
+    ljdf_t     = read_local_job_details( ".", "local_job_details.json" )
+    currentrun = int( ljdf_t['CurrentRun'] )
+    totalruns  = int( ljdf_t['TotalRuns'] ) 
+    jobid      = ljdf_t['CurrentJobId' ] 
+  # check to stop jobs if current run greater than total runs.
+    if currentrun > totalruns:
+        cleanup_job_runs()
+        return
+  # increment job number 
+    if (processing =="post"): 
+        newrun = int(currentrun) + 1
+        update_local_job_details( "LastJobId",  jobid )
+        if newrun > totalruns:
+            cleanup_job_runs()
+            return
+        update_local_job_details( "CurrentRun", newrun )
 
-# read current state:
-    ljdf_t  = read_local_job_details( ".", "local_job_details.json" )
-    current = ljdf_t['CurrentRun'] 
-    total   = int( ljdf_t['TotalRuns'] ) 
-    jobid   = ljdf_t['CurrentJobId' ] 
-    mesg    = ljdf_t['JobMessage']
-
-    newrun = int(current) + 1
-    update_local_job_details( "LastJobId", jobid )
-
-    if  newrun >= total:       # -stop jobs if current run equals or greater than total runs.
-        update_local_job_details( "JobStatus", "finished" )
+def cleanup_job_runs():
+        update_local_job_details( "JobStatus",  "Finished" )
         update_local_job_details( "JobMessage", "Finished production runs" )
         update_local_job_details( "PauseJobFlag", "pausejob" )
         update_local_job_details( "CurrentJobId", -1 )
         pausejob_flag( "Job runs finished." )
         final_job_cleanup()     
-        return None
-
-    update_local_job_details( "CurrentRun",  newrun )
 
 def get_job_runtime( starttime, status ):
     """ Function to return runtime of current job in H:M format.
@@ -428,7 +434,7 @@ def check_if_job_running():
     """ function to check if job already running in current working directory """ 
     dir_path = os.getcwd()
     ljdf_t = read_local_job_details( dir_path, "local_job_details.json" ) 
-    current_jobid     = ljdf_t["CurrentJobId"]
+    current_jobid     = str( ljdf_t["CurrentJobId"] )
     current_jobstatus = ljdf_t["JobStatus"]
     current_run = ljdf_t["CurrentRun"]
 

@@ -19,16 +19,17 @@ production_script=X
 module load openmpi
 module load X                # module file
 
-NNODES=$SLURM_JOB_NUM_NODES
+NNODE=$SLURM_JOB_NUM_NODES
 NTASKS=$SLURM_NTASKS_PER_NODE
 
 # calculate total processes (P) and processes per node (PPN) (for multinode jobs) 
 # PPN=`expr $SLURM_NTASK_PER_NODE - 1`
 # P="$(($PPN * $SLURM_NNODES))"
 
-GPUS="+devices $CUDA_VISIBLE_DEVICES" 
+GPUS="+idelpoll +devices $CUDA_VISIBLE_DEVICES" 
+echo "cuda devices: $CUDA_VISBLE_DEVICES" >> cuda.info
 
-# copy current configuration files from above directory. 
+# update current configuration files from above directory. 
 cp ../*.py . 
 cp ../namd* . 
 
@@ -45,10 +46,10 @@ fi
 if [ -f pausejob ]; then exit; fi
 
 # run production job:
-if [ $NNODES == 1 ]; then
-# namd2 +ppn $NTASKS $GPUS $production_script >temp_working_outputfile.out 2>temp_working_errorsfile.err;
+if [ $NNODE == 1 ]; then
 
-namd2 +ppn $NTASKS +devices 0 $production_script >temp_working_outputfile.out 2>temp_working_errorsfile.err;
+  namd2 +ppn $NTASKS $GPUS $production_script >temp_working_outputfile.out 2>temp_working_errorsfile.err;
+ #namd2 +ppn $NTASKS +devices 0 $production_script >temp_working_outputfile.out 2>temp_working_errorsfile.err;
 
 fi 
 

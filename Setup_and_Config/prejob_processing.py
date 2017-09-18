@@ -1,4 +1,4 @@
-#!/usr/local/python/3.6.0-gcc/bin/python3
+#!/usr/bin/python3
 
 import os
 import sys 
@@ -15,8 +15,8 @@ jobtype = sys.argv[2]     # job type,
 def main():
 
 ##  performs checks before launching the job:  
-    mdwf.check_run_counter()       # -check job counter
-    mdwf.check_pausejob_flag()     # -checks for pausejob flag
+    mdwf.check_run_counter("pre")     # -check job counter
+    mdwf.check_pausejob_flag()        # -checks for pausejob flag
  
 ##  update the local job details file: 
     mdwf.update_local_job_details( "CurrentJobId", jobid )

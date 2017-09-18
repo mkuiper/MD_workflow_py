@@ -21,7 +21,7 @@ optimize_script=X
 module load openmpi
 module load X			# namd module file
 
-NNODES=$SLURM_JOB_NUM_NODES
+NNODE=$SLURM_JOB_NUM_NODES
 NTASKS=$SLURM_NTASKS_PER_NODE
 
 # calculate total processes (P) and processes per node (PPN)(for multiple node jobs) 
@@ -29,8 +29,9 @@ NTASKS=$SLURM_NTASKS_PER_NODE
 # P="$(($PPN * $SLURM_NODES))"
 
 GPUS="+devices $CUDA_VISIBLE_DEVICES"
+echo "cuda devices: $CUDA_VISBLE_DEVICES" > cuda.info
 
-# copy current working scripts from above directory
+# update current working scripts from above directory
 cp ../*.py . 
 cp ../namd* . 
 
@@ -49,7 +50,7 @@ fi
 if [ -f pausejob ]; then exit; fi
 
 # submit job to the cluster:------------------------------------
-if [ $NNODES == 1 ]; then
+if [ $NNODE == 1 ]; then
 
  #namd2 +ppn $NTASKS $GPUS $optimize_script >temp_working_outputfile.out 2> temp_working_errorsfile.err;
  namd2 +ppn $NTASKS +devices 0 $optimize_script >temp_working_outputfile.out 2> temp_working_errorsfile.err;

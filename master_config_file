@@ -12,7 +12,6 @@
 "PsfFileName"  : "ChangeMe.psf",
 "PdbFileName"  : "ChangeMe.pdb",
 
-
 "Comment1"      : "Job Details Section",
 
 "JobStreams"    : ["MainJobDir1"],

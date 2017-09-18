@@ -1,7 +1,0 @@
-set firstframe 1 
-set lastframe -1 
-set stepsize  1 
-
-set cwd /flush1/kui00b/MD_workflow_py/MainJobDir1/Sim1_04
-
- mol addfile $cwd/OutputFiles/2017_16Sep_MyJob1_run_01.dcd type dcd first $firstframe last $lastframe step $stepsize filebonds 1 autobonds 1 waitfor all
