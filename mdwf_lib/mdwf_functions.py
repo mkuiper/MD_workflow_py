@@ -394,10 +394,13 @@ def check_if_job_running():
     """ Function to check if job already running in current working directory """ 
     dir_path = os.getcwd()
     ljdf_t = read_local_job_details( dir_path, "local_job_details.json" ) 
+    if not ljdf_t:
+        return "null","null","null"
     current_jobid  = str( ljdf_t["CurrentJobId"] )
     current_jobstatus = ljdf_t["JobStatus"]
     current_run = ljdf_t["CurrentRun"]
-    return current_jobstatus, current_jobid, current_run
+    total_runs =  ljdf_t["TotalRuns"]
+    return current_jobstatus, current_jobid, current_run, total_runs
 
 def monitor_jobs():
     """ Function to monitor jobs status on the cluster. """ 
@@ -534,12 +537,10 @@ def populate_job_directories():
     ljdf_t = read_local_job_details()
     cwd=os.getcwd()
     ljdf_t[ 'BASE_DIR' ]        = cwd
-    ljdf_t[ 'CurrentRound' ]    = mcf["Round"]
     ljdf_t[ 'Account' ]         = mcf["Account"]
     ljdf_t[ 'Nodes' ]           = mcf["Nodes"]
     ljdf_t[ 'Walltime' ]        = mcf["Walltime"]
     ljdf_t[ 'JobFailTime' ]     = mcf["JobFailTime"]
-    ljdf_t[ 'DiskSpaceCutOff' ] = mcf["DiskSpaceCutOff"]
 
     Flavour          = mcf["Flavour"]
     OptScript        = mcf["EquilibrateConfScript"]
@@ -789,7 +790,7 @@ def get_current_file_list(job_dir):
         return
     file_list=[f for f in os.listdir(job_dir) if os.path.isfile(os.path.join(job_dir, f))]
     if not file_list:
-        print("No files found in {}. \n".format(job_dir))
+        return
     return sorted(file_list)
 
 def execute_function_in_job_tree( func, *args ):
@@ -829,23 +830,34 @@ def start_all_jobs():
     execute_function_in_job_tree( start_jobs, startscript )
 
 def start_jobs( startscript ):
-    """ Function to start jobs in a directory"""
+    """ Function to start equilibrium jobs in a directory"""
     cwd = os.getcwd()
-    jobstatus, jobid, jobrun = check_if_job_running()
+  # check files in directory  
+    filelist = get_current_file_list( "." )
+    if not filelist:
+        print(" No files in job directory {}. Have you populated?".format(cwd))
+        return
 
-    if  jobstatus == "ready" and jobid == 0 and jobrun == 0:
+    jobstatus, jobid, jobrun, totalruns = check_if_job_running()
+
+    if jobstatus == "null":
+        return
+    if  jobstatus == "ready" and jobrun == 0:
         subprocess.Popen(['sbatch', startscript])
         update_local_job_details( "JobStatus",  "submitted" )
         update_local_job_details( "JobMessage", "Submitted to queue" )
 
     else:
         if jobstatus == "cancelled":
-            print(("{}:jobid{} Appears this job was cancelled. Clear pauseflags before restart. (./mdwf --clear)".format(cwd[-20:], jobid )))   
+            print(("{}:jobid{} Appears this job was cancelled. Clear pauseflags \
+                    before restart. (./mdwf --clear)".format(cwd[-20:], jobid )))   
         if "running" in jobstatus:
-            print(("{}:jobid: {} --A job appears to be already running here.".format(cwd[-20:], jobid)))
+            print(("{}:jobid: {} --A job appears to be already running here. \
+                    ".format(cwd[-20:], jobid)))
         else: 
             if jobrun >= 1:
-                print(("{}{} Seems equilibration job already run here, don't you want to restart instead? (./mdwf --restart)".format(cwd[-20:], jobid)))
+                print(("{}{} Seems equilibration job already run here, don't \
+                you want to restart instead? (./mdwf --restart)".format(cwd[-20:], jobid)))
 
 def clear_jobs():
     """ Function to clear all pausejob and stop flags """
@@ -855,7 +867,7 @@ def clear_jobs():
 def clear_all_jobs():
     """ Function to clear all stop flags in a directory"""
     cwd = os.getcwd()
-    jobstatus, jobid, jobrun = check_if_job_running()
+    jobstatus, jobid, jobrun, totalruns = check_if_job_running()
     if not "running" in jobstatus:
         update_local_job_details( "JobStatus", "ready" )
         update_local_job_details( "CurrentJobId", 0 )
@@ -880,7 +892,8 @@ def restart_all_production_jobs():
 def restart_jobs(restart_script):
     """ Function to restart production jobs. """
     cwd = os.getcwd()
-    jobstatus, jobid, jobrun = check_if_job_running()
+    jobstatus, jobid, jobrun, totalruns = check_if_job_running()
+    
     ljdf_t = read_local_job_details( ".", "local_job_details.json" )
     current   = ljdf_t["CurrentRun"]
     jobid     = ljdf_t["CurrentJobId"]
@@ -888,17 +901,21 @@ def restart_jobs(restart_script):
     message   = ljdf_t["JobMessage"] 
     pauseflag = ljdf_t["PauseJobFlag"]
  
+    if current >= total: 
+        print(("{}{}:{} Current run >= to Total runs. Extend runs first.    (./mdwf -e)".format(RED, cwd[-20:],DEFAULT)))
+        return
+
     time.sleep(0.25)
     status1 = ["running", "submitted"]
     status2 = ["cancelled", "stopped"]
-    status3 = ["finsihed", "ready"]
+    status3 = ["finished", "ready"]
     
     if jobstatus in status1:
         print(("{}:{}  A job appears to be submitted or running here already.".format(cwd[-20:], jobid)))
         return
  
     if  jobstatus in status2 or pauseflag=="pausejob":
-        print(("{}{}:{} Job is finished or was stopped. Clear pauseflags first. (./mdwf --clear)".format(RED, cwd[-20:], DEFAULT)))
+        print(("{}{}:{} Job is finished or stopped. Clear pauseflags first. (./mdwf --clear)".format(RED, cwd[-20:], DEFAULT)))
         return
 
     if jobstatus in status3:
@@ -910,9 +927,6 @@ def restart_jobs(restart_script):
             subprocess.Popen(['sbatch', restart_script])
         return 
 
-        if current >= total: 
-            print(("{}{}:{} Current run number equal or greater than total runs. Use './mdwf -e' to extend runs.".format(RED, cwd[-20:],DEFAULT)))
-            return 
 
 def recover_all_jobs():
     """ Function to recover and restore crashed jobs. """
@@ -1030,7 +1044,7 @@ def pause_jobs():
 
 def pause_all_jobs():
     """ Adds pause job in directory. """
-    jobstatus, jobid, jobrun  = check_if_job_running()
+    jobstatus, jobid, jobrun, totalruns  = check_if_job_running()
     status4 = ["stopped", "cancelled", "processing"]
     if jobstatus in ["stopped", "cancelled", "processing"]:
         update_local_job_details("JobMessage", "No job running")
@@ -1041,7 +1055,7 @@ def pause_all_jobs():
 def stop_all_jobs_immediately():
     """ Function to stop all jobs immediately """
 
-    jobstatus, jobid, jobrun  = check_if_job_running()
+    jobstatus, jobid, jobrun, totalruns  = check_if_job_running()
     if jobstatus in [ "stopped", "cancelled", "processing" ]:
         update_local_job_details( "JobMessage", "No job running" ) 
     else:

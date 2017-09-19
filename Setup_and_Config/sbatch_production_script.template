@@ -26,7 +26,7 @@ NTASKS=$SLURM_NTASKS_PER_NODE
 # PPN=`expr $SLURM_NTASK_PER_NODE - 1`
 # P="$(($PPN * $SLURM_NNODES))"
 
-GPUS="+idelpoll +devices $CUDA_VISIBLE_DEVICES" 
+GPUS="+idlepoll +devices $CUDA_VISIBLE_DEVICES" 
 echo "cuda devices: $CUDA_VISBLE_DEVICES" >> cuda.info
 
 # update current configuration files from above directory. 

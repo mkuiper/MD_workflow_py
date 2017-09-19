@@ -4,8 +4,8 @@ __pycache__/
 *.pyc
 
 # Specific to MD_workflow
-Main_Job_Dir/
-MainJobdir1/
+Main_Job_Dir/*
+MainJobdir1/*
 
 # C extensions
 *.so

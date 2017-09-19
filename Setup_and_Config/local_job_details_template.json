@@ -1,39 +1,31 @@
 {
-"Comment0"       : "Job_details_json_file v0.25",
+"Comment0"       : "Job_details_json_file v0.5",
 
 "BASE_DIR"           : "unassigned",
 "JOB_STREAM_DIR"     : "unassigned",
 "JobDirName"         : "unassigned",
 "JobBaseName"        : "unassigned",
-
-"Comment1"        : "Job details",
-"Account"         : "unassigned",
-"ResourceManager" : "slurm",
-
+"==----------==" : "---------------",
+"Account"        : "unassigned",
+"Nodes"          : 0,
+"GPUs"           : 0,
+"Walltime"       : 0,
 "CurrentJobId"   : 0,
+"LastJobId"      : 0,
+"====------====" : "----------------",
+"CurrentRun"     : 0, 
+"TotalRuns"      : 0,
+"=-=-=-=-=-=-=-" : "----------------",
 "QueueStatus"    : "not started",
 "JobStatus"      : "ready",
 "JobMessage"     : "not started",
 "ErrorsMessages" : 0,
-"Nodes"          : 0,
-"Walltime"       : 0,
-
-"CurrentRun"     : 0, 
-"TotalRuns"      : 0,
-
-"Temperature"    : "unassigned",
-"Pressure"       : "unassigned",
-"Lambda"         : "unassigned",
-
 "PauseJobFlag"   : 0,
-"LastTimingValue": 0,
-"OldSlurmFileID" : 0,
-"LastJobId"      : 0,
+"==============" : "----------------",
 "JobStartTime"   : 0,
 "JobFinishTime"  : 0,
 "JobFailTime"    : 0,
-"DiskSpaceCutOff": 0,
-
+"--==========--" : "----------------",
 "CustomFlag1"    : 0,
 "CustomFlag2"    : 0,
 "CustomFlag3"    : 0
