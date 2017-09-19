@@ -25,7 +25,7 @@ BLUE    = '\033[34m'
 
 def read_master_config_file():  
     """ Reads the json file 'master_config_file' and
-         returns the dictionary  """  
+         returns the dictionary. """  
 
     if os.path.isfile( 'master_config_file' ):
         master_json = open( 'master_config_file' )
@@ -42,7 +42,7 @@ def read_master_config_file():
 def read_local_job_details(path="Setup_and_Config",
         ljdf_target="local_job_details_template.json"):  
     """ Reads the json file 'local_job_details.json' and 
-        returns the dictionary  """  
+        returns the dictionary. """  
 
     target = path + "/" + ljdf_target
 
@@ -50,15 +50,15 @@ def read_local_job_details(path="Setup_and_Config",
         local_json = open(target)
         ljdf = json.load(local_json,object_pairs_hook=OrderedDict)
         local_json.close()
+        return ljdf
     else:
-        print(("Can't see {}  Have you populated job tree? ".format(target)))
+        print(("Can't see {} Have you populated job tree? ".format(target)))
         return
-    return ljdf
 
 def read_namd_job_details(targetfile):
     """ Extracts simulation details from given namd config file 
         and returns a dictionary and a list. The function assumes 
-        namd files are located in /Setup_and_Config """
+        namd files are located in /Setup_and_Config. """
     
     target = os.getcwd() + "/Setup_and_Config/" + targetfile
     jdd = {}    # job-details dictionary  
@@ -116,9 +116,9 @@ def read_namd_job_details(targetfile):
     return jdd, jdpl
 
 def gather_jobs():
-    """function to create a convenient vmd input file to load and view trajectory data"""
+    """ Function to create a convenient vmd input file to load and view trajectory data. """
     global dcdlist
-    # write basic model loader. 
+  # Write basic model loader. 
     mcf = read_master_config_file()
     psf   = mcf["PsfFileName"]
     pdb   = mcf["PdbFileName"]
@@ -135,43 +135,38 @@ def gather_jobs():
         execute_function_in_job_tree(gather_list)
         dcdlist.close()  
 
+def gather_list():
+    """function to create list of output files from OutputFiles folder""" 
+  # List dcd files in /OutputFiles folder
+    cwd = os.getcwd()
+    line = "# " + cwd + "\n"  
+    dcdlist.write(line)
+
+    f_list = get_current_file_list("OutputFiles")
+  # For creating vmd dcd fileloader
+    head = "mol addfile "
+    tail = " type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all\n"
+    for l in f_list:
+        if ".dcd" in l:
+            dcdline = head + cwd + "/OutputFiles/" + l + tail
+            dcdlist.write(dcdline)
+
 def extend_jobs(a):
+    """ Function to change number of job runs. """
     execute_function_in_job_tree(extend_runs,a) 
     
 def extend_runs(a):
+    """ Function to change number of job runs. """
     ljdf_t  = read_local_job_details( ".", "local_job_details.json" )
     total   = int( ljdf_t[ 'TotalRuns' ] )
     # Update the total of runs. 
     newtotal = int( total ) + a
     update_local_job_details( "TotalRuns", newtotal )
     
-
-def sorted_ls(path):
-    mtime = lambda f: os.stat(os.path.join(path, f)).st_mtime
-    return list(sorted(os.listdir(path), key=mtime))
-
-def gather_list():
-    """function to create list of output files from OutputFiles folder""" 
-    # list dcd files in /OutputFiles folder
-    cwd = os.getcwd()
-    line = "# " + cwd + "\n"  
-    dcdlist.write(line)
-
-    if os.path.isdir("OutputFiles"):
-        f_list = sorted_ls("OutputFiles")
-
-        # for creating vmd fileloader
-        head = "mol addfile "
-        tail = " type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all\n"
-        for l in f_list:
-            if ".dcd" in l:
-                dcdline = head + cwd + "/OutputFiles/" + l + tail
-                dcdlist.write(dcdline)
-
 def get_atoms(psffile):
-    """ function to estimate dcd frame size of simulation based on 
+    """ Function to estimate dcd frame size of simulation based on 
         the numbers of atoms. Assumes the psf file is in 
-        /InputFiles directory.  Returns the number of atoms """
+        /InputFiles directory.  Returns the number of atoms. """
 
     target=os.getcwd() + "/InputFiles/" + psffile
     atoms = 0 
