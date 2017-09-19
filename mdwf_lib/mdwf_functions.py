@@ -173,20 +173,19 @@ def get_atoms(psffile):
     if os.path.isfile(target):
         f = open(target,'r')
         for line in f:
-            if 'NATOM' in line:     # extract number of atoms from !NATOM line
+            if 'NATOM' in line:     
                 nl = line.split( )
                 atoms = nl[0]
         f.close()    
+        return atoms
     else:
         print(("{}Can't find {} in /InputFiles directory {}"\
                .format(RED,psffile,DEFAULT)))
-    return atoms
 
 def pausejob_flag( directive ):
-    """creates or removes pausejob flag. Pausejob are (mostly) 
-       empty files in the directory which are an extra 
-       precaution for job control. Their presence in the directory 
-       stops jobs launching. """ 
+    """ Creates or removes pausejob flag. Pausejob are small text files 
+        as an extra precaution for job control. 
+        Their presence in the directory stops jobs launching. """ 
 
     if directive == "remove": 
         update_local_job_details( "PauseJobFlag", 0 )
@@ -200,52 +199,26 @@ def pausejob_flag( directive ):
 
 def check_pausejob_flag():
     """ A simple check for the pausejob flag in local details file. 
-        Creates and actual pauseflag file in the directory if present  """ 
+        Creates and actual pauseflag file in the directory if present. """ 
 
     ljdf_t  = read_local_job_details( ".", "local_job_details.json" )
     pause = ljdf_t["PauseJobFlag"]
     
     if pause != 0:
         f = open( "pausejob", 'a' )
-        f.write(" pauseflag already present")
+        f.write(" pauseflag already present in local_jobs_detail file. ")
         f.close()
         update_local_job_details( "JobStatus",  "pausejob" )
         update_local_job_details( "JobMessage", "paused" )
 
 def check_disk_quota():
-    """ function for checking that there is enough diskspace on the 
-        system before starting job. Relies on running the 'mydisk'
-        program on Avoca.  The default setting is set in the 
-        'master_config_file'. Creates a pausejob flag if it fails  """
-
-    ljdf_t  = read_local_job_details( ".", "local_job_details.json" )
-    account = ljdf_t[ 'Account'  ]
-    diskspc = int( ljdf_t[ 'DiskSpaceCutOff'  ] )
-
-    try:
-        disk = subprocess.check_output('mydisk')
-        dline = disk.split("\n")
-        for i in dline:       
-            if account in i:   # looks for account number
-                usage = int( i.split( )[-1][:-1] ) 
-        if usage > diskspc:
-            print(("Warning: Account {} disk space quota low. Usage: {} % "\
-                  .format(account,a)))          
-            print(("Diskspace too low. usage: {}%  disk limit set to: {}%\n"\
-                  .format(a,b))) 
-            update_local_job_details("JobStatus", "stopping" )
-            update_local_job_details("PauseJobFlag", "low disk" )
-            update_local_job_details("JobMessage", "Stopped: Disk quota low.")
-            pausejob_flag( "Low Disk Quota detected." )
-    except:
-        print(("Can't run 'mydisk'. Can't check disk quota for account {}."\
-               .format(account))) 
+    """ Obselete function. """
+    return
 
 def log_job_details( jobid ):
-    """ Simple function to update 'local_job_details' from job details"""
+    """ Simple function to update 'local_job_details' from "scontrol show job" details. """
 
-    jobdetails = subprocess.check_output(["scontrol",\
-                     "show", "job", str(jobid) ] )
+    jobdetails = subprocess.check_output(["scontrol", "show", "job", str(jobid) ] )
     jdsplit = re.split( ' |\n', jobdetails )  
     for i in jdsplit:
         if "JobState=" in i:
@@ -277,9 +250,8 @@ def check_job_runtime():
         pausejob_flag( "Short runtime detected - job fail??" )
 
 def check_run_counter(processing="post"):
-    """ This function checks the run counter and create a pausejob flag 
-        if they have exceeded the total job run value.
-        Increments job run counter as necessary """
+    """ Function to checks the run counter. Creates pause if total job run 
+        value exceeded. Increments job run counter as necessary """
   # read current state:
     ljdf_t     = read_local_job_details( ".", "local_job_details.json" )
     currentrun = int( ljdf_t['CurrentRun'] )
@@ -299,17 +271,17 @@ def check_run_counter(processing="post"):
         update_local_job_details( "CurrentRun", newrun )
 
 def cleanup_job_runs():
-        update_local_job_details( "JobStatus",  "Finished" )
-        update_local_job_details( "JobMessage", "Finished production runs" )
-        update_local_job_details( "PauseJobFlag", "pausejob" )
-        update_local_job_details( "CurrentJobId", -1 )
-        pausejob_flag( "Job runs finished." )
-        final_job_cleanup()     
+    """ Cleans up folder. Updates local details. """    
+    update_local_job_details( "JobStatus",  "Finished" )
+    update_local_job_details( "JobMessage", "Finished production runs" )
+    update_local_job_details( "PauseJobFlag", "pausejob" )
+    update_local_job_details( "CurrentJobId", -1 )
+    pausejob_flag( "Job runs finished." )
+    final_job_cleanup()     
 
 def get_job_runtime( starttime, status ):
     """ Function to return runtime of current job in H:M format.
         Returns --:-- if job not running. """
-
     if "running" in status:
         seconds = int( time.time() - starttime ) 
         m, s = divmod( seconds, 60 )
@@ -320,16 +292,14 @@ def get_job_runtime( starttime, status ):
     return Time
 
 def create_job_basename( jobname, run, zf ):
-    """ creates a time stamped basename for current job, uses zfill for 
+    """ Creates a time stamped basename for current job, uses zfill for 
         numbering convention. """
-
     timestamp = time.strftime( "%Y_%d%b_", time.localtime() )
     basename  = timestamp + jobname + "run_" + str( run ).zfill( zf )
     return basename
 
 def update_local_job_details( key, status ):
-    """ updates local job details of 'local job details file' """
-
+    """ Updates local job details of 'local job details file'. """
     ljdf_t = read_local_job_details(".", "local_job_details.json")
     ljdf_t[ key ] = status
     with open("local_job_details.json", 'w') as outfile:
@@ -338,8 +308,7 @@ def update_local_job_details( key, status ):
 
 def redirect_namd_output( CurrentWorkingName = "current_MD_run_files",
                           jobtype = "production"):
-    """ A function to redirect NAMD output to appropriate folders."""
-
+    """ Function to redirect NAMD output to appropriate folders."""
     ljdf_t = read_local_job_details( ".", "local_job_details.json" )
     jobname = ljdf_t[ 'JobBaseName' ] 
     run     = ljdf_t[ 'CurrentRun' ]
@@ -347,26 +316,26 @@ def redirect_namd_output( CurrentWorkingName = "current_MD_run_files",
     zfill   = len( str( total ) ) + 1
     basename = create_job_basename( jobname, run, zfill )
 
-    # make shorthand of current working files
+  # Make shorthand of current working files
     cwf_coor = CurrentWorkingName + ".coor"
     cwf_vel  = CurrentWorkingName + ".vel"
     cwf_xsc  = CurrentWorkingName + ".xsc"
     cwf_xst  = CurrentWorkingName + ".xst"
     cwf_dcd  = CurrentWorkingName + ".dcd"
 
-    # check that restartfiles actually exisit, if not create pausejob condition. 
+  # Check that restartfiles actually exisit, if not create pausejob condition. 
     if not os.path.isfile(cwf_coor) or not os.path.isfile(cwf_vel) \
             or not os.path.isfile(cwf_xsc):
         pausejob_flag( "Missing input files." )
         update_local_job_details( "JobStatus", "stopping" )
         update_local_job_details( "JobMessage", "No namd outputfiles generated" )
 
-    # copy CurrentWorking (restart) files to LastRestart/ directory 
+  # Copy CurrentWorking (restart) files to LastRestart/ directory 
     shutil.copy(cwf_coor, 'LastRestart/' + cwf_coor)
     shutil.copy(cwf_vel,  'LastRestart/' + cwf_vel)
     shutil.copy(cwf_xsc,  'LastRestart/' + cwf_xsc)
  
-    # rename and move current working files
+  # Rename and move current working files
     os.rename( cwf_dcd,    "OutputFiles/"  + basename + ".dcd"  )
     shutil.copy( cwf_vel,  "RestartFiles/" + basename + ".vel"  )
     shutil.copy( cwf_xsc,  "RestartFiles/" + basename + ".xsc"  )
@@ -376,7 +345,7 @@ def redirect_namd_output( CurrentWorkingName = "current_MD_run_files",
     shutil.move( "temp_working_errorsfile.err", "Errors/"     + basename + ".err" )
         
 def post_jobrun_cleanup():
-    """ remove unwanted error, backup files, etc """
+    """ Remove unwanted error, backup files, etc. """
     for file in glob("slurm*"):
         shutil.move(file, "JobLog/" )
     for file in glob("core*"):
@@ -393,8 +362,7 @@ def post_jobrun_cleanup():
     update_local_dcd_list()
 
 def update_local_dcd_list():
-    """ a simple function to create a local dcd_files_list.vmd use to load data into VMD""" 
-
+    """ Function to create a local dcd_files_list.vmd use to load data into VMD. """ 
     f = open('local_dcd_files_loader.vmd', 'w')
     cwd = os.getcwd()    
     
@@ -402,50 +370,37 @@ def update_local_dcd_list():
     f.write("set lastframe -1 \n")
     f.write("set stepsize  1 \n\n")
     f.write("set cwd " + cwd + "\n\n")
-    
     dcdlist = glob( "OutputFiles/*.dcd" ) 
     for i in dcdlist:
         line = " mol addfile %s%s type dcd first %s last %s step %s filebonds 1 autobonds 1 waitfor all\n"\
                 % ( "$cwd/", i, "$firstframe", "$lastframe", "$stepsize")
         f.write( line )        
-
     f.close()
 
-
 def final_job_cleanup():
-    """ perform final cleanup once jobruns are finished. """
+    """ Perform final cleanup once jobs are finished. """
     for file in glob("*BAK"):
         os.remove( file )
 
 def log_job_timing():
-    """ log length of job in human readable format """
+    """ Log length of job in human readable format. """
 ## still to do 
 
 def countdown_timer():
-    """ function to adjust countdown timer """
+    """ Function to adjust countdown timer """
 ## still to do 
 
 def check_if_job_running():
-    """ function to check if job already running in current working directory """ 
+    """ Function to check if job already running in current working directory """ 
     dir_path = os.getcwd()
     ljdf_t = read_local_job_details( dir_path, "local_job_details.json" ) 
-    current_jobid     = str( ljdf_t["CurrentJobId"] )
+    current_jobid  = str( ljdf_t["CurrentJobId"] )
     current_jobstatus = ljdf_t["JobStatus"]
     current_run = ljdf_t["CurrentRun"]
-
-#    
-#    status = running 
-#    status = submitted 
-#    status = processing 
-#    status = cancelled
-
-## needs better way to efficient way to check queue here
-## this method currently just relies on 'local_job_details'
-
     return current_jobstatus, current_jobid, current_run
 
 def monitor_jobs():
-    """ -function to monitor jobs status on the cluster """ 
+    """ Function to monitor jobs status on the cluster. """ 
 
     mcf = read_master_config_file()
     if not mcf:
@@ -489,7 +444,7 @@ def monitor_jobs():
     print(("\n{}done.".format(DEFAULT)))
 
 def md5sum( filename, blocksize=65536 ):
-    """function for returning md5 checksum"""
+    """ Function to return md5 checksum. """
     hash = hashlib.md5()
     with open(filename, "r+b") as f:
         for block in iter(lambda: f.read(blocksize), ""):
@@ -498,7 +453,7 @@ def md5sum( filename, blocksize=65536 ):
     return hash.hexdigest()
 
 def getfilesize( filename ):
-    """ Function to get file size """
+    """ Function to get file size. """
     size = os.path.getsize(filename)
     return size
 
@@ -506,7 +461,7 @@ def check_job_structure():
     """ Function to check job structure in 'master_config_file'
         The job structure has three tiers, JobStreams (we usually
         only have 1), job replicates in the stream, and number 
-        of job runs to perform in each replicate.      """
+        of job runs to perform in each replicate. """
 
     mcf = read_master_config_file()
     JobStreams   = mcf["JobStreams"]
@@ -515,7 +470,7 @@ def check_job_structure():
     JobBaseNames = mcf["JobBaseNames"]     
     Runs         = mcf["Runs"]     
 
-    # check that job details lists are the same length in master_config_file: 
+  # Check that job details lists are the same length in master_config_file: 
     nJobStreams   = int( len( JobStreams )) 
     nReplicates   = int( len( Replicates ))
     nBaseNames    = int( len( BaseDirNames ))
@@ -531,13 +486,13 @@ def check_job_structure():
 def initialize_job_directories():
     """ Function to setup and initialize job structure directories 
         as defined in the 'master_config_file'. This function copies 
-        the job template from /Setup_and_Config """
+        the job template from /Setup_and_Config. """
 
     cwd=os.getcwd()
     JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams,\
                 nReplicates, nBaseNames = check_job_structure() 
 
-    # create job stream structure:  /JobStreams/JobReplicates
+  # Create job stream structure:  /JobStreams/JobReplicates
     for i in range(0, nJobStreams):
         TargetJobDir = cwd + "/" + JobStreams[i]
         if not os.path.exists(TargetJobDir):
