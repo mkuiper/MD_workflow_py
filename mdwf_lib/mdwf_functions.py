@@ -492,18 +492,18 @@ def initialize_job_directories():
     JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, nJobStreams,\
                 nReplicates, nBaseNames = check_job_structure() 
 
-  # Create job stream structure:  /JobStreams/JobReplicates
+  # Create Job Stream structure:  /JobStreams/JobReplicates
     for i in range(0, nJobStreams):
         TargetJobDir = cwd + "/" + JobStreams[i]
         if not os.path.exists(TargetJobDir):
             print(("Job Stream directory /{} does not exist. \nMaking new directory.\n".format(TargetJobDir)))
             os.makedirs(JobStreams[i]) 
 
-        # Copy directory structure from /Setup_and Config/JobTemplate
+      # Copy directory structure from /Setup_and Config/JobTemplate
         print(("Making job replicates in /{}".format(JobStreams[i])))
         TemplatePath = cwd + "/Setup_and_Config/JobTemplate"
 
-        # check existance of JobTemplate directory:
+      # Check existance of JobTemplate directory:
         if not os.path.exists(TemplatePath):
             print("Can't find the /Setup_and_Config/JobTemplate \
                    directory. Exiting.")
@@ -524,8 +524,8 @@ def initialize_job_directories():
                 print(("Creating:{}".format(NewDirName)))             
 
 def populate_job_directories():
-    """ -function to populate or update job directory tree 
-         with job scripts that are located in /Setup_and_Config """
+    """ Function to populate or update job directory tree 
+        with job scripts that are located in /Setup_and_Config. """
 
     JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, \
     nJobStreams, nReplicates, nBaseNames = check_job_structure() 
@@ -548,7 +548,7 @@ def populate_job_directories():
     startscript      = mcf["SbatchEquilibrateScript"]
     productionscript = mcf["SbatchProductionScript"]
 
-## list files to transfer:
+  # List files to transfer:
     print(("{}Job Files to transfer from /Setup_and_Config:{}"\
            .format(GREEN, DEFAULT))) 
     print(("{} {}\n {}".format(DEFAULT, startscript,\
@@ -559,19 +559,19 @@ def populate_job_directories():
     for conffile in glob(r'Setup_and_Config/*.conf' ):
         print((" " + conffile[17:]))  
 
-## descend through job structure and populate job directories:
+  # Descend through job structure and populate job directories:
     for i in range(0, nJobStreams):
         TargetJobDir = cwd + "/" + JobStreams[i]
         print(("{}\nPopulating JobStream: {} {}".format( GREEN,
                                       TargetJobDir, DEFAULT))) 
 
-## check to see if there actually are any job directories to fill:
+  # Check to see if there actually are any job directories to fill:
         if not os.path.exists( TargetJobDir ):
             print(("Job directory {} not found. Have you initialized?"\
                    .format(TargetJobDir)))
             sys.exit()
 
-## create temporary sbatch scripts:
+  # Create temporary sbatch scripts:
         sb_start_template = "Setup_and_Config/" + startscript + ".template"
         sb_prod_template  = "Setup_and_Config/" + productionscript + ".template"
         if not os.path.exists( sb_start_template ) \
@@ -579,7 +579,7 @@ def populate_job_directories():
             print("Can't find sbatch template files in Settup_and_Config. Exiting.")
             sys.exit()
 
-## modify replicate elements in staging dictionary file:
+  # Modify replicate elements in staging dictionary file:
         ljdf_t['JOB_STREAM_DIR'] = JobStreams[i]
         ljdf_t['CurrentRun']     = 0
         ljdf_t['TotalRuns']      = int( Runs[i] )
@@ -597,7 +597,7 @@ def populate_job_directories():
         shutil.copy( sb_start_template, 'sb_start_temp')
         shutil.copy( sb_prod_template,  'sb_prod_temp' )
 
-## replace lines in sbatch files:
+  # Replace lines in sbatch files:
         for f in ["sb_start_temp", "sb_prod_temp"]:
             for line in fileinput.FileInput( f, inplace=True ):
                 line = line.replace('#SBATCH --nodes=X',   nnodes  )   
@@ -610,16 +610,15 @@ def populate_job_directories():
                 line = line.replace('production_script=X', nprod   )   
                 sys.stdout.write(line)   
 
-## copy across python and config scripts from /Setup_and_Config to top of each job dir 
+  # Copy across python and config scripts from /Setup_and_Config to top of each job dir 
         jobpath  = JobStreams[i] + "/"
         for pyfile in glob(r'Setup_and_Config/*.py' ):
             shutil.copy2( pyfile, jobpath )
         for conffile in glob(r'Setup_and_Config/*.conf' ):
             shutil.copy2(conffile, jobpath)
 
-## populate job directories with local_job_details and sbatch files
+  # Populate job directories with local_job_details and sbatch files
         jobdirlist = sorted(get_current_dir_list(jobpath))
-
         if jobdirlist:
             for j in jobdirlist:
                 print(("{} -populating: {}{}".format(DEFAULT, j, DEFAULT)))
@@ -641,7 +640,7 @@ def populate_job_directories():
                 shutil.copy('sb_start_temp', sbs_path)
                 shutil.copy('sb_prod_temp' , sbp_path)
 
-## remove tempfiles. 
+  # Remove tempfiles. 
     os.remove('sb_start_temp')
     os.remove('sb_prod_temp')
     print("\n -done populating directories")
@@ -655,7 +654,7 @@ def check_job():
     jd_opt,  jd_opt_pl  = read_namd_job_details(mcf["EquilibrateConfScript"])    
     jd_prod, jd_prod_pl = read_namd_job_details(mcf["ProductionConfScript"])    
 
-#   # checking if files in configuration exist where they are supposed to be. 
+  # Checking if files in configuration exist where they are supposed to be. 
     print(("{}--------------------------------------------------------------------------------".format(BLUE)))
     print(("{}Checking configuration input files:{}".format(YELLOW, DEFAULT)))
     print(("{}--------------------------------------------------------------------------------".format( BLUE)))
@@ -703,7 +702,7 @@ def check_job():
     nReplicates  = int(len(Replicates))
     nRuns        = int(len(Runs))
 
-    # calculating variables from input files:
+  # Calculating variables from input files:
     for i in range(0, nReplicates):
         sr += int(Replicates[i])                         # total no. of job replicate
     for j in range(0, nRuns): 
@@ -740,6 +739,7 @@ def check_job():
 
 
 def check_file_exists(target):
+    """ Check file exists, give appropriate message. """
     mesg1 = "{} found {} -ok{}".format(DEFAULT, GREEN, DEFAULT)
     mesg2 = "{} found {} -ok{} -example file?".format(DEFAULT, GREEN, DEFAULT)
     mesg3 = "{} not found.{} -Check config file.{}".format(DEFAULT, RED, DEFAULT) 
@@ -757,8 +757,7 @@ def check_file_exists(target):
         print(("{} %-46s {}".format(RED, mesg3) %(ntarget)))
 
 def benchmark():
-    """ -function to benchmark job """
-# read job details:        
+    """ Function to benchmark job """
     mcf = read_master_config_file()
     jd_opt, jd_opt_pl = read_namd_job_details(mcf["EquilibrateConfScript"])    
     print(("{} Setting up jobs for benchmarking based on current job config files.".format(DEFAULT)))
@@ -772,10 +771,10 @@ def benchmark():
 
 
 def get_current_dir_list(job_dir):
-    """ Simple function to return a list of directories in a given path """
+    """ Function to return a list of sorted directories in a given path. """
 
     if not os.path.isdir(job_dir):
-        print("No directories found in {}. Have you initialized? \n".format(job_dir))
+        print("No directories {} found. Have you initialized? \n".format(job_dir))
         return
     dir_list=[f for f in os.listdir(job_dir) if os.path.isdir(os.path.join(job_dir, f))]
     if not dir_list:
@@ -783,79 +782,34 @@ def get_current_dir_list(job_dir):
     return sorted(dir_list)
 
 def get_current_file_list(job_dir):
-    """ Simple function to return a list of files in a given path """
+    """ Function to return a list of files in a given path. """
 
     if not os.path.isdir(job_dir):
-        print("No directories named {} found. Have you initialized? \n".format(job_dir))
+        print("No directory {} found. Have you initialized? \n".format(job_dir))
         return
-    dir_list=[f for f in os.listdir(job_dir) if os.path.isfile(os.path.join(job_dir, f))]
-    if not dir_list:
+    file_list=[f for f in os.listdir(job_dir) if os.path.isfile(os.path.join(job_dir, f))]
+    if not file_list:
         print("No files found in {}. \n".format(job_dir))
-    return sorted(dir_list)
-
-def get_curr_job_list(job_dir):
-    """<high-level description of the function here>
-
-    Argument(s):
-        job_dir -- path to the job directory.
-
-    Notes:
-        <notes of interest, e.g. bugs, caveats etc.>
-
-    Returns:
-        <description of the return value>
-
-    """
-
-    # are you after a list of jobs or a list of files?
-    file_list = []
-
-    if os.path.isdir(job_dir):
-        # build a list of every file in the `job_dir` directory tree. 
-        # you may want to ignore files such as '.gitkeep' etc.
-        for root, _, fns in os.walk(job_dir):
-            for fn in fns:
-                file_path = os.path.join(root, fn)
-                if os.path.isfile(file_path):
-                    file_list.append(file_path)
-
-        #
-        # insert code to manipulate `file_list` here.
-        #
-        
-        file_list.sort()
-    else:
-        # NOTE: to developers, it is good practise to write error messages to
-        # `stderr` rather than to stdout (i.e. avoid using`print` to display
-        # error messages).
-        sys.stderr.write("{} doesn't exist, it needs to be initialised.{}"
-                .format(job_dir, os.linesep))
-    return file_list
-
+    return sorted(file_list)
 
 def execute_function_in_job_tree( func, *args ):
-    """ -a generic function to execute a given function throughout the entire job tree """
+    """ Function to execute a given function throughout the entire job tree. """
 
     cwd = os.getcwd()
-## read job structure tree as given in the "master_config_file":
+  # Read job structure tree as given in the "master_config_file":
     JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, \
                 nJobStreams, nReplicates, nBaseNames = check_job_structure() 
 
-## descending into job tree:
+  # Descending into job tree:
     for i in range( 0, nJobStreams ):
         CurrentJobStream = cwd + '/' + JobStreams[i]
 
-## descending into job directory tree of each JobStream         
+  # Descending into job directory tree of each JobStream         
         if os.path.isdir( CurrentJobStream ):
             JobStreamDirList = get_current_dir_list( CurrentJobStream ) 
 
-#debug            print(JobStreamDirList) 
-#debug            print(CurrentJobStream) 
-
             for j in JobStreamDirList:
                 CurrentJobDir = CurrentJobStream + '/' + j
-#debug            print (CurrentJobDir)
-
                 if os.path.isdir(CurrentJobDir):
                     os.chdir( CurrentJobDir )
                     func( *args ) 
@@ -869,13 +823,13 @@ def execute_function_in_job_tree( func, *args ):
 
 
 def start_all_jobs():
-    """ function for starting all jobs """
+    """ Function for starting all jobs. """
     mcf = read_master_config_file()
     startscript = mcf["SbatchEquilibrateScript"]
     execute_function_in_job_tree( start_jobs, startscript )
 
 def start_jobs( startscript ):
-    """ function to start jobs in a directory"""
+    """ Function to start jobs in a directory"""
     cwd = os.getcwd()
     jobstatus, jobid, jobrun = check_if_job_running()
 
@@ -894,12 +848,12 @@ def start_jobs( startscript ):
                 print(("{}{} Seems equilibration job already run here, don't you want to restart instead? (./mdwf --restart)".format(cwd[-20:], jobid)))
 
 def clear_jobs():
-    """ function for clearing all pausejob and stop flags """
+    """ Function to clear all pausejob and stop flags """
     mcf = read_master_config_file()
     execute_function_in_job_tree( clear_all_jobs )
 
 def clear_all_jobs():
-    """ function to clear all stop flags in a directory"""
+    """ Function to clear all stop flags in a directory"""
     cwd = os.getcwd()
     jobstatus, jobid, jobrun = check_if_job_running()
     if not "running" in jobstatus:
@@ -908,7 +862,7 @@ def clear_all_jobs():
         update_local_job_details( "JobMessage", "Cleared stop flags" )
         update_local_job_details( "PauseJobFlag", 0 )
 
-         ## remove explicit flag file:    
+      # Remove explicit flag file.    
         if  os.path.isfile( "pausejob" ):
             os.remove( "pausejob" )
         print(("{} cleared stop flags in: {} {}".format( GREEN, cwd, DEFAULT )))
@@ -916,19 +870,15 @@ def clear_all_jobs():
     else:
         print(("A job appears to be running here:..{} : jobstatus:{}".format( cwd[-20:], jobid )))
 
-
 def restart_all_production_jobs():
-    """ -function to restart_all_production_jobs """
+    """ Function to restart_all_production_jobs. """
     print("-- restarting production jobs.")
     mcf = read_master_config_file()
-
-## check_job_status
-
     restart_script = mcf["SbatchProductionScript"]
     execute_function_in_job_tree(restart_jobs, restart_script)
  
 def restart_jobs(restart_script):
-    """ function to restart production jobs """
+    """ Function to restart production jobs. """
     cwd = os.getcwd()
     jobstatus, jobid, jobrun = check_if_job_running()
     ljdf_t = read_local_job_details( ".", "local_job_details.json" )
@@ -965,7 +915,7 @@ def restart_jobs(restart_script):
             return 
 
 def recover_all_jobs():
-    """ -function to recover and restore crashed jobs """
+    """ Function to recover and restore crashed jobs. """
     print("Crash recovery: ")
     print("Typically we expect binary output files like .dcd to be the")
     print("same size using this workflow. If a job has crashed we can ")
@@ -973,15 +923,13 @@ def recover_all_jobs():
     print("the name of the first bad file. Files will be restored to this") 
     print("point. ") 
 
-
     execute_function_in_job_tree( recovery_function )
 
 def recovery_function():
-    """ this function checks sizes and md5sums of outputfiles, giving the opportunity
+    """ This function checks sizes and md5sums of outputfiles, giving the opportunity
         for a user to recover from the last known good file"""   
 
     ljdf = read_local_job_details( ".", "local_job_details.json" ) 
-
     # the following constructs a string to find the "equilibration" dcd file
     # (which is numbered 0, but with zfill padding) 
 
@@ -992,11 +940,8 @@ def recovery_function():
     FList = get_current_file_list( "OutputFiles" )
     FileList = filter(lambda k: '.dcd' in k, FList)
 
-
     line = ljdf["JOB_STREAM_DIR"] + "/" + ljdf["JobDirName"] + "/" +  "OutputFiles:"
     print(("\n{}{}{}".format( GREEN, line, DEFAULT )))
-
-    #### 
 
     for i in FileList:
         if "dcd" in i:
@@ -1074,16 +1019,17 @@ def recovery_function():
 
 
 def stop_jobs():
-    """ -function to stop all jobs, -either immediately or gently."""
+    """ Function to stop all jobs immediately. """
     print("-- stopping all jobs")
     execute_function_in_job_tree(stop_all_jobs_immediately)
 
 def pause_jobs():
-    """ -function to stop all jobs, -either immediately or gently."""
+    """ Function to stop all jobs gently, ie) at end of current run."""
     print("-- pausing all jobs")
     execute_function_in_job_tree(pause_all_jobs)
 
 def pause_all_jobs():
+    """ Adds pause job in directory. """
     jobstatus, jobid, jobrun  = check_if_job_running()
     status4 = ["stopped", "cancelled", "processing"]
     if jobstatus in ["stopped", "cancelled", "processing"]:
@@ -1093,30 +1039,25 @@ def pause_all_jobs():
         update_local_job_details("JobMessage", "Pausejob request sent")
 
 def stop_all_jobs_immediately():
-    """ function to stop all jobs immediately """
+    """ Function to stop all jobs immediately """
 
     jobstatus, jobid, jobrun  = check_if_job_running()
     if jobstatus in [ "stopped", "cancelled", "processing" ]:
         update_local_job_details( "JobMessage", "No job running" ) 
     else:
-        cancel_job( jobid )
-
-def cancel_job( jobid ):
-    """ function to send scancelcommand for jobid """
-
-    print((" stopping job: {}".format( jobid )))
-    message = " scancel jobid: %s" % jobid 
-    pausejob_flag( "scancel command sent. " )         
-    update_local_job_details("JobFinishTime", time.time())
-    update_local_job_details("JobMessage", "Sent scancel command")
-    update_local_job_details("JobStatus", "stopped")
-    update_local_job_details("PauseJobFlag", "cancelled")
+        print((" Stopping job: {}".format( jobid )))
+        message = " scancel jobid: %s" % jobid 
+        pausejob_flag( "scancel command sent. " )         
+        update_local_job_details("JobFinishTime", time.time())
+        update_local_job_details("JobMessage", "Sent scancel command")
+        update_local_job_details("JobStatus", "stopped")
+        update_local_job_details("PauseJobFlag", "cancelled")
         
-    subprocess.Popen([ 'scancel', jobid ])
-    update_local_job_details( "CurrentJobId",  -1 )
+        subprocess.Popen([ 'scancel', jobid ])
+        update_local_job_details( "CurrentJobId",  -1 )
         
 def erase_all_data():
-    """ -function to erase all data for a clean start. Use with caution!"""
+    """ Function to erase all data for a clean start. Use with caution!"""
 
     JobStreams, Replicates, BaseDirNames, JobBaseNames, Runs, \
                 nJobStreams, nReplicates, nBaseNames = check_job_structure()
@@ -1150,26 +1091,24 @@ def erase_all_data():
             for m in p:
                 os.remove(m)  
 
-
         print("\nOh the humanity. I sure hope that wasn't anything important.")
     else: 
         print("Phew! Nothing erased.")
 
 def create_dcd_file_loader( first = 0, last = -1, step =1):
-    """ A function to create an easyfile loader to be able to read in a
-        contiguous series of dcd output files for VMD.   """
+    """ Function to create an easyfile loader to be able to read in a
+        contiguous series of dcd output files for VMD. """
     
     cwd = os.getcwd()
     OutputDir = cwd + "/" "OutputFiles"
     DirList = get_current_dir_list( OutputDir )
- 
-    # create vmd line:
+
+  # Create vmd line:
     line = "mol addfile %s type dcd first %s last %s step %s filebonds 1 autobonds 1 waitfor all\n"\
             .format( dcdline, first, last, step )
 
-
 def clone():
-    """ -function to clone directory without data, but preserving input files."""
+    """ Function to clone directory without data, but preserving input files. """
     print("-- cloning data directory. Not implimented yet.") 
 
 
