@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
+<<<<<<< Updated upstream
 # MD workflow functions.   mdwf
 """ mdwf functions.                    version 0.25
+=======
+# MD workflow functions.   mdwf 
+""" mdwf functions.                    version 0.5
+>>>>>>> Stashed changes
 """
 
 import os
@@ -23,8 +28,13 @@ GREEN   = '\033[32m'
 YELLOW  = '\033[33m'
 BLUE    = '\033[34m'
 
+<<<<<<< Updated upstream
 ## Read File Functions:
 def read_master_config_file():
+=======
+### Read Functions--------------------------------------------------
+def read_master_config_file():  
+>>>>>>> Stashed changes
     """ Reads the json file 'master_config_file' and
          returns the dictionary. """
 
@@ -37,7 +47,11 @@ def read_master_config_file():
         print(("{}Can't see 'master_config_file' {} "\
                 .format(RED, DEFAULT)))
         print(("{}Have you populated the directory? (./mdwf -p){}"\
+<<<<<<< Updated upstream
                 .format(RED, DEFAULT)))
+=======
+                .format(RED, DEFAULT))) 
+>>>>>>> Stashed changes
 
 def read_local_job_details(path="Setup_and_Config",
         ljdf_target="local_job_details_template.json"):
@@ -45,8 +59,8 @@ def read_local_job_details(path="Setup_and_Config",
         returns the dictionary. """
 
     target = path + "/" + ljdf_target
-
     if os.path.isfile(target):
+
         local_json = open(target)
         ljdf = json.load(local_json,object_pairs_hook=OrderedDict)
         local_json.close()
