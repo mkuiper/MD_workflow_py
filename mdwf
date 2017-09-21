@@ -91,7 +91,7 @@ def main():
         print((YELLOW+"Restarting production jobs:"+DEFAULT))
         mdwf.restart_all_production_jobs()
     if args.gather: 
-        print((YELLOW+"Gathering data files: (list under /Analysis"+DEFAULT))
+        print((YELLOW+"Gathering data files: List under /Analysis"+DEFAULT))
         mdwf.gather_jobs()
     if args.extend: 
         print((YELLOW+"Extending production runs:"+DEFAULT))

@@ -417,7 +417,8 @@ def restart_jobs(restart_script):
     """ Function to restart production jobs. """
     cwd = os.getcwd()
     jobstatus, jobid, jobrun, totalruns = check_if_job_running()
-
+    if jobstatus =="null":
+        return
     ljdf_t = read_local_job_details( ".", "local_job_details.json" )
     current   = ljdf_t["CurrentRun"]
     jobid     = ljdf_t["CurrentJobId"]
@@ -466,7 +467,9 @@ def recovery_function():
         for a user to recover from the last known good file"""
 
     ljdf = read_local_job_details( ".", "local_job_details.json" )
-    # the following constructs a string to find the "equilibration" dcd file
+    if not ljdf:
+        return
+    # The following constructs a string to find the "equilibration" dcd file
     # (which is numbered 0, but with zfill padding)
 
     total = ljdf["TotalRuns"]
@@ -717,7 +720,7 @@ def check_if_job_running():
     dir_path = os.getcwd()
     ljdf_t = read_local_job_details( dir_path, "local_job_details.json" )
     if not ljdf_t:
-        return "null","null","null"
+        return "null","null","null","null"
     current_jobid  = str( ljdf_t["CurrentJobId"] )
     current_jobstatus = ljdf_t["JobStatus"]
     current_run = ljdf_t["CurrentRun"]
@@ -857,7 +860,7 @@ def check_job():
     else:
         print((" {}   Total production data:{} %12.2f {}GB - error in calculating \
                 frame size. No psf file?".format(RED, DEFAULT, RED) %(tpd)))
-    print(("{}--------------------------------------------------------------------------------".format(BLUE)))
+    print(("{}--------------------------------------------------------------------------------{}".format(BLUE,DEFAULT)))
 def check_file_exists(target):
     """ Check file exists, give appropriate message. """
     mesg1 = "{} found {} -ok{}".format(DEFAULT, GREEN, DEFAULT)
