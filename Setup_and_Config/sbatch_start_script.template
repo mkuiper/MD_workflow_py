@@ -28,13 +28,15 @@ NTASKS=$SLURM_NTASKS_PER_NODE
 # PPN=`expr $SLURM_NTASKS_PER_NODE -1`
 # P="$(($PPN * $SLURM_NODES))"
 
-GPUS="+idlepoll +devices $CUDA_VISIBLE_DEVICES"
-echo "cuda devices: $CUDA_VISBLE_DEVICES" > cuda.info
+GPUS=" +idlepoll +devices $CUDA_VISIBLE_DEVICES"
+echo "cuda devices" > cuda.info
+echo $GPUS >> cuda.info
+nvidia-smi >> cuda.info
+
 
 # update current working scripts from above directory
 cp ../*.py . 
 cp ../namd* . 
-
 #--------------------------------------------------------------------------------
 ## python script to initiate job and setup variables.-----------
 ## pause if preprocessing script is not present. 
@@ -52,8 +54,8 @@ if [ -f pausejob ]; then exit; fi
 # submit job to the cluster:------------------------------------
 if [ $NNODE == 1 ]; then
 
- #namd2 +ppn $NTASKS $GPUS $optimize_script >temp_working_outputfile.out 2> temp_working_errorsfile.err;
- namd2 +ppn $NTASKS +devices 0 $optimize_script >temp_working_outputfile.out 2> temp_working_errorsfile.err;
+#namd2 +ppn $NTASKS $GPUS $optimize_script >temp_working_outputfile.out 2> temp_working_errorsfile.err;
+namd2 +ppn $NTASKS +idlepoll +devices 0 $optimize_script >temp_working_outputfile.out 2> temp_working_errorsfile.err;
 
 fi
 

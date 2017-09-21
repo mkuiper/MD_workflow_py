@@ -26,14 +26,14 @@ NTASKS=$SLURM_NTASKS_PER_NODE
 # PPN=`expr $SLURM_NTASK_PER_NODE - 1`
 # P="$(($PPN * $SLURM_NNODES))"
 
-GPUS="+idlepoll +devices $CUDA_VISIBLE_DEVICES" 
-echo "cuda devices: $CUDA_VISBLE_DEVICES" >> cuda.info
+GPUS=" +idlepoll +devices $CUDA_VISIBLE_DEVICES" 
+echo "cuda devices: production" >> cuda.info
+echo $GPUS >> cuda.info
+nvidia-smi >> cuda.info
 
 # update current configuration files from above directory. 
 cp ../*.py . 
 cp ../namd* . 
-
-
 
 #--------------------------------------------------------------------------------------------
 # python script for preprocessing data
@@ -48,11 +48,9 @@ if [ -f pausejob ]; then exit; fi
 # run production job:
 if [ $NNODE == 1 ]; then
 
-  namd2 +ppn $NTASKS $GPUS $production_script >temp_working_outputfile.out 2>temp_working_errorsfile.err;
- #namd2 +ppn $NTASKS +devices 0 $production_script >temp_working_outputfile.out 2>temp_working_errorsfile.err;
-
+#  namd2 +ppn $NTASKS $GPUS $production_script >temp_working_outputfile.out 2>temp_working_errorsfile.err;
+  namd2 +ppn $NTASKS +idlepoll +devices 0 $production_script >temp_working_outputfile.out 2>temp_working_errorsfile.err;
 fi 
-
 
 #--------------------------------------------------------------------------------------------
 # python script for postprocessing data

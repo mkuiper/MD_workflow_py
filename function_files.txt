@@ -1,0 +1,59 @@
+
+# read functions:
+def read_master_config_file():  
+def read_local_job_details(path="Setup_and_Config",
+def read_namd_job_details(targetfile):
+
+
+
+def gather_jobs():
+def gather_list():
+def extend_jobs(a):
+def extend_runs(a):
+def get_atoms(psffile):
+def pausejob_flag( directive ):
+def check_pausejob_flag():
+def check_disk_quota():
+def log_job_details( jobid ):
+def check_job_runtime():
+        If the run time is less than a certain cutoff defined in the 
+def check_run_counter(processing="post"):
+def cleanup_job_runs():
+def get_job_runtime( starttime, status ):
+def create_job_basename( jobname, run, zf ):
+def update_local_job_details( key, status ):
+def redirect_namd_output( CurrentWorkingName = "current_MD_run_files",
+def post_jobrun_cleanup():
+def update_local_dcd_list():
+def final_job_cleanup():
+def log_job_timing():
+def countdown_timer():
+def check_if_job_running():
+def monitor_jobs():
+def md5sum( filename, blocksize=65536 ):
+def getfilesize( filename ):
+def check_job_structure():
+def initialize_job_directories():
+        as defined in the 'master_config_file'. This function copies 
+def populate_job_directories():
+def check_job():
+def check_file_exists(target):
+def benchmark():
+def get_current_dir_list(job_dir):
+def get_current_file_list(job_dir):
+def execute_function_in_job_tree( func, *args ):
+def start_all_jobs():
+def start_jobs( startscript ):
+def clear_jobs():
+def clear_all_jobs():
+def restart_all_production_jobs():
+def restart_jobs(restart_script):
+def recover_all_jobs():
+def recovery_function():
+def stop_jobs():
+def pause_jobs():
+def pause_all_jobs():
+def stop_all_jobs_immediately():
+def erase_all_data():
+def create_dcd_file_loader( first = 0, last = -1, step =1):
+def clone():
