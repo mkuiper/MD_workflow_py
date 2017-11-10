@@ -517,7 +517,7 @@ def recovery_function():
                 confirm = input(line)
                 if confirm in yes:
                     print("-deleting redundant output and restart files:")
-                    for j in DcdList:
+                    for j in targetlist:
                         targetfile=os.getcwd()+"/OutputFiles/"+j
                         try:
                             os.remove(targetfile)
