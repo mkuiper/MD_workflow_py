@@ -3,7 +3,7 @@
 "Account"      : "AccountNo",
 "Flavour"      : "Namd",
 "UserName"     : "anon",
-"Walltime"     : "2:0:0",
+"Walltime"     : "1:0:0",
 "Nodes"        : "1",
 "TaskPerNode"  : "4",
 "GPUsPerNode"  : "1",
@@ -15,7 +15,7 @@
 "Comment1"      : "Job Details Section",
 
 "JobStreams"    : ["MainJobDir1"],
-"JobReplicates" : ["5"],
+"JobReplicates" : ["3"],
 "BaseDirNames"  : ["Sim1_"],
 "JobBaseNames"  : ["MyJob1_"],
 "Runs"          : ["5" ],
@@ -34,7 +34,7 @@
 
 "Comment2"           : "Miscellaneous Parameters",
 
-"JobFailTime"        : 60,
+"JobFailTime"        : 20,
 "DiskSpaceCutOff"    : 95,
 "AutoAnalysis"       : "False"
 

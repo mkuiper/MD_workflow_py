@@ -477,12 +477,14 @@ def recovery_function():
     zf_bait = ".dcd".zfill( zf )
 
     FList = get_current_file_list( "OutputFiles" )
-    FileList = filter(lambda k: '.dcd' in k, FList)
+    
+    DcdList = [item for item in FList if ".dcd" in item]
+    #FileList = filter(lambda k: '.dcd' in k, FList)
 
     line = ljdf["JOB_STREAM_DIR"] + "/" + ljdf["JobDirName"] + "/" +  "OutputFiles:"
     print(("\n{}{}{}".format( GREEN, line, DEFAULT )))
-
-    for i in FileList:
+    
+    for i in DcdList:
         if "dcd" in i:
             path = 'OutputFiles/' + i
             size = os.path.getsize( path )
@@ -498,26 +500,24 @@ def recovery_function():
 
     if target != "":
         # find index of target in dirlist.
-        if target in dirlist:
-     #      index = dirlist.index( target )
-
+        if target in DcdList:
             # find index of target in dirlist.
-            index = dirlist.index(target)+1
-            print(("\n{}Files to delete:{}".format(BLUE, DEFAULT )))
+            index = DcdList.index(target)+1
+            print(("\n{}Files to delete:{}".format(DEFAULT, DEFAULT )))
             targetlist=[]
-            for i in range( index, int(len(dirlist))):
-                 print((dirlist[i]))
-                 targetlist.append(dirlist[i])
+            for i in range( index, int(len(DcdList))):
+                 print((DcdList[i]))
+                 targetlist.append(DcdList[i])
 
-            line = " {}Confirm:{} y/n ".format(BLUE, DEFAULT )
+            line = " {}Confirm:{} y/n ".format(YELLOW, DEFAULT )
             confirm = input(line)
             yes = ["Y","y","yes"]
             if confirm in yes:
-                line = " {}Really? -this can't be undone! Confirm:{} y/n ".format(BLUE, DEFAULT )
+                line = " {}Really? -this can't be undone! Confirm:{} y/n ".format(YELLOW, DEFAULT )
                 confirm = input(line)
                 if confirm in yes:
                     print("-deleting redundant output and restart files:")
-                    for j in targetlist:
+                    for j in DcdList:
                         targetfile=os.getcwd()+"/OutputFiles/"+j
                         try:
                             os.remove(targetfile)

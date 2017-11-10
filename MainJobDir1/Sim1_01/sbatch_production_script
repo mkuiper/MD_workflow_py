@@ -9,15 +9,15 @@
 #-- the X values will be substituted with a values from the master_config_file 
 #-- when you populate job directories with ./mdwf -p 
 
-#SBATCH --nodes=X
-#SBATCH --time=X
-#SBATCH --tasks-per-node=X
-#SBATCH --gres gpu:X
+#SBATCH --nodes=1
+#SBATCH --time=1:0:0
+#SBATCH --tasks-per-node=4
+#SBATCH --gres gpu:1
 
-production_script=X
+production_script=namd_production_script.conf
 
 module load openmpi
-module load X                # module file
+module load namd/2.12-ibverbs-smp-cuda                # module file
 
 
 NNODE=$SLURM_JOB_NUM_NODES

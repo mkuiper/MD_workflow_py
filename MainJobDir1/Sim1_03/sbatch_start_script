@@ -11,15 +11,15 @@
 #-- from the master_config_file when you populate 
 #-- job directories with:  ./mdwf -p 
 
-#SBATCH --nodes=X
-#SBATCH --time=X
-#SBATCH --tasks-per-node=X
-#SBATCH --gres gpu:X
+#SBATCH --nodes=1
+#SBATCH --time=1:0:0
+#SBATCH --tasks-per-node=4
+#SBATCH --gres gpu:1
 
-optimize_script=X      
+optimize_script=namd_equilibration_script.conf      
 
 module load openmpi
-module load X			# namd module file
+module load namd/2.12-ibverbs-smp-cuda			# namd module file
 
 NNODE=$SLURM_JOB_NUM_NODES
 NTASKS=$SLURM_NTASKS_PER_NODE
