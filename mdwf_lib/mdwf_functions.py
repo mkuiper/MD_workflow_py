@@ -642,6 +642,7 @@ def erase_all_data():
         print("\nOh the humanity. I sure hope that wasn't anything important.")
     else:
         print("Phew! Nothing erased.")
+
 def cleanup_job_runs():
     """ Cleans up folder. Updates local details. """
     update_local_job_details( "JobStatus",  "Finished" )
@@ -1038,6 +1039,8 @@ def post_jobrun_cleanup():
 
     # update dcd files list:
     update_local_dcd_list()
+
+
 def update_local_dcd_list():
     """ Function to create a local dcd_files_list.vmd use to load data into VMD. """
     f = open('local_dcd_files_loader.vmd', 'w')
@@ -1057,6 +1060,13 @@ def final_job_cleanup():
     """ Perform final cleanup once jobs are finished. """
     for file in glob("*BAK"):
         os.remove( file )
+    for file in glob("*.old"):
+        os.remove( file )
+    for file in glob("*.restart.*"):
+        os.remove( file )
+    for file in glob("*.xst"):
+        os.remove( file )
+
 def log_job_timing():
     """ Log length of job in human readable format. """
 
