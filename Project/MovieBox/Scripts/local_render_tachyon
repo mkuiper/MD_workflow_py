@@ -6,7 +6,7 @@
 ## for molecular animations using tachyon. 
 
 
-cd Inbox;
+cd InBox;
 
 for i in *
  do
@@ -28,7 +28,6 @@ sed 's/^    Samples.*/    Samples 16/' ../Temp/temp.dat >../Temp/temp_file.dat
 
 #tachyon -aasamples $aas -res $xres $yres ../Temp/$i -format TARGA -o ../Frames/$i.tga
 ##  post rendering processing: 
-# convert
 
 ##  move plot file to OutBox
 mv ../Temp/$i ../Outbox
