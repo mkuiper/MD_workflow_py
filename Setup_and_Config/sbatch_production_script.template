@@ -27,9 +27,10 @@ NTASKS=$SLURM_NTASKS_PER_NODE
  PPN=`expr $SLURM_NTASK_PER_NODE - 1`
  P="$(($PPN * $SLURM_NNODES))"
 
-#GPUS=" +idlepoll +devices $CUDA_VISIBLE_DEVICES" 
-GPUS=" +idlepoll +devices 0" 
+# GPUS=" +idlepoll +devices $CUDA_VISIBLE_DEVICES"  <- this seems to cause troulbe with GPU allocation
+GPUS=" +idlepoll " 
 
+# For trouble shooting:
 echo "cuda devices: production" >> cuda.info
 echo $CUDA_VISIBLE_DEVICES >> cuda.info
 echo $GPUS >> cuda.info

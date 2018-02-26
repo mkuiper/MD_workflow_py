@@ -28,8 +28,8 @@ NTASKS=$SLURM_NTASKS_PER_NODE
 # PPN=`expr $SLURM_NTASKS_PER_NODE -1`
 # P="$(($PPN * $SLURM_NODES))"
 
-#GPUS=" +idlepoll +devices $CUDA_VISIBLE_DEVICES"
-GPUS=" +idlepoll +devices 0"
+GPUS=" +idlepoll +devices $CUDA_VISIBLE_DEVICES"
+
 echo "cuda devices" > cuda.info
 echo $CUDA_VISIBLE_DEVICES >> cuda.info
 echo $GPUS >> cuda.info
