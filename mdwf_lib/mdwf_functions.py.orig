@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
+<<<<<<< Updated upstream
 # MD workflow functions.   mdwf
+<<<<<<< HEAD
+""" mdwf functions.                    version 0.25
+=======
+# MD workflow functions.   mdwf 
 """ mdwf functions.                    version 0.5
+>>>>>>> Stashed changes
+=======
+""" mdwf functions.                    version 0.5
+>>>>>>> cleanup
 """
 import os
 import subprocess
@@ -22,8 +31,13 @@ GREEN   = '\033[32m'
 YELLOW  = '\033[33m'
 BLUE    = '\033[34m'
 
+<<<<<<< Updated upstream
 ## Read File Functions:
+def read_master_config_file():
+=======
+### Read Functions--------------------------------------------------
 def read_master_config_file():  
+>>>>>>> Stashed changes
     """ Reads the json file 'master_config_file' and
          returns the dictionary. """
 
@@ -36,8 +50,15 @@ def read_master_config_file():
         print(("{}Can't see 'master_config_file' {} "\
                 .format(RED, DEFAULT)))
         print(("{}Have you populated the directory? (./mdwf -p){}"\
+<<<<<<< Updated upstream
                 .format(RED, DEFAULT)))
+<<<<<<< HEAD
+=======
+                .format(RED, DEFAULT))) 
+>>>>>>> Stashed changes
 
+=======
+>>>>>>> cleanup
 def read_local_job_details(path="Setup_and_Config",
         ljdf_target="local_job_details_template.json"):
     """ Reads the json file 'local_job_details.json' and
@@ -183,7 +204,7 @@ def initialize_job_directories():
         if not os.path.exists(TemplatePath):
             print("Can't find the /Setup_and_Config/JobTemplate \
                    directory. Exiting.")
-            sys.exit()
+            sys.exit(error)
 
         replicates = int(Replicates[i])
         zf = len(str(replicates)) + 1      # for zfill
@@ -900,7 +921,6 @@ def get_atoms(psffile):
     else:
         print(("{}Can't find {} in /InputFiles directory {}"\
                .format(RED,psffile,DEFAULT)))
-
 def get_job_runtime( starttime, status ):
     """ Function to return runtime of current job in H:M format.
         Returns --:-- if job not running. """
@@ -912,7 +932,6 @@ def get_job_runtime( starttime, status ):
     else:
         Time = "--:--"
     return Time
-
 def get_current_dir_list(job_dir):
     """ Function to return a list of sorted directories in a given path. """
 
@@ -923,7 +942,6 @@ def get_current_dir_list(job_dir):
     if not dir_list:
         print("No directories found in {}. Have you initialized? \n".format(job_dir))
     return sorted(dir_list)
-
 def get_current_file_list(job_dir):
     """ Function to return a list of files in a given path. """
 
@@ -1030,7 +1048,6 @@ def redirect_namd_output( CurrentWorkingName = "current_MD_run_files",
     shutil.copy( cwf_coor, "RestartFiles/" + basename + ".coor" )
     shutil.move( "temp_working_outputfile.out", "OutputText/" + basename + ".txt" )
     shutil.move( "temp_working_errorsfile.err", "Errors/"     + basename + ".err" )
-
 def post_jobrun_cleanup():
     """ Remove unwanted error, backup files, etc. """
     for file in glob("slurm*"):
@@ -1064,7 +1081,6 @@ def update_local_dcd_list():
                 % ( "$cwd/", i, "$firstframe", "$lastframe", "$stepsize")
         f.write( line )
     f.close()
-
 def final_job_cleanup():
     """ Perform final cleanup once jobs are finished. """
     for file in glob("*BAK"):
@@ -1079,12 +1095,15 @@ def final_job_cleanup():
 def log_job_timing():
     """ Log length of job in human readable format. """
 
+
+## still to do
+def countdown_timer():
+    """ Function to adjust countdown timer """
 def benchmark():
     """ Function to benchmark job """
     mcf = read_master_config_file()
     jd_opt, jd_opt_pl = read_namd_job_details(mcf["EquilibrateConfScript"])
     print(("{} Setting up jobs for benchmarking based on current job config files.".format(DEFAULT)))
-
 def create_dcd_file_loader( first = 0, last = -1, step =1):
     """ Function to create an easyfile loader to be able to read in a
         contiguous series of dcd output files for VMD. """
