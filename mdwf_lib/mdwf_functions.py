@@ -926,8 +926,9 @@ def get_current_file_list(job_dir):
     if not os.path.isdir(job_dir):
         print("No directory {} found. Have you initialized? \n".format(job_dir))
         return
-#   file_list=[f for f in os.listdir(job_dir) if os.path.isfile(os.path.join(job_dir, f))]
+    file_list=[f for f in os.listdir(job_dir) if os.path.isfile(os.path.join(job_dir, f))]
     if not file_list:
+        print("No directory {} found. Have you initialized? \n".format(job_dir))
         return
     mtime = lambda f: os.stat(os.path.join(job_dir,f)).st_mtime
     return list(sorted(os.listdir(job_dir), key=mtime))
