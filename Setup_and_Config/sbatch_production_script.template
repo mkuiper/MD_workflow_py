@@ -23,18 +23,23 @@ NNODE=$SLURM_JOB_NUM_NODES
 NTASKS=$SLURM_NTASKS_PER_NODE
 
 # calculate total processes (P) and processes per node (PPN) (for multinode jobs) 
-# PPN=`expr $SLURM_NTASK_PER_NODE - 1`
-# P="$(($PPN * $SLURM_NNODES))"
+PPN=`expr $SLURM_NTASK_PER_NODE - 1`
+P="$(($PPN * $SLURM_NNODES))"
 
-GPUS="+idlepoll +devices $CUDA_VISIBLE_DEVICES" 
-echo "cuda devices: $CUDA_VISBLE_DEVICES" >> cuda.info
+# GPUS=" +idlepoll +devices $CUDA_VISIBLE_DEVICES"  <- this seems to cause troulbe with GPU allocation
+GPUS=" +idlepoll " 
+
+# For trouble shooting:
+echo "cuda devices: production" > cuda.info
+echo $CUDA_VISIBLE_DEVICES >> cuda.info
+echo $GPUS >> cuda.info
+nvidia-smi >> cuda.info
 
 # update current configuration files from above directory. 
 cp ../*.py . 
 cp ../namd* . 
 
-
-
+scontrol show job $SLURM_JOBID >> scontrol.info
 #--------------------------------------------------------------------------------------------
 # python script for preprocessing data
 if [ -f ../prejob_processing.py ]; 
@@ -49,12 +54,15 @@ if [ -f pausejob ]; then exit; fi
 if [ $NNODE == 1 ]; then
 
   namd2 +ppn $NTASKS $GPUS $production_script >temp_working_outputfile.out 2>temp_working_errorsfile.err;
- #namd2 +ppn $NTASKS +devices 0 $production_script >temp_working_outputfile.out 2>temp_working_errorsfile.err;
 
 fi 
 
-
 #--------------------------------------------------------------------------------------------
+# record average timing numbers from namd output (from days/ns converted to ns/day)  
+nsday=`less temp_working_outputfile.out |grep CPUs | tail -n 3 | awk '{ sum += $8; } END { if (NR > 0) print NR/sum; } '` 
+ddate=`date +%d/%b/%Y`
+echo $ddate " JobId:" $SLURM_JOBID "  NodeList:" $SLURM_JOB_NODELIST " cpus:" $NTASKS " GpuList:" $CUDA_VISIBLE_DEVICES " ns/day:" $nsday >> timing.info
+
 # python script for postprocessing data
 if [ -f ../postjob_processing.py ]; 
  then python3 ../postjob_processing.py $SLURM_JOBID -production;

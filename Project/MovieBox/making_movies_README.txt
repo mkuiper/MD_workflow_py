@@ -14,7 +14,7 @@ and tcl scripts and then stitching frames together using Blender
 
 Software requirements for making movies: 
 - you should have the latest version of VMD installed 
-(currently 1.9.1 as of April 2012)
+(currently 1.9.3 as of April 2017)
 
      http://www.ks.uiuc.edu/Research/vmd/
 
@@ -77,7 +77,7 @@ to be rendered later on a cluster or desktop.  (Using the RenderBox subdirectory
 
 
 *** New GUI in vmd ************************************************************
-As of VMD version 1.9.1,  there is a new gui to be found under: 
+As of VMD version 1.9.3,  there is a new gui to be found under: 
    Extensions -> Visualization -> ViewChangeRender 
 
 Though limited in its functionality, it can be a useful way of setting and saving 
@@ -162,11 +162,11 @@ We would play it to generate the .dat files (after loading the molecule, traject
 
 which looks something like: 
 
- move_vp_render 1  2   1    movie_frames movie_segment_1  200   200    0 smooth;
- move_vp_render 2  2   201  movie_frames movie_segment_1  200     0  200 sharp;
+ move_vp_render 1  2   1    InBox movie_segment_1  200   200    0 smooth;
+ move_vp_render 2  2   201  InBox movie_segment_1  200     0  200 sharp;
   
 
-This would populate the directory /movie_frames with movie_segment_1.dat files for later rendering.  
+This would populate the directory /InBox with movie_segment_1.dat files for later rendering.  
 
 Make sure to enable ambient occlusion lighting for fancy effects! 
 Display → Display Settings → Shadows (on) Amb. Occl. (on)
@@ -176,16 +176,8 @@ Display → Display Settings → Shadows (on) Amb. Occl. (on)
 4) Rendering the plot.dat files. 
 >-------------------------------------------------------------------------------
 
-In order to render the frames we've just generated we will use RenderBox_v1
-
-RenderBox is its own directory structure to systematically render .dat frames.  
-It can be used on a local machine or pushed to a cluster to process the images in parallel. 
-
-Basically we copy the .dat files to /Inbox  and then start the rendering script in the top directory. 
-
-ie)  from the Renderbox directory: 
- 
- mv ../movie_frames/* Inbox/ 
+In order to render the frames we've just generated we will use a script to run vmd tachyon 
+to render the .dat files into .tga images. 
 
 Before we start we can edit the render script to change the resolution and the anti-alias sampling  
 of the image processing: (useful for creating higher resolution movies from the same .dat files.  
@@ -201,10 +193,9 @@ Also check the vmd path to the Tachyon renderer is the same:
 
 Launch the local rendering script: 
 
- ./local_render_tachyon  
+ Script/local_render_tachyon  
 
 This takes a .dat file in /Inbox   moves it to /Temp,  generates the image which is put into /Frames
-
 
   
 >-------------------------------------------------------------------------------
