@@ -1,0 +1,21 @@
+CRYST1    1.000    1.000    1.000  90.00  90.00  90.00 P 1           1
+ATOM      1  CG  EPHEA   1      -2.601   5.423   3.405  1.00  0.00      A    C
+ATOM      2  CD1 EPHEA   1      -3.756   4.749   3.032  1.00  0.00      A    C
+ATOM      3  HD1 EPHEA   1      -4.066   3.895   3.615  1.00  0.00      A    H
+ATOM      4  CD2 EPHEA   1      -2.250   6.618   2.652  1.00  0.00      A    C
+ATOM      5  HD2 EPHEA   1      -1.401   7.163   3.038  1.00  0.00      A    H
+ATOM      6  CE1 EPHEA   1      -4.653   5.269   2.073  1.00  0.00      A    C
+ATOM      7  HE1 EPHEA   1      -5.559   4.717   1.866  1.00  0.00      A    H
+ATOM      8  CE2 EPHEA   1      -3.061   7.046   1.591  1.00  0.00      A    C
+ATOM      9  HE2 EPHEA   1      -2.733   7.866   0.969  1.00  0.00      A    H
+ATOM     10  CZ  EPHEA   1      -4.287   6.388   1.338  1.00  0.00      A    C
+ATOM     11  OH  EPHEA   1      -5.218   6.809   0.385  1.00  0.00      A    O
+ATOM     12  HH  EPHEA   1      -6.028   6.371   0.657  1.00  0.00      A    H
+ATOM     13  CB  EPHEA   1      -1.727   4.926   4.527  1.00  0.00      A    C
+ATOM     14  HB1 EPHEA   1      -2.133   4.014   5.016  1.00  0.00      A    H
+ATOM     15  HB2 EPHEA   1      -0.722   4.756   4.087  1.00  0.00      A    H
+ATOM     16  CA  EPHEA   1      -1.672   5.937   5.686  1.00  0.00      A    C
+ATOM     17  HA1 EPHEA   1      -1.586   6.967   5.280  1.00  0.00      A    H
+ATOM     18  HA2 EPHEA   1      -0.634   5.770   6.044  1.00  0.00      A    H
+ATOM     19  HA3 EPHEA   1      -2.462   5.738   6.441  1.00  0.00      A    H
+END

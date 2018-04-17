@@ -28,7 +28,7 @@ NTASKS=$SLURM_NTASKS_PER_NODE
 # PPN=`expr $SLURM_NTASKS_PER_NODE -1`
 # P="$(($PPN * $SLURM_NODES))"
 
-GPUS=" +idlepoll "
+GPUS=" +idlepoll +devices $CUDA_VISIBLE_DEVICES"
 
 echo "cuda devices" > cuda.info
 echo $CUDA_VISIBLE_DEVICES >> cuda.info
@@ -38,8 +38,8 @@ nvidia-smi >> cuda.info
 scontrol show job $SLURM_JOBID > scontrol.info
 
 # update current working scripts from above directory
-# cp ../*.py . 
-# cp ../namd* . 
+cp ../*.py . 
+cp ../namd* . 
 #--------------------------------------------------------------------------------
 ## python script to initiate job and setup variables.-----------
 ## pause if preprocessing script is not present. 
@@ -58,13 +58,12 @@ if [ -f pausejob ]; then exit; fi
 if [ $NNODE == 1 ]; then
 
 namd2 +ppn $NTASKS $GPUS $optimize_script >temp_working_outputfile.out 2> temp_working_errorsfile.err;
+#namd2 +ppn $NTASKS +idlepoll +devices 0 $optimize_script >temp_working_outputfile.out 2> temp_working_errorsfile.err;
 
 fi
+
+
 #--------------------------------------------------------------------------------
-# record average timing numbers from namd output (from days/ns converted to ns/day)
-nsday=`less temp_working_outputfile.out |grep CPUs | tail -n 3 | awk '{ sum += $8; } END { if (NR > 0) print NR/sum; } '`
-ddate=`date +%d/%b/%Y`
-echo $ddate " JobId:" $SLURM_JOBID "  NodeList:" $SLURM_JOB_NODELIST " cpus:" $NTASKS " GpuList:" $CUDA_VISIBLE_DEVICES " ns/day:" $nsday >> timing.info
 
 ## python script to cleanup and redirect data-------------------- 
 if [ -f ../postjob_processing.py ];

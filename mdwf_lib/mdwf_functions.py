@@ -285,10 +285,10 @@ def populate_job_directories():
 
   # Copy across python and config scripts from /Setup_and_Config to top of each job dir
         jobpath  = JobStreams[i] + "/"
-        for pyfile in glob(r'Setup_and_Config/*.py' ):
-            shutil.copy2( pyfile, jobpath )
-        for conffile in glob(r'Setup_and_Config/*.conf' ):
-            shutil.copy2(conffile, jobpath)
+#        for pyfile in glob(r'Setup_and_Config/*.py' ):
+#            shutil.copy2( pyfile, jobpath )
+#        for conffile in glob(r'Setup_and_Config/*.conf' ):
+#            shutil.copy2(conffile, jobpath)
 
   # Populate job directories with local_job_details and sbatch files
         jobdirlist = sorted(get_current_dir_list(jobpath))
@@ -313,6 +313,15 @@ def populate_job_directories():
                 shutil.copy('sb_start_temp', sbs_path)
                 shutil.copy('sb_prod_temp' , sbp_path)
 
+           #     jobpath  = JobStreams[i] + "/" + j + "/"
+                for pyfile in glob(r'Setup_and_Config/*.py' ):
+                    shutil.copy2( pyfile, jobpath )
+                for conffile in glob(r'Setup_and_Config/*.conf' ):
+                    shutil.copy2(conffile, jobpath)
+
+  # Populate job directories with local_job_details and sbatch files
+        jobdirlist = sorted(get_current_dir_list(jobpath))
+
   # Remove tempfiles.
     os.remove('sb_start_temp')
     os.remove('sb_prod_temp')
@@ -323,6 +332,7 @@ def start_all_jobs():
     mcf = read_master_config_file()
     startscript = mcf["SbatchEquilibrateScript"]
     execute_function_in_job_tree( start_jobs, startscript )
+
 def start_jobs( startscript ):
     """ Function to start equilibrium jobs in a directory"""
     cwd = os.getcwd()
@@ -357,6 +367,7 @@ def stop_jobs():
     """ Function to stop all jobs immediately. """
     print("-- stopping all jobs")
     execute_function_in_job_tree(stop_all_jobs_immediately)
+
 def stop_all_jobs_immediately():
     """ Function to stop all jobs immediately """
 
@@ -378,6 +389,7 @@ def stop_all_jobs_immediately():
 def extend_jobs(a):
     """ Function to change number of job runs. """
     execute_function_in_job_tree(extend_runs,a)
+
 def extend_runs(a):
     """ Function to change number of job runs. """
     ljdf_t  = read_local_job_details( ".", "local_job_details.json" )
@@ -390,6 +402,7 @@ def clear_jobs():
     """ Function to clear all pausejob and stop flags """
     mcf = read_master_config_file()
     execute_function_in_job_tree( clear_all_jobs )
+
 def clear_all_jobs():
     """ Function to clear all stop flags in a directory"""
     cwd = os.getcwd()
@@ -414,6 +427,7 @@ def restart_all_production_jobs():
     mcf = read_master_config_file()
     restart_script = mcf["SbatchProductionScript"]
     execute_function_in_job_tree(restart_jobs, restart_script)
+
 def restart_jobs(restart_script):
     """ Function to restart production jobs. """
     cwd = os.getcwd()
@@ -463,6 +477,7 @@ def recover_all_jobs():
     print("point. ")
 
     execute_function_in_job_tree( recovery_function )
+
 def recovery_function():
     """ This function checks sizes and md5sums of outputfiles, giving the opportunity
         for a user to recover from the last known good file"""

@@ -1,0 +1,15 @@
+CRYST1    1.000    1.000    1.000  90.00  90.00  90.00 P 1           1
+ATOM      1  CG  PHENA   1       1.554   4.402   1.389  1.00  0.00      A    C
+ATOM      2  HG  PHENA   1       1.614   3.980   2.381  1.00  0.00      A    H
+ATOM      3  CD1 PHENA   1       0.403   5.094   0.987  1.00  0.00      A    C
+ATOM      4  HD1 PHENA   1      -0.424   5.205   1.672  1.00  0.00      A    H
+ATOM      5  CD2 PHENA   1       2.630   4.255   0.502  1.00  0.00      A    C
+ATOM      6  HD2 PHENA   1       3.518   3.722   0.810  1.00  0.00      A    H
+ATOM      7  CE1 PHENA   1       0.329   5.641  -0.303  1.00  0.00      A    C
+ATOM      8  HE1 PHENA   1      -0.560   6.173  -0.608  1.00  0.00      A    H
+ATOM      9  CE2 PHENA   1       2.553   4.803  -0.787  1.00  0.00      A    C
+ATOM     10  HE2 PHENA   1       3.378   4.695  -1.476  1.00  0.00      A    H
+ATOM     11  CZ  PHENA   1       1.405   5.494  -1.188  1.00  0.00      A    C
+ATOM     12  OH  PHENA   1       1.338   6.039  -2.484  1.00  0.00      A    O
+ATOM     13  HH  PHENA   1       0.483   6.469  -2.565  1.00  0.00      A    H
+END
