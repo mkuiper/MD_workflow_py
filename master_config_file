@@ -2,10 +2,10 @@
 "Comment0"     : "Master_Config_File v0.5",
 "Account"      : "AccountNo",
 "Flavour"      : "Namd",
-"UserName"     : "anon",
-"Walltime"     : "1:0:0",
+"UserName"     : "anonymous",
+"Walltime"     : "2:0:0",
 "Nodes"        : "1",
-"TaskPerNode"  : "4",
+"TaskPerNode"  : "28",
 "GPUsPerNode"  : "1",
 
 "ModuleFile"   : "namd/2.12-ibverbs-smp-cuda",

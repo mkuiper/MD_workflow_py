@@ -10,12 +10,11 @@ package require psfgen
 
 #topology ../InputFiles/Parameters/top_all27_prot_na.rtf
 
-#topology ../InputFiles/Parameters/top_all36_prot.rtf
-#topology ../InputFiles/Parameters/top_all36_na.rtf
-#topology ../InputFiles/Parameters/top_all36_lipid.rtf
-#topology ../InputFiles/Parameters/top_all36_carb.rtf
-#topology ../InputFiles/Parameters/toppar_all36_carb_model.str
-#topology ../InputFiles/Parameters/toppar_water_ions_namd.str
+topology ../InputFiles/Parameters/top_all36_prot.rtf
+topology ../InputFiles/Parameters/top_all36_na.rtf
+topology ../InputFiles/Parameters/top_all36_lipid.rtf
+topology ../InputFiles/Parameters/top_all36_carb.rtf
+topology ../InputFiles/Parameters/toppar_water_ions_namd.str
 
 
 #
