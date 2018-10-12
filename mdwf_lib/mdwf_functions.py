@@ -287,8 +287,14 @@ def populate_job_directories():
         jobpath  = JobStreams[i] + "/"
         for pyfile in glob(r'Setup_and_Config/*.py' ):
             shutil.copy2( pyfile, jobpath )
-#        for conffile in glob(r'Setup_and_Config/*.conf' ):
-#            shutil.copy2(conffile, jobpath)
+
+        for conffile in glob(r'Setup_and_Config/*.conf' ):
+            script = os.path.basename(conffile)
+            fileloc = jobpath + script
+            if not os.path.isfile(fileloc):
+                shutil.copy2(conffile, jobpath)
+            else:
+                print(" skipping config file: {}, already exists.".format(conffile))
 
   # Populate job directories with local_job_details and sbatch files
         jobdirlist = sorted(get_current_dir_list(jobpath))
@@ -304,7 +310,7 @@ def populate_job_directories():
                         json.dump(ljdf_t, outfile, indent=2)
                     outfile.close()
                 else:
-                    print(" skipping local_details_file: already exists ")
+                    print(" skipping local_details_file: already exists.")
 
                 jobpath  = JobStreams[i] + "/" + j + "/"
                 sbs_path = jobpath       + "/" + startscript
@@ -313,11 +319,11 @@ def populate_job_directories():
                 shutil.copy('sb_start_temp', sbs_path)
                 shutil.copy('sb_prod_temp' , sbp_path)
 
-           #     jobpath  = JobStreams[i] + "/" + j + "/"
+#               jobpath  = JobStreams[i] + "/" + j + "/"
 #               for pyfile in glob(r'Setup_and_Config/*.py' ):
 #                   shutil.copy2( pyfile, jobpath )
-                for conffile in glob(r'Setup_and_Config/*.conf' ):
-                    shutil.copy2(conffile, jobpath)
+#                for conffile in glob(r'Setup_and_Config/*.conf' ):
+#                    shutil.copy2(conffile, jobpath)
 
   # Populate job directories with local_job_details and sbatch files
         jobdirlist = sorted(get_current_dir_list(jobpath))

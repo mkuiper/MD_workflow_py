@@ -53,7 +53,7 @@ if [ -f pausejob ]; then exit; fi
 # run production job:
 if [ $NNODE == 1 ]; then
 
-  namd2 +ppn $NTASKS $GPUS $production_script >temp_working_outputfile.out 2>temp_working_errorsfile.err;
+  namd2 +ppn $NTASKS $GPUS ../$production_script >temp_working_outputfile.out 2>temp_working_errorsfile.err;
 
 fi 
 

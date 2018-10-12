@@ -57,7 +57,7 @@ if [ -f pausejob ]; then exit; fi
 # submit job to the cluster:------------------------------------
 if [ $NNODE == 1 ]; then
 
-namd2 +ppn $NTASKS $GPUS $optimize_script >temp_working_outputfile.out 2> temp_working_errorsfile.err;
+namd2 +ppn $NTASKS $GPUS ../$optimize_script >temp_working_outputfile.out 2> temp_working_errorsfile.err;
 
 fi
 #--------------------------------------------------------------------------------
