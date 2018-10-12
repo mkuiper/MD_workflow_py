@@ -285,8 +285,8 @@ def populate_job_directories():
 
   # Copy across python and config scripts from /Setup_and_Config to top of each job dir
         jobpath  = JobStreams[i] + "/"
-#        for pyfile in glob(r'Setup_and_Config/*.py' ):
-#            shutil.copy2( pyfile, jobpath )
+        for pyfile in glob(r'Setup_and_Config/*.py' ):
+            shutil.copy2( pyfile, jobpath )
 #        for conffile in glob(r'Setup_and_Config/*.conf' ):
 #            shutil.copy2(conffile, jobpath)
 
@@ -314,8 +314,8 @@ def populate_job_directories():
                 shutil.copy('sb_prod_temp' , sbp_path)
 
            #     jobpath  = JobStreams[i] + "/" + j + "/"
-                for pyfile in glob(r'Setup_and_Config/*.py' ):
-                    shutil.copy2( pyfile, jobpath )
+#               for pyfile in glob(r'Setup_and_Config/*.py' ):
+#                   shutil.copy2( pyfile, jobpath )
                 for conffile in glob(r'Setup_and_Config/*.conf' ):
                     shutil.copy2(conffile, jobpath)
 
