@@ -1,0 +1,19 @@
+# volmap generator. 
+# script to automatically generate occupancy maps to help determine fractional 
+# occupancy.
+
+mol top 0 
+
+set models [molinfo num]
+
+
+for {set molno 0} {$molno < $models} {incr molno} {
+
+  set mol_id [molinfo index $molno]
+  mol top $mol_id
+
+  set frames [molinfo $mol_id get numframes]
+  volmap occupancy [atomselect top {water}] \
+    -res 1.0 -allframes -combine avg  -mol top
+
+}

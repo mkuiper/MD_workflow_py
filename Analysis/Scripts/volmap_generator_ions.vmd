@@ -1,0 +1,24 @@
+# volmap generator. 
+# script to automatically generate occupancy maps to help determine fractional 
+# occupancy.
+
+mol top 0 
+
+set models [molinfo num]
+
+
+for {set molno 0} {$molno < $models} {incr molno} {
+
+  set mol_id [molinfo index $molno]
+  mol top $mol_id
+
+# generate cation set
+  set frames [molinfo $mol_id get numframes]
+  volmap occupancy [atomselect top {name LIT SOD MG POT CAL RUB CES BAR CAD}] \
+    -res 1.0 -allframes -combine avg  -mol top
+
+# generate anion set 
+  set frames [molinfo $mol_id get numframes]
+  volmap occupancy [atomselect top {name CLA}] \
+    -res 1.0 -allframes -combine avg  -mol top
+}

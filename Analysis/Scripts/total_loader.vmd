@@ -1,0 +1,13 @@
+# Total loader script. 
+# simple loader script to read in models, dcd files and then perform protein alignment
+
+source setup_representations.vmd
+
+source dcd_loader_script.vmd 
+
+source align_protein_backbones.vmd
+
+source volmap_generator.vmd
+
+source volmap_generator_water.vmd
+source volmap_generator_ions.vmd

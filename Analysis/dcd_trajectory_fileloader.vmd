@@ -1,0 +1,21 @@
+# /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_01
+mol addfile /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_01/OutputFiles/2018_16Oct_sim_run_00.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_01/OutputFiles/2018_16Oct_sim_run_01.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_01/OutputFiles/2018_16Oct_sim_run_02.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_01/OutputFiles/2018_16Oct_sim_run_03.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_01/OutputFiles/2018_16Oct_sim_run_04.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_01/OutputFiles/2018_16Oct_sim_run_05.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+# /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_02
+mol addfile /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_02/OutputFiles/2018_16Oct_sim_run_00.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_02/OutputFiles/2018_16Oct_sim_run_01.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_02/OutputFiles/2018_16Oct_sim_run_02.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_02/OutputFiles/2018_16Oct_sim_run_03.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_02/OutputFiles/2018_16Oct_sim_run_04.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_02/OutputFiles/2018_16Oct_sim_run_05.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+# /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_03
+mol addfile /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_03/OutputFiles/2018_16Oct_sim_run_00.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_03/OutputFiles/2018_16Oct_sim_run_01.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_03/OutputFiles/2018_16Oct_sim_run_02.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_03/OutputFiles/2018_16Oct_sim_run_03.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_03/OutputFiles/2018_16Oct_sim_run_04.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /flush1/kui00b/MD_workflow_py/MainJobDir_01/Sim1_03/OutputFiles/2018_16Oct_sim_run_05.dcd type dcd first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all

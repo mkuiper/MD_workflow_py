@@ -1,0 +1,22 @@
+# DCD loader script
+# Script to load in the latest dcd files 'dcd_trajectory_fileloader' 
+# This will only work if each model has a different number of atoms. 
+# If two models have the same number of atoms trajectory files will be corrupted!
+#
+#
+
+# Expecting models to be already loaded into vmd 
+
+# count models loaded:
+set models [molinfo num]
+
+for {set molno 0} {$molno < $models} {incr molno} { 
+
+  set mol_id [molinfo index $molno]
+  mol top $mol_id
+  source dcd_trajectory_fileloader.vmd
+}
+
+
+
+
