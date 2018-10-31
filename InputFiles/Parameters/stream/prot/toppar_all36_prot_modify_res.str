@@ -708,6 +708,9 @@ BOND 1ND1 2ZN
 
 RESI HYP           0.00 ! hydroxyproline
 !
+!Note: there is a conflict with parameters containing the CP2/OH1 atom types
+!in carb/toppar_all36_carb_imlab.str
+!
 !Domene, C., Jorgensen, C., Vanommeslaeghe, K., Schofield, C.,
 !MacKerell, A.D., Jr., “Quantifying the binding interaction between the
 !hypoxia-inducible transcription factor and the von Hippel Lindau

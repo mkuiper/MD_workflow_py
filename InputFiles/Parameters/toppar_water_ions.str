@@ -309,6 +309,7 @@ SOD    OC       -0.07502    3.23  ! osmotic P; carboxylate =O
 SOD    OS       -0.07502    3.13  ! POPC optim.; ester =O
 !! NA
 !SOD    ON3      -0.07502    3.16  ! POPC optim.; phosphate =O UNVALIDATED
+LIT    ON3      -0.0167     3.1775 ! Savelyev and MacKerell, JPCB 2015
 !! lipid
 SOD    OCL      -0.07502    3.23  ! osmotic P; carboxylate =O
 SOD    OBL      -0.07502    3.13  ! POPC optim.; ester =O
@@ -321,6 +322,10 @@ SOD    OG2D2    -0.07502    3.23  ! osmotic P; carboxylate =O
 ! OG2D1 in CGenFF shared between esters, amides, aldehydes,...
 !SOD    OG2D1    -0.07502    3.13  ! POPC optim.; ester =O
 SOD    OG2P1    -0.07502    3.16  ! POPC optim.; phosphate =O
+! Chloride
+CLA    LIT      -0.0187     3.6875 ! Savelyev and MacKerell, JPCB 2015
+CLA    SOD      -0.0839     3.7310 ! Savelyev and MacKerell, JPCB 2015
+CLA    POT      -0.1142     4.0810 ! Savelyev and MacKerell, JPCB 2015
 
 END
 BOMLEV @bom @PARA

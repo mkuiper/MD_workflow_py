@@ -35,22 +35,25 @@ echo $CUDA_VISIBLE_DEVICES >> cuda.info
 echo $GPUS >> cuda.info
 nvidia-smi >> cuda.info
 
-# update current configuration files from above directory. 
-# cp ../*.py . 
+# Update current configuration files from above directory. 
+cp ../*.py . 
 cp ../namd* . 
 
 scontrol show job $SLURM_JOBID >> scontrol.info
 #--------------------------------------------------------------------------------------------
-# python script for preprocessing data
+# Python script for preprocessing data
 if [ -f ../prejob_processing.py ]; 
  then python3 ../prejob_processing.py $SLURM_JOBID -production;
  else echo "No processing script" > pausejob
 fi 
 
-# prevent job from running if pausejob is present
-if [ -f pausejob ]; then exit; fi
+# Prevent job from running if pausejob is present
+if [ -f pausejob ]; then 
+  scontrol show job $SLURM_JOBID >> last_slurm.info;
+  exit; 
+fi
 
-# run production job:
+# Run production job:
 if [ $NNODE == 1 ]; then
 
  namd2 +ppn $NTASKS $GPUS $production_script > temp_working_outputfile.out 2> temp_working_errorsfile.err;
@@ -58,23 +61,23 @@ if [ $NNODE == 1 ]; then
 fi 
 
 #--------------------------------------------------------------------------------------------
-# record average timing numbers from namd output (from days/ns converted to ns/day)  
+# Record average timing numbers from namd output (from days/ns converted to ns/day)  
 nsday=`less temp_working_outputfile.out |grep CPUs | tail -n 3 | awk '{ sum += $8; } END { if (NR > 0) print NR/sum; } '` 
 ddate=`date +%d/%b/%Y`
 echo $ddate " JobId:" $SLURM_JOBID "  NodeList:" $SLURM_JOB_NODELIST " cpus:" $NTASKS " GpuList:" $CUDA_VISIBLE_DEVICES " ns/day:" $nsday >> timing.info
 
-# python script for postprocessing data
+# Python script for postprocessing data
 if [ -f ../postjob_processing.py ]; 
- then python3 ../postjob_processing.py $SLURM_JOBID -production;
- else echo "No processing script" > pausejob
+  then python3 ../postjob_processing.py $SLURM_JOBID -production;
+  else echo "No processing script" > pausejob;
 fi
 
-# prevent job from running if pausejob is present
+# Prevent job from running if pausejob is present. Also to troubleshoot crashing jobs. 
 if [ -f pausejob ]; then
- exit
+  scontrol show job $SLURM_JOBID >> last_slurm.info;
+  exit;
 fi
 
-# launch next job: 
- 
+# Launch next job: 
 sbatch sbatch_production_script 
 

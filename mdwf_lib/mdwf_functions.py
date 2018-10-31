@@ -338,6 +338,7 @@ def start_all_jobs():
     mcf = read_master_config_file()
     startscript = mcf["SbatchEquilibrateScript"]
     execute_function_in_job_tree( start_jobs, startscript )
+    print("{}Submitted all jobs.{}".format(YELLOW,DEFAULT))
 
 def start_jobs( startscript ):
     """ Function to start equilibrium jobs in a directory"""
@@ -359,15 +360,15 @@ def start_jobs( startscript ):
 
     else:
         if jobstatus == "cancelled":
-            print(("{}:jobid{} Appears this job was cancelled. Clear pauseflags \
-                    before restart. (./mdwf --clear)".format(cwd[-20:], jobid )))
+            print(("..{}:jobid{} Appears this job was cancelled. Clear pauseflags \
+                    before restart. (./mdwf --clear)".format(cwd[-24:], jobid )))
         if "running" in jobstatus:
-            print(("{}:jobid: {} --A job appears to be already running here. \
-                    ".format(cwd[-20:], jobid)))
+            print(("..{}:jobid: {} --A job appears to be already running here. \
+                    ".format(cwd[-24:], jobid)))
         else:
             if jobrun >= 1:
-                print(("{}{} Seems equilibration job already run here, don't \
-                you want to restart instead? (./mdwf --restart)".format(cwd[-20:], jobid)))
+                print(("..{}{} Seems equilibration job already run here, don't \
+you want to restart instead? (./mdwf --restart)".format(cwd[-24:], jobid)))
 
 def stop_jobs():
     """ Function to stop all jobs immediately. """
@@ -425,7 +426,7 @@ def clear_all_jobs():
         print(("{} cleared stop flags in: {} {}".format( GREEN, cwd, DEFAULT )))
 
     else:
-        print(("A job appears to be running here:..{} : jobstatus:{}".format( cwd[-20:], jobid )))
+        print(("A job appears to be running here:..{} : jobstatus:{}".format( cwd[-24:], jobid )))
 
 def restart_all_production_jobs():
     """ Function to restart_all_production_jobs. """
