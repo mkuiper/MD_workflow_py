@@ -3,7 +3,7 @@
 "Account"      : "AccountNo",
 "Flavour"      : "Namd",
 "UserName"     : "anonymous",
-"Walltime"     : "2:0:0",
+"Walltime"     : "0:5:0",
 "Nodes"        : "1",
 "TaskPerNode"  : "28",
 "GPUsPerNode"  : "1",
@@ -15,7 +15,7 @@
 "Comment1"      : "Job Details Section",
 
 "JobStreams"    : ["MainJobDir_01"],
-"JobReplicates" : ["3"],
+"JobReplicates" : ["2"],
 "BaseDirNames"  : ["Sim1_"],
 "JobBaseNames"  : ["sim_"],
 "Runs"          : ["5" ],

@@ -36,8 +36,8 @@ echo $GPUS >> cuda.info
 nvidia-smi >> cuda.info
 
 # Update current configuration files from above directory. 
-cp ../*.py . 
-cp ../namd* . 
+# cp ../*.py . 
+# cp ../namd* . 
 
 scontrol show job $SLURM_JOBID >> scontrol.info
 #--------------------------------------------------------------------------------------------

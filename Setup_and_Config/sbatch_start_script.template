@@ -39,7 +39,8 @@ scontrol show job $SLURM_JOBID > scontrol.info
 
 # update current working scripts from above directory
 # cp ../*.py . 
- cp ../namd* . 
+# cp ../namd* . 
+
 #--------------------------------------------------------------------------------
 ## python script to initiate job and setup variables.-----------
 ## pause if preprocessing script is not present. 
