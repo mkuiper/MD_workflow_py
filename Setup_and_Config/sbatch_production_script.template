@@ -62,7 +62,8 @@ fi
 
 #--------------------------------------------------------------------------------------------
 # Record average timing numbers from namd output (from days/ns converted to ns/day)  
-nsday=`less temp_working_outputfile.out |grep CPUs | tail -n 3 | awk '{ sum += $8; } END { if (NR > 0) print NR/sum; } '` 
+#nsday=`less temp_working_outputfile.out |grep CPUs | tail -n 3 | awk '{ sum += $8; } END { if (NR > 0) print NR/sum; } '` 
+nsday=`less temp_working_outputfile.out |grep TIMING | tail -n 3 | awk '{ sum += substr($8,1,6); } END { if (NR > 0) print 0.1728/(sum/NR); } '` 
 hours=`less temp_working_outputfile.out |grep CPUTime | awk '{ print $4/3600; } '` 
 ddate=`date +%d/%b/%Y`
 echo $ddate " JobId:" $SLURM_JOBID "  NodeList:" $SLURM_JOB_NODELIST " cpus:" $NTASKS " GpuList:" $CUDA_VISIBLE_DEVICES " ns/day:" $nsday " Total hours:" $hours >> timing.info
