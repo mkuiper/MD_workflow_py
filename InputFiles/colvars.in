@@ -1,0 +1,24 @@
+# colvar script to keep protein centered
+
+colvarsTrajFrequency 5000
+
+colvar {
+  name dist
+
+  distance {
+       
+    group1 { # protein CA atom selection
+            psfSegID   A   
+            atomNameResidueRange CA 10-60
+           }
+    group2 { dummyAtom ( 0.0, 0.0, 0.0) }
+   }
+}
+
+harmonic {
+   colvars dist
+   centers 0
+   forceConstant 0.2
+}
+
+

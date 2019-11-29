@@ -196,6 +196,12 @@ for analysis.
 =================
  Miscellaneous:
 =================
+Have included the useful program Packmol in the BUILD directory, great for packing in molecules into a volume. 
+Please go to this page to cite:
+qm.unicamp.br/packmol/citation.shtml
+
+
+
 
 To cleanup .git related files you may use:
 rm -rf .git

@@ -3,12 +3,13 @@
 "Account"      : "AccountNo",
 "Flavour"      : "Namd",
 "UserName"     : "anonymous",
-"Walltime"     : "0:5:0",
+"Walltime"     : "2:0:0",
 "Nodes"        : "1",
 "TaskPerNode"  : "28",
 "GPUsPerNode"  : "1",
 
 "ModuleFile"   : "namd/2.12-ibverbs-smp-cuda",
+"MPIModule"    : "blank",
 "PsfFileName"  : "ChangeMe.psf",
 "PdbFileName"  : "ChangeMe.pdb",
 
