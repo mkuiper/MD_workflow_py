@@ -717,9 +717,9 @@ def check_pausejob_flag():
     if pause != 0:
         f = open( "pausejob", 'a' )
         f.write(" pauseflag already present in local_jobs_detail file. ")
-        f.close()
         update_local_job_details( "JobStatus",  "pausejob" )
         update_local_job_details( "JobMessage", "paused" )
+        f.close()
 def check_disk_quota():
     """ Obselete function. """
     return
@@ -1002,19 +1002,23 @@ def pausejob_flag( directive ):
         f = open("pausejob", 'a')
         f.write(directive)
         f.close()
+
 def create_job_basename( jobname, run, zf ):
     """ Creates a time stamped basename for current job, uses zfill for
         numbering convention. """
     timestamp = time.strftime( "%Y_%d%b_", time.localtime() )
     basename  = timestamp + jobname + "run_" + str( run ).zfill( zf )
     return basename
+
 def update_local_job_details( key, status ):
     """ Updates local job details of 'local job details file'. """
     ljdf_t = read_local_job_details(".", "local_job_details.json")
     ljdf_t[ key ] = status
+    
     with open("local_job_details.json", 'w') as outfile:
         json.dump(ljdf_t, outfile, indent=2)
     outfile.close()
+
 def redirect_namd_output( CurrentWorkingName = "current_MD_run_files",
                           jobtype = "production"):
     """ Function to redirect NAMD output to appropriate folders."""
