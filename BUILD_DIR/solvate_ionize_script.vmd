@@ -1,0 +1,22 @@
+# VMD for LINUXAMD64, version 1.9.4a38 (October 17, 2019)
+# Log file '/flush5/kui00b/Corona_BATACE2_2020/BUILD_DIR/temptcl.vmd', created by user kui00b
+
+set Name ionized
+
+
+#mol new {$Name.psf} type {psf} first 0 last -1 step 1 waitfor 1
+#mol addfile {$Name.pdb} type {pdb} first 0 last -1 step 1 waitfor 1 0
+
+package require solvate
+
+solvate model_temp_x.psf  model_temp_x.pdb -o solvate1 -s WT  -b 1.8  -minmax {{-80 -90 -100} {80 90 100}}
+
+package require autoionize 
+
+autoionize -psf solvate1.psf -pdb solvate1.pdb -nions {{SOD 389} {CLA 468} {MG 10} {POT 50}}
+
+# mv ionized.psf ../InputFiles/$Name.psf 
+# mv ionized.pdb ../InputFiles/$Name.pdb
+
+exit 
+

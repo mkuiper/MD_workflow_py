@@ -1,0 +1,34 @@
+#!/usr/local/bin/vmd
+# VMD script written by save_state $Revision: 1.47 $
+# VMD version: 1.9.3
+
+
+set  mol_list { e2d2_aq e2d2_aq_cu1 e2d2_aq_dis e2d2_aq_21S e2d2_aq_107S e2d2_aq_111S e2d2_cu_ubq }
+set c 0 
+
+foreach i $mol_list {
+
+ mol new      ../InputFiles/$i.psf type psf first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+ mol addfile  ../InputFiles/$i.pdb type pdb first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+
+  mol showrep top 0 off
+  mol representation NewCartoon 0.60 10.0 3.0 0
+  mol color ColorID $c
+  mol material AOChalky
+  mol addrep top
+
+  mol representation Licorice 0.4 12.0 12.0 
+  mol selection {resid 107 111 and not hydrogen and chain A}
+  mol color Type
+  mol addrep top
+
+  mol representation Licorice 0.4 12.0 12.0 
+  mol selection {resname TRP and not hydrogen and chain A}
+  mol color Type
+  mol addrep top
+
+  incr c
+
+}
+
+

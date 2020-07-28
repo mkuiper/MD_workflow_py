@@ -1,0 +1,57 @@
+# VMD for LINUXAMD64, version 1.9.4a38 (October 17, 2019)
+# Hexagonal periodic boundary conditions script.  mk July 2020
+
+# This script is designed to help solvate with hexagonal boundary conditions. 
+
+# Hexagonal boundary condition can be tricky to set up. 
+# From the top it looks like this:         
+
+#     . __________ _
+#      /      | /   |
+#     /       |/    | Y
+#    /|       /     |
+#   /_|______/.    _|
+#
+#     |---X---|     
+#                   which should also have a depth Z.           
+
+# The easiest way I've found is to is simply solvate & ionize rectangular box with VMD such that 
+# Y = sqrt(3)*X/2  
+
+# Then thouroughly minimize with a script which has hexagonal axis enabled. (10,000 steps) 
+# as the X/Y dimensions should be correct, the minimization should wrap the corners to 
+# the appropriate sides to make the appropriate hexagonal shape. 
+
+#ie) 
+#  Periodic Boundary Conditions: ----------------------------------------------
+## make sure to check that the cell dimensions match your input files! 
+# cellBasisVector1    160.    0.      0.
+# cellBasisVector2     80.  138.564   0.
+# cellBasisVector3     0.     0.    250.
+# cellOrigin           0      0       0
+# wrapAll             on
+# wrapWater           on
+#
+## for hexagonal PBC:
+## v1 ( r      0      0 ) 
+## v2 ( r/2   3*0.5*r/2   0 ) 
+## v3 ( 0      0      h ) 
+#
+
+package require solvate
+set X 85 
+set Z 150
+set Y [format %.5f [expr 3**0.5 * $X / 2] ]
+
+set a "{-$X -$Y -$Z}"
+set b "{ $X  $Y  $Z}"
+
+#solvate model_temp_x.psf  model_temp_x.pdb -o solvate -s WT  -b 1.8  -minmax {{-80 -69.28203 -150} {80 69.28203 150}}
+#package require autoionize 
+#autoionize -psf solvate.psf -pdb solvate.pdb -sc 0.15
+#
+#mol new {ionized.psf} type {psf} first 0 last -1 step 1 waitfor 1
+#mol new {ionized.pdb} type {pdb} first 0 last -1 step 1 waitfor 1
+
+exit 
+
