@@ -1,22 +1,67 @@
 # VMD for LINUXAMD64, version 1.9.4a38 (October 17, 2019)
-# Log file '/flush5/kui00b/Corona_BATACE2_2020/BUILD_DIR/temptcl.vmd', created by user kui00b
+# Hexagonal periodic boundary conditions script.  mk July 2020
 
-set Name ionized
+# This script is designed to help solvate with hexagonal boundary conditions. 
 
+# Hexagonal boundary condition can be tricky to set up. 
+# From the top it looks like this:         
 
-#mol new {$Name.psf} type {psf} first 0 last -1 step 1 waitfor 1
-#mol addfile {$Name.pdb} type {pdb} first 0 last -1 step 1 waitfor 1 0
+#     . __________ _
+#      /      | /   |
+#     /       |/    | Y
+#    /|       /     |
+#   /_|______/.    _|
+#
+#     |---X---|     
+#                   which should also have a depth Z.           
+
+# The easiest way I've found is to is simply solvate & ionize rectangular box with VMD such that 
+# Y = sqrt(3)*X/2  
+
+# Then thouroughly minimize with a script which has hexagonal axis enabled. (10,000 steps) 
+# as the X/Y dimensions should be correct, the minimization should wrap the corners to 
+# the appropriate sides to make the appropriate hexagonal shape. 
+
+#ie) 
+#  Periodic Boundary Conditions: ----------------------------------------------
+## make sure to check that the cell dimensions match your input files! 
+# cellBasisVector1    160.    0.      0.
+# cellBasisVector2     80.  138.564   0.
+# cellBasisVector3     0.     0.    250.
+# cellOrigin           0      0       0
+# wrapAll             on
+# wrapWater           on
+#
+## for hexagonal PBC:
+## v1 ( r      0      0 ) 
+## v2 ( r/2   3*0.5*r/2   0 ) 
+## v3 ( 0      0      h ) 
+#
 
 package require solvate
+set X 65 
+set Z 150
+set Y [format %.5f [expr 3**0.5 * $X / 2] ]
 
-solvate model_temp_x.psf  model_temp_x.pdb -o solvate1 -s WT  -b 1.8  -minmax {{-80 -90 -100} {80 90 100}}
+# set a "{-$X -$Y -$Z}"
+# set b "{ $X  $Y  $Z}"
+
+solvate model_temp_x.psf  model_temp_x.pdb -o solvate -s WT  -b 1.8  -minmax {{-32 -32 -36} {32 32 36}}
+#solvate model_temp_x.psf  model_temp_x.pdb -o solvate1 -s WA  -b 1.8  -minmax {{-60 -60 15} {60 60 70}}
+#solvate solvate1.psf          solvate1.pdb -o solvate  -s WB  -b 1.8  -minmax {{-60 -60 -70} {60 60 -15}}
 
 package require autoionize 
+autoionize -psf solvate.psf -pdb solvate.pdb -sc 0.15 -cation POT
+#autoionize -psf ionized.psf -pdb ionized.pdb -nions {{CAL 10} {CLA 20}}
+#
+mol new {ionized.psf} type {psf} first 0 last -1 step 1 waitfor 1
+mol new {ionized.pdb} type {pdb} first 0 last -1 step 1 waitfor 1
 
-autoionize -psf solvate1.psf -pdb solvate1.pdb -nions {{SOD 389} {CLA 468} {MG 10} {POT 50}}
-
-# mv ionized.psf ../InputFiles/$Name.psf 
-# mv ionized.pdb ../InputFiles/$Name.pdb
+# to set CA atomse of protein and ligand to 1.0 for constraints while optimizing. 
+set sel2 [atomselect top {protein and name CA}]
+$sel2 set beta 1.0 
+set sel [atomselect top all]
+$sel writepdb ionized.pdb 
 
 exit 
 

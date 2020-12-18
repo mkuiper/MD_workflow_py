@@ -1,0 +1,24 @@
+# VMD for LINUXAMD64, version 1.9.4a38 (October 17, 2019)
+# Log file '/scratch1/kui00b/MOLECULES_2018/BUILD_DIR/molecule_prep2.vmd', created by user kui00b
+menu files off
+menu files on
+mol addrep 0
+display resetview
+mol new {ionized.psf} type {psf} first 0 last -1 step 1 waitfor 1
+animate style Loop
+display resetview
+mol addfile {ionized.pdb} type {pdb} first 0 last -1 step 1 waitfor 1 0
+animate style Loop
+mol addfile {opt_01.dcd} type {dcd} first 0 last -1 step 1 waitfor 1 0
+animate style Loop
+menu save off
+menu save on
+set sel0 [atomselect top all]
+$sel0 set beta 0.0
+set sel [atomselect top all frame last]
+$sel writepdb ionized.pdb 
+
+exit
+# VMD for LINUXAMD64, version 1.9.4a38 (October 17, 2019)
+# end of log file.
+

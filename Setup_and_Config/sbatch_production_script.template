@@ -46,6 +46,9 @@ if [ -f ../prejob_processing.py ];
  then python3 ../prejob_processing.py $SLURM_JOBID -production;
  else echo "No processing script" > pausejob
 fi 
+if [ ! -f local_job_details.json ];
+ echo "No local_job_details file" >> pausejob;
+fi
 
 # Prevent job from running if pausejob is present
 if [ -f pausejob ]; then 

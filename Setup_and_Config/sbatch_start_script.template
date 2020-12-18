@@ -51,6 +51,9 @@ if [ -f ../prejob_processing.py ];
  else 
       echo "No processing script" > pausejob;
 fi
+if [ ! -f local_job_details.json ];
+ echo "No local_job_details file" >> pausejob;
+fi
 
 ## prevent job from running if pausejob is present
 if [ -f pausejob ]; then exit; fi
