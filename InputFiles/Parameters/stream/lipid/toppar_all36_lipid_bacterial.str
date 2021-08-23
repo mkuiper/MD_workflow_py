@@ -5368,6 +5368,405 @@ IC  CD14   CD15  CD16  H16X       1.5333  112.96   60.23  110.39   1.1115
 IC  H16X   CD15  *CD16 H16Y       1.1115  110.39 -119.86  110.53   1.1112
 IC  H16X   CD15  *CD16 H16Z       1.1115  110.39  120.03  110.61   1.1112
 
+RESI DPPGK        1.00  ! 2,3 dipalmitoyl-D-glycero-1-Phosphatidylglycero-lysine
+!
+GROUP                   !
+ATOM N    NH3    -0.30  !
+ATOM HT1  HC      0.33  !
+ATOM HT2  HC      0.33  !
+ATOM HT3  HC      0.33  !
+ATOM CA   CT1     0.21  !
+ATOM HAC  HB1     0.10  !
+GROUP                   !
+ATOM CB   CT2    -0.18  !
+ATOM HB1  HA2     0.09  !
+ATOM HB2  HA2     0.09  !
+GROUP                   !
+ATOM CG   CT2    -0.18  !
+ATOM HG1  HA2     0.09  !
+ATOM HG2  HA2     0.09  !
+GROUP                   !
+ATOM CD   CT2    -0.18  !
+ATOM HD1  HA2     0.09  !
+ATOM HD2  HA2     0.09  !
+GROUP                   !
+ATOM CE   CT2     0.21  !       HT1 HT2 HT3
+ATOM HE1  HA2     0.05  !          \ | /                  
+ATOM HE2  HA2     0.05  !        (+) N
+ATOM NZ   NH3    -0.30  !            |   HB1 HG1 HD1 HE1    HZ1
+ATOM HZ1  HC      0.33  !            |   |   |   |   |     /   
+ATOM HZ2  HC      0.33  !        HAC-CA--CB--CG--CD--CE--NZ--HZ2
+ATOM HZ3  HC      0.33  !            |   |   |   |   |     \
+GROUP                   !            |   HB2 HG2 HD2 HE2    HZ3
+ATOM C    C       0.51  !          O=C                  
+ATOM O    O      -0.51  !            |
+GROUP                   !            |                  
+ATOM C13  CTL2   0.09   !           OC3
+ATOM H13A HAL2   0.09   !            |
+ATOM H13B HAL2   0.09   !            |
+ATOM OC3  OSL   -0.27   !     H13A--C13---H13B
+GROUP                   !            |
+ATOM C12  CTL1   0.14   !            |
+ATOM H12A HAL1   0.09   !            |
+ATOM OC2  OHL   -0.65   !     H12A--C12---OC2--HO2
+ATOM HO2  HOL    0.42   !            |
+GROUP                   !            |     alpha5
+ATOM C11  CTL2  -0.08   !            |
+ATOM H11A HAL2   0.09   !     H11A--C11---H11B
+ATOM H11B HAL2   0.09   !            |     alpha4
+ATOM P    PL     1.50   !   (-) O13  O12
+ATOM O13  O2L   -0.78   !         \ /      alpha3
+ATOM O14  O2L   -0.78   !          P (+)
+ATOM O12  OSLP  -0.57   !         / \      alpha2
+ATOM O11  OSLP  -0.57   !   (-) O14  O11
+ATOM C1   CTL2  -0.08   !            |     alpha1
+ATOM HAZ  HAL2   0.09   !       HAZ--C1---HBZ
+ATOM HBZ  HAL2   0.09   !            |     theta1
+GROUP                   !            |
+ATOM C2   CTL1   0.17   !       HS---C2--------------
+ATOM HS   HAL1   0.09   !            | beta1        |
+ATOM O21  OSL   -0.49   !       O22  O21          theta3
+ATOM C21  CL     0.90   !        \\ /  beta2        |
+ATOM O22  OBL   -0.63   !          C21              |
+ATOM C22  CTL2  -0.22   !          |   beta3        |
+ATOM H2R  HAL2   0.09   !   H2R---C22---H2S         |
+ATOM H2S  HAL2   0.09   !          |                |
+GROUP                   !          |    beta4       |
+ATOM C3   CTL2   0.08   !          |                |
+ATOM HX   HAL2   0.09   !          |           HX---C3---HY
+ATOM HY   HAL2   0.09   !          |                |   gamma1
+ATOM O31  OSL   -0.49   !          |           O32  O31
+ATOM C31  CL     0.90   !          |            \\ /    gamma2
+ATOM O32  OBL   -0.63   !          |              C31
+ATOM C32  CTL2  -0.22   !          |              |     gamma3
+ATOM H2X  HAL2   0.09   !          |        H2X---C32---H2Y
+ATOM H2Y  HAL2   0.09   !          |              |
+GROUP                   !          |              |      gamma4
+ATOM C23  CTL2  -0.18   !          |              |
+ATOM H3R  HAL2   0.09   !   H3R ---C23---H3S
+ATOM H3S  HAL2   0.09   !          |              |
+GROUP                   !
+ATOM C24  CTL2  -0.18   !          |
+ATOM H4R  HAL2   0.09   !   H4R ---C24---H4S      |
+ATOM H4S  HAL2   0.09   !          |
+GROUP                   !
+ATOM C25  CTL2  -0.18   !          |              |
+ATOM H5R  HAL2   0.09   !   H5R ---C25---H5S
+ATOM H5S  HAL2   0.09   !          |              |
+GROUP                   !
+ATOM C26  CTL2  -0.18   !          |
+ATOM H6R  HAL2   0.09   !   H6R ---C26---H6S      |
+ATOM H6S  HAL2   0.09   !          |
+GROUP                   !
+ATOM C27  CTL2  -0.18   !          |              |
+ATOM H7R  HAL2   0.09   !   H7R ---C27---H7S
+ATOM H7S  HAL2   0.09   !          |              |
+GROUP                   !
+ATOM C28  CTL2  -0.18   !          |
+ATOM H8R  HAL2   0.09   !   H8R ---C28---H8S      |
+ATOM H8S  HAL2   0.09   !          |
+GROUP                   !
+ATOM C29  CTL2  -0.18   !          |              |
+ATOM H9R  HAL2   0.09   !   H9R ---C29---H9S
+ATOM H9S  HAL2   0.09   !          |              |
+GROUP                   !
+ATOM C210 CTL2  -0.18   !          |
+ATOM H10R HAL2   0.09   !   H10R---C210--H10S     |
+ATOM H10S HAL2   0.09   !          |
+GROUP                   !
+ATOM C211 CTL2  -0.18   !          |              |
+ATOM H11R HAL2   0.09   !   H11R---C211--H11S
+ATOM H11S HAL2   0.09   !          |              |
+GROUP                   !
+ATOM C212 CTL2  -0.18   !          |
+ATOM H12R HAL2   0.09   !   H12R---C212--H12S     |
+ATOM H12S HAL2   0.09   !          |
+GROUP                   !
+ATOM C213 CTL2  -0.18   !          |              |
+ATOM H13R HAL2   0.09   !   H13R---C213--H13S
+ATOM H13S HAL2   0.09   !          |              |
+GROUP                   !
+ATOM C214 CTL2  -0.18   !          |              |
+ATOM H14R HAL2   0.09   !   H14R---C214--H14S
+ATOM H14S HAL2   0.09   !          |              |
+GROUP                   !
+ATOM C215 CTL2  -0.18   !          |              |
+ATOM H15R HAL2   0.09   !   H15R---C215--H15S
+ATOM H15S HAL2   0.09   !          |              |
+GROUP                   !
+ATOM C216 CTL3  -0.27   !          |
+ATOM H16R HAL3   0.09   !   H16R---C216--H16S     |
+ATOM H16S HAL3   0.09   !          |
+ATOM H16T HAL3   0.09   !         H16T            |
+GROUP                   !
+ATOM C33  CTL2  -0.18   !                         |
+ATOM H3X  HAL2   0.09   !                  H3X ---C33---H3Y
+ATOM H3Y  HAL2   0.09   !                         |
+GROUP                   !
+ATOM C34  CTL2  -0.18   !                         |
+ATOM H4X  HAL2   0.09   !                  H4X ---C34---H4Y
+ATOM H4Y  HAL2   0.09   !                         |
+GROUP                   !
+ATOM C35  CTL2  -0.18   !                         |
+ATOM H5X  HAL2   0.09   !                  H5X ---C35---H5Y
+ATOM H5Y  HAL2   0.09   !                         |
+GROUP                   !
+ATOM C36  CTL2  -0.18   !                         |
+ATOM H6X  HAL2   0.09   !                  H6X ---C36---H6Y
+ATOM H6Y  HAL2   0.09   !                         |
+GROUP                   !
+ATOM C37  CTL2  -0.18   !                         |
+ATOM H7X  HAL2   0.09   !                  H7X ---C37---H7Y
+ATOM H7Y  HAL2   0.09   !                         |
+GROUP                   !
+ATOM C38  CTL2  -0.18   !                         |
+ATOM H8X  HAL2   0.09   !                  H8X ---C38---H8Y
+ATOM H8Y  HAL2   0.09   !                         |
+GROUP                   !
+ATOM C39  CTL2  -0.18   !                         |
+ATOM H9X  HAL2   0.09   !                  H9X ---C39---H9Y
+ATOM H9Y  HAL2   0.09   !                         |
+GROUP                   !
+ATOM C310 CTL2  -0.18   !                         |
+ATOM H10X HAL2   0.09   !                  H10X---C310--H10Y
+ATOM H10Y HAL2   0.09   !                         |
+GROUP                   !
+ATOM C311 CTL2  -0.18   !                         |
+ATOM H11X HAL2   0.09   !                  H11X---C311--H11Y
+ATOM H11Y HAL2   0.09   !                         |
+GROUP                   !
+ATOM C312 CTL2  -0.18   !                         |
+ATOM H12X HAL2   0.09   !                  H12X---C312--H12Y
+ATOM H12Y HAL2   0.09   !                         |
+GROUP                   !
+ATOM C313 CTL2  -0.18   !                         |
+ATOM H13X HAL2   0.09   !                  H13X---C313--H13Y
+ATOM H13Y HAL2   0.09   !                         |
+GROUP                   !
+ATOM C314 CTL2  -0.18   !                         |
+ATOM H14X HAL2   0.09   !                  H14X---C314--H14Y
+ATOM H14Y HAL2   0.09   !                         |
+GROUP                   !
+ATOM C315 CTL2  -0.18   !                         |
+ATOM H15X HAL2   0.09   !                  H15X---C315--H15Y
+ATOM H15Y HAL2   0.09   !                         |
+GROUP                   !
+ATOM C316 CTL3  -0.27   !                         |
+ATOM H16X HAL3   0.09   !                  H16X---C316--H16Y
+ATOM H16Y HAL3   0.09   !                         |
+ATOM H16Z HAL3   0.09   !                         H16Z
+
+! Lys
+BOND HT1 N HT2 N HT3 N
+BOND N  CA  
+BOND CB CA   CG CB   CD CG   CE CD   NZ CE   
+BOND C  CA   
+BOND CA HAC  CB HB1  CB HB2  CG HG1   
+BOND CG HG2  CD HD1  CD HD2  CE HE1  CE HE2 
+DOUBLE   O  C   
+BOND NZ HZ1  NZ HZ2  NZ HZ3   
+! Polar Head
+BOND  C    OC3       OC3  C13       C13  H13A      C13  H13B      C13  C12
+BOND  HO2  OC2       OC2  C12       C12  H12A      C12  C11
+BOND  C11  H11A      C11  H11B      C11  O12       O11  C1
+BOND  O12  P         P    O11       P    O13       P    O14
+! Glycerol Backbone
+BOND  C1   HAZ       C1    HBZ      C1   C2        
+BOND  C2   HS        C2    C3       C2   O21
+BOND  C3   HX        C3    HY       C3   O31
+! Chain #2
+BOND  O21  C21
+BOND  C21  C22
+DOUBLE C21  O22
+BOND  C22  H2R       C22  H2S       C22  C23
+BOND  C23  H3R       C23  H3S       C23  C24
+BOND  C24  H4R       C24  H4S       C24  C25
+BOND  C25  H5R       C25  H5S       C25  C26
+BOND  C26  H6R       C26  H6S       C26  C27
+BOND  C27  H7R       C27  H7S       C27  C28
+BOND  C28  H8R       C28  H8S       C28  C29
+BOND  C29  H9R       C29  H9S       C29  C210
+BOND  C210 H10R      C210 H10S      C210 C211
+BOND  C211 H11R      C211 H11S      C211 C212
+BOND  C212 H12R      C212 H12S      C212 C213
+BOND  C213 H13R      C213 H13S      C213 C214
+BOND  C214 H14R      C214 H14S      C214 C215
+BOND  C215 H15R      C215 H15S      C215 C216
+BOND  C216 H16R      C216 H16S      C216 H16T
+! Chain #3
+BOND  O31  C31
+BOND  C31  C32
+DOUBLE  C31  O32
+BOND  C32  H2X       C32  H2Y       C32  C33
+BOND  C33  H3X       C33  H3Y       C33  C34
+BOND  C34  H4X       C34  H4Y       C34  C35
+BOND  C35  H5X       C35  H5Y       C35  C36
+BOND  C36  H6X       C36  H6Y       C36  C37
+BOND  C37  H7X       C37  H7Y       C37  C38
+BOND  C38  H8X       C38  H8Y       C38  C39
+BOND  C39  H9X       C39  H9Y       C39  C310
+BOND  C310 H10X      C310 H10Y      C310 C311
+BOND  C311 H11X      C311 H11Y      C311 C312
+BOND  C312 H12X      C312 H12Y      C312 C313
+BOND  C313 H13X      C313 H13Y      C313 C314
+BOND  C314 H14X      C314 H14Y      C314 C315
+BOND  C315 H15X      C315 H15Y      C315 C316
+BOND  C316 H16X      C316 H16Y      C316 H16Z
+
+IMPR C21 O21 C22 O22    C31 O31 C32 O32
+
+DONOR HT1 N   
+DONOR HT2 N   
+DONOR HT3 N   
+DONOR HZ1 NZ   
+DONOR HZ2 NZ   
+DONOR HZ3 NZ   
+ACCEPTOR O C   
+
+IC HT1   N     CA    C      0.0000  0.0000  180.0000  0.0000  0.0000
+IC HT2   CA    *N    HT1    0.0000  0.0000  120.0000  0.0000  0.0000
+IC HT3   CA    *N    HT2    0.0000  0.0000  120.0000  0.0000  0.0000
+IC N     C     *CA   CB     1.4504  107.29  122.23  111.36   1.5568
+IC N     C     *CA   HAC    1.4504  107.29 -116.88  107.36   1.0833
+IC N     CA    CB    CG     1.4504  111.47  180.00  115.76   1.5435
+IC CG    CA    *CB   HB1    1.5435  115.76  120.90  107.11   1.1146
+IC CG    CA    *CB   HB2    1.5435  115.76 -124.48  108.99   1.1131
+IC CA    CB    CG    CD     1.5568  115.76  180.00  113.28   1.5397
+IC CD    CB    *CG   HG1    1.5397  113.28  120.74  109.10   1.1138
+IC CD    CB    *CG   HG2    1.5397  113.28 -122.34  108.99   1.1143
+IC CB    CG    CD    CE     1.5435  113.28  180.00  112.33   1.5350
+IC CE    CG    *CD   HD1    1.5350  112.33  122.25  108.41   1.1141
+IC CE    CG    *CD   HD2    1.5350  112.33 -121.59  108.13   1.1146
+IC CG    CD    CE    NZ     1.5397  112.33  180.00  110.46   1.4604
+IC NZ    CD    *CE   HE1    1.4604  110.46  119.91  110.51   1.1128
+IC NZ    CD    *CE   HE2    1.4604  110.46 -120.02  110.57   1.1123
+IC CD    CE    NZ    HZ1    1.5350  110.46  179.92  110.02   1.0404
+IC HZ1   CE    *NZ   HZ2    1.0404  110.02  120.27  109.50   1.0402
+IC HZ1   CE    *NZ   HZ3    1.0404  110.02 -120.13  109.40   1.0401
+IC C13   C12   C11   O12    1.5516  113.86  177.39  110.94   1.4329
+IC C11   C12   C13   OC3    1.5511  111.05  170.57  112.26   1.4479
+IC OC3   C12   *C13  H13A   1.4479  112.26 -118.84  106.67   1.1132
+IC H13A  C12   *C13  H13B   1.1132  106.67 -115.02  109.54   1.1151
+IC C12   C13   OC3   C      1.5560  112.26   81.50  114.74   1.3253
+IC C13   OC3   C     CA     1.4479  114.74 -173.33  108.08   1.5332
+IC CA    OC3   *C    O      1.5332  108.08  179.61  126.15   1.2144
+IC OC3   C     CA    CB     1.3253  108.08 -177.04  113.81   1.5470
+IC C11   C13   *C12  OC2    1.5470  113.86  121.19  110.87   1.4235
+IC OC2   C13   *C12  H12A   1.4235  110.87  118.76  108.06   1.1153
+IC C13   C12   OC2   HO2    1.5516  110.87 -162.63  100.60   0.9696
+IC O12   C12   *C11  H11A   1.4329  110.94 -119.23  108.49   1.1130
+IC H11A  C12   *C11  H11B   1.1130  108.49 -115.94  109.18   1.1161
+IC C12   C11   O12   P      1.5470  110.94   93.63  120.04   1.5904
+IC C11   O12   P     O11    1.4329  120.04 -164.47  101.59   1.5892
+IC O11   O12   *P    O13    1.5892  101.59 -114.60  108.45   1.4755
+IC O11   O12   *P    O14    1.5892  101.59  115.63  108.70   1.4781
+IC O12   P     O11   C1     1.5904  101.59  -27.62  118.80   1.4303
+IC P     O11   C1    C2     1.5892  118.80 -158.81  110.93   1.5511
+IC C2    O11   *C1   HAZ    1.5511  110.93 -121.63  110.24   1.1129
+IC HAZ   O11   *C1   HBZ    1.1129  110.24 -120.25  111.14   1.1186
+IC O11   C1    C2    C3     1.4303  110.93   40.46  111.05   1.5560
+IC C3    C1    *C2   O21    1.5560  111.05  119.58  109.27   1.4407
+IC C3    C1    *C2   HS     1.5560  111.05 -118.08  109.07   1.1154
+IC C1    C2    O21   C21    1.5511  109.27   68.77  114.61   1.3180
+IC C2    O21   C21   C22    1.4407  114.61 -162.88  109.06   1.5280
+IC C22   O21   *C21  O22    1.5280  109.06  179.13  126.56   1.2166
+IC O21   C21   C22   C23    1.3180  109.06   53.17  112.18   1.5469
+IC C23   C21   *C22  H2R    1.5469  112.18 -121.75  108.04   1.1082
+IC H2R   C21   *C22  H2S    1.1082  108.04 -117.37  107.14   1.1094
+IC C1    C2    C3    O31    1.5511  111.05  170.57  112.26   1.4479
+IC O31   C2    *C3   HX     1.4479  112.26 -118.84  106.67   1.1132
+IC HX    C2    *C3   HY     1.1132  106.67 -115.02  109.54   1.1151
+IC C2    C3    O31   C31    1.5560  112.26   81.50  114.74   1.3253
+IC C3    O31   C31   C32    1.4479  114.74 -173.33  108.08   1.5332
+IC C32   O31   *C31  O32    1.5332  108.08  179.61  126.15   1.2144
+IC O31   C31   C32   C33    1.3253  108.08 -177.04  113.81   1.5470
+IC C33   C31   *C32  H2X    1.5470  113.81  120.66  106.88   1.1097
+IC H2X   C31   *C32  H2Y    1.1097  106.88  116.70  107.98   1.1088
+IC C21   C22   C23   C24    1.5280  112.18  176.06  112.34   1.5342
+IC C24   C22   *C23  H3R    1.5342  112.34 -121.17  110.08   1.1143
+IC H3R   C22   *C23  H3S    1.1143  110.08 -117.33  109.19   1.1136
+IC C22   C23   C24   C25    1.5469  112.34  172.23  113.38   1.5396
+IC C25   C23   *C24  H4R    1.5396  113.38 -121.91  109.32   1.1126
+IC H4R   C23   *C24  H4S    1.1126  109.32 -116.59  108.35   1.1133
+IC C23   C24   C25   C26    1.5342  113.38 -110.46  113.02   1.5385
+IC C26   C24   *C25  H5R    1.5385  113.02 -119.35  108.07   1.1142
+IC H5R   C24   *C25  H5S    1.1142  108.07 -116.98  110.21   1.1123
+IC C24   C25   C26   C27    1.5396  113.02   71.03  113.93   1.5386
+IC C27   C25   *C26  H6R    1.5386  113.93 -122.08  107.49   1.1113
+IC H6R   C25   *C26  H6S    1.1113  107.49 -115.96  109.74   1.1126
+IC C25   C26   C27   C28    1.5385  113.93 -147.59  113.65   1.5384
+IC C28   C26   *C27  H7R    1.5384  113.65 -122.39  108.56   1.1131
+IC H7R   C26   *C27  H7S    1.1131  108.56 -116.03  110.04   1.1090
+IC C26   C27   C28   C29    1.5386  113.65   71.07  114.17   1.5413
+IC C29   C27   *C28  H8R    1.5413  114.17 -122.30  108.62   1.1126
+IC H8R   C27   *C28  H8S    1.1126  108.62 -116.50  108.97   1.1126
+IC C27   C28   C29   C210   1.5384  114.17   63.16  115.43   1.5418
+IC C210  C28   *C29  H9R    1.5418  115.43  121.54  108.37   1.1128
+IC H9R   C28   *C29  H9S    1.1128  108.37  116.25  109.17   1.1117
+IC C28   C29   C210  C211   1.5413  115.43   63.77  114.21   1.5383
+IC C211  C29   *C21  H10R   5.7002   24.22   61.29   19.31   5.4148
+IC H10R  C29   *C21  H10S   5.4148   19.31  -45.05    6.15   4.1763
+IC C29   C210  C211  C212   1.5418  114.21 -100.84  113.98   1.5369
+IC C212  C210  *C21  H11R   5.2218   28.62   50.44   22.04   5.7557
+IC H11R  C210  *C21  H11S   5.7557   22.04  -37.21   14.50   6.7798
+IC C210  C211  C212  C213   1.5383  113.98 -177.16  114.12   1.5399
+IC C213  C211  *C21  H12R   6.2275   24.49  -10.79   18.11   4.1637
+IC H12R  C211  *C21  H12S   4.1637   18.11  -40.97   22.34   5.4886
+IC C211  C212  C213  C214   1.5369  114.12  -62.39  113.99   1.5381
+IC C214  C212  *C21  H13R   7.6683    7.46   34.04   19.37   6.2621
+IC H13R  C212  *C21  H13S   6.2621   19.37  -51.02   19.78   6.1349
+IC C212  C213  C214  C215   1.5399  113.99  100.10  113.99   1.5357
+IC C215  C213  *C21  H14R   8.5188    9.30  155.53    5.65   8.2786
+IC H14R  C213  *C21  H14S   8.2786    5.65  -74.03   12.62   7.7720
+IC C213  C214  C215  C216   1.5381  113.99 -177.56  112.99   1.5303
+IC C216  C214  *C21  H15R   9.9341    7.78  -54.23   13.51   8.6789
+IC H15R  C214  *C21  H15S   8.6789   13.51   47.42   15.44   8.1446
+IC C214  C215  C216  H16R   1.5357  112.99   60.73  110.35   1.1114
+IC H16R  C215  *C21  H16S  10.0022    9.94  -71.95    4.09  10.5937
+IC H16R  C215  *C21  H16T  10.0022    9.94   70.49    6.25  10.4440
+IC C31   C32   C33   C34    1.5332  113.81  -69.76  113.48   1.5379
+IC C34   C32   *C33  H3X    1.5379  113.48 -120.04  107.81   1.1134
+IC H3X   C32   *C33  H3Y    1.1134  107.81 -116.77  110.11   1.1132
+IC C32   C33   C34   C35    1.5470  113.48 -174.70  113.05   1.5388
+IC C35   C33   *C34  H4X    1.5388  113.05 -119.75  108.33   1.1150
+IC H4X   C33   *C34  H4Y    1.1150  108.33 -117.08  109.89   1.1110
+IC C33   C34   C35   C36    1.5379  113.05   78.95  113.54   1.5371
+IC C36   C34   *C35  H5X    1.5371  113.54 -121.79  108.12   1.1132
+IC H5X   C34   *C35  H5Y    1.1132  108.12 -116.65  109.34   1.1131
+IC C34   C35   C36   C37    1.5388  113.54   79.35  112.97   1.5380
+IC C37   C35   *C36  H6X    1.5380  112.97 -122.73  108.56   1.1104
+IC H6X   C35   *C36  H6Y    1.1104  108.56 -116.99  109.20   1.1133
+IC C35   C36   C37   C38    1.5371  112.97 -169.78  113.78   1.5391
+IC C38   C36   *C37  H7X    1.5391  113.78 -121.49  108.40   1.1136
+IC H7X   C36   *C37  H7Y    1.1136  108.40 -116.03  109.71   1.1109
+IC C36   C37   C38   C39    1.5380  113.78   63.43  114.72   1.5407
+IC C39   C37   *C38  H8X    1.5407  114.72 -122.16  108.70   1.1128
+IC H8X   C37   *C38  H8Y    1.1128  108.70 -116.71  108.42   1.1134
+IC C37   C38   C39   C310   1.5391  114.72   57.40  113.74   1.5377
+IC C310  C38   *C39  H9X    1.5377  113.74  121.23  108.61   1.1128
+IC H9X   C38   *C39  H9Y    1.1128  108.61  116.24  109.15   1.1087
+IC C38   C39   C310  C311   1.5407  113.74  177.22  114.38   1.5396
+IC C311  C39   *C31  H10X   6.7302   21.15  -51.66   12.25   5.4275
+IC H10X  C39   *C31  H10Y   5.4275   12.25   -2.84   17.29   7.1341
+IC C39   C310  C311  C312   1.5377  114.38   98.32  114.24   1.5401
+IC C312  C310  *C31  H11X   5.7098   23.45    8.45   15.08   7.6585
+IC H11X  C310  *C31  H11Y   7.6585   15.08  -47.85   17.43   7.1025
+IC C310  C311  C312  C313   1.5396  114.24  -72.50  116.35   1.5390
+IC C313  C311  *C31  H12X   5.6215   22.21  -78.42    9.29   4.7736
+IC H12X  C311  *C31  H12Y   4.7736    9.29   19.65   18.78   6.2615
+IC C311  C312  C313  C314   1.5401  116.35  -73.79  114.08   1.5401
+IC C314  C312  *C31  H13X   7.0335   20.16   38.94   22.48   5.4367
+IC H13X  C312  *C31  H13Y   5.4367   22.48  -52.01   21.71   4.9428
+IC C312  C313  C314  C315   1.5390  114.08   98.09  114.78   1.5367
+IC C315  C313  *C31  H14X   8.0336    8.09  -74.65   14.63   7.0784
+IC H14X  C313  *C31  H14Y   7.0784   14.63  -65.72    8.61   7.5607
+IC C313  C314  C315  C316   1.5401  114.78   70.46  113.76   1.5324
+IC C316  C314  *C31  H15X   7.9760   18.37   14.50    5.89   9.0340
+IC H15X  C314  *C31  H15Y   9.0340    5.89   40.94   14.15   8.1542
+IC C314  C315  C316  H16X   1.5367  113.76  178.55  110.62   1.1105
+IC H16X  C315  *C31  H16Y   8.9048   13.62  -43.76   15.54   8.1029
+IC H16X  C315  *C31  H16Z   8.9048   13.62    0.25   15.11   7.1178
+
 end
 
 read para card flex @app
@@ -5387,7 +5786,8 @@ CTL2 CG3RC1 222.500     1.530   ! alkanes, 3/92
 CTL3  CG3RC1  222.50     1.5380 ! BAM1, bile acid steroidal C-D ring, cacha, 02/08, from genFF
 CTL3  CG3C31  240.00     1.5010 ! PROTMOD cyclopropane, taken from CG321 CG3C31, genFF
 CTL2  CG3C31  240.00     1.5010 ! PROTMOD cyclopropane, from genFF
-!
+! for DPPGK
+OSL   C     150.0       1.334   ! methyl acetate
 
 ANGLES
 !
@@ -5414,6 +5814,10 @@ CTL3  CG3RC1 HGA1     34.50    110.10   22.53 2.179  ! CARBOCY carbocyclic sugar
 CTL3  CG3RC1 CG3C31   53.35    111.00    8.0   2.561 ! CARBOCY carbocyclic sugars, taken from CG321-CG3RC1-HGA1, from GenFF
 CG3C31 CTL2   HAL2     26.50    110.10   22.53   2.17900 ! PROT alkane update, adm jr., 3/2/92, from genFF
 CTL1 CTL2 CL      52.0     108.00   ! best guess made by jbl for PhPC
+! for DPPGK
+OSL  C    O       90.0     125.9    160.0   2.2576 ! acetic acid
+OSL  C    CT1     55.0     109.0    20.00   2.3260 ! methyl acetate
+C    OSL  CTL2    40.0     109.6     30.0   2.2651 ! methyl acetate
 
 
 !
@@ -5452,6 +5856,19 @@ CG3RC1 CG3RC1 CTL2 CTL2     0.58  3     47.6 !ring, KRP
 CG3RC1 CTL2 CTL2 CTL2     0.16  1    180.0 ! ring, KRP
 CG3RC1 CTL2 CTL2 CTL2     0.01  2    180.0 ! ring, KRP
 CG3RC1 CTL2 CTL2 CTL2     0.17  3    180.0 ! ring, KRP
+! for DPPGK
+OSL  C    CT1  NH3       0.0500  6   180.00 ! /scrat , from OG302 CG2O2 CG311 CG321, PENALTY= 46
+OSL  C    CT1  CT2       0.0500  6   180.00 ! /scrat , from OG302 CG2O2 CG311 CG321, PENALTY= 1
+OSL  C    CT1  HB1       0.0000  1     0.00 ! /scrat , from OG302 CG2O2 CG311 HGA1, PENALTY= 1
+O    C    OSL  CTL2      0.9650  1   180.00 ! LIPID methyl acetate
+CTL2 CTL2 OSL  C         0.7000  1   180.00 ! LIPID ethyl acetate, 12/92
+HAL2 CTL2 OSL  C         0.0000  3     0.00 ! LIPID phosphate, new NA, 4/98, adm jr.
+CT1  C    OSL  CTL2      2.0500  2   180.00 ! /scrat , from CG321 CG2O2 OG302 CG321, PENALTY= 17
+
+IMPROPERS
+! for DPPGK
+C    CT1  O    OSL      62.0000  0     0.00 ! /scrat , from CG2O2 CG311 OG2D1 OG302, PENALTY= 0.1
+C    CTL2 O    OSL      62.0000  0     0.00 ! PROT & LIPID WILDCARD; from MAS, methyl acetate; xxwy
 
 NONBONDED nbxmod  5 atom cdiel fshift vatom vdistance vswitch -
 cutnb 14.0 ctofnb 12.0 ctonnb 10.0 eps 1.0 e14fac 1.0 wmin 1.5
@@ -5470,5 +5887,4 @@ cutnb 14.0 ctofnb 12.0 ctonnb 10.0 eps 1.0 e14fac 1.0 wmin 1.5
 end
 
 return
-
 

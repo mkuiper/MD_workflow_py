@@ -357,12 +357,18 @@ H    NH2  CT1   50.000    111.00              ! From LSN HC-NH2-CT2
 H    NH2  CT2   50.000    111.00              ! From LSN HC-NH2-CT2, Neutral Gly Nterminus
 NH2  CT1  CT1   67.700    110.00              ! From LSN NH2-CT2-CT2
 NH2  CT1  CT2   67.700    110.00              ! From LSN NH2-CT2-CT2
+NH2  CT1  CT2A  67.700    110.00              ! From LSN NH2-CT2-CT2
 NH2  CT1  CT3   67.700    110.00              ! From LSN NH2-CT2-CT2
 CT1  CD   OH1   55.000    110.50              ! From ASPP CT2-CD-OH1
 CT3  CT1  CD    52.000    108.00              ! Ala cter
 NH2  CT1  HB1   38.000    109.50   50.00   2.1400 ! From LSN NH2-CT2-HA
 NH2  CT1  C     50.000    107.00              ! From ALA Dipep. NH1-CT2-C
+NH2  CT1  CD    50.000    107.00              ! From ALA Dipep. NH1-CT2-C
 NH2  CT2  C     50.000    107.00              ! From ALA Dipep. NH1-CT2-C, Neutral Gly Nterminus
+!NH2  CT2  CD    50.000    107.00              ! From ALA Dipep. NH1-CT2-C, Neutral Gly Nterminus, repeat, see below
+HB2  CT1  HB2   36.000    115.00              ! from HB2  CT2  HB2
+HB2  CT1  CD    50.000    109.50              ! from HB2  CT2  CD
+NH1  CT1  HB2   48.000    108.00              ! from NH1  CT2  HB2
 
 !
 !Indole/Tryptophan
@@ -1026,18 +1032,30 @@ DIHEDRALS
 !
 !atom types             Kchi    n   delta
 !
-!Neutral N terminus
-NH2  CT1  C    O        0.0000  1     0.00   
+!Neutral N and C termini
+NH2  CT1  C    O        0.0000  1     0.00
 NH2  CT2  C    O        0.0000  1     0.00   ! Neutral Gly Nterminus
 NH2  CT1  C    NH1      0.0000  1     0.00
 NH2  CT2  C    NH1      0.0000  1     0.00   ! Neutral Gly Nterminus
+NH2  CT2  C    N        0.0000  1     0.00   ! NNEU
+NH2  CT1  CT2A HA2      0.2000  3     0.00 ! From X    CT1  CT2  X
 H    NH2  CT1  CT1      0.0000  1     0.00
 H    NH2  CT1  C        0.0000  1     0.00
+H    NH2  CT1  CD       0.0000  1     0.00
 H    NH2  CT2  C        0.0000  1     0.00   ! Neutral Gly Nterminus
+H    NH2  CT2  CD       0.0000  1     0.00   ! Neutral Gly Nterminus
 H    NH2  CT1  HB1      0.1100  3     0.00   ! From LSN HC-NH2-CT2-HA
 H    NH2  CT2  HB2      0.1100  3     0.00   ! From LSN HC-NH2-CT2-HA, Neutral Gly Nterminus
 H    NH2  CT1  CT2      0.1100  3     0.00   ! From LSN HC-NH2-CT2-CT2
+H    NH2  CT1  CT2A     0.1100  3     0.00   ! From LSN HC-NH2-CT2-CT2
 H    NH2  CT1  CT3      0.1100  3     0.00   ! From LSN HC-NH2-CT2-CT2
+CC   CT2A CT1  NH2      0.6800  1   180.00   ! From CC   CT2A CT1  NH1
+CC   CT2A CT1  NH2      0.1000  2   180.00
+CC   CT2A CT1  NH2      0.3800  3     0.00
+CD   CT1  CT2A CC       1.6100  1   180.00   ! From C    CT1  CT2A CC
+CD   CT1  CT2A CC       1.2900  2   180.00
+CD   CT1  CT2A CC       0.5900  3   180.00
+
 !Indole/Tryptophan
 CAI  CA   CA   CAI      3.1000  2   180.00 ! from CA CA CA CA
 CA   CPT  CPT  CA       3.0000  2   180.00 ! atm, methylindole, 1/17/04	

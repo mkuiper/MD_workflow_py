@@ -1475,5 +1475,3 @@ toppar_all36_prot_modify_res.str added to par_all36_cgenff.str
 
 6) Drude force field: update to drude_toppar_2019.tgz
 
-7) Lipids: missing IMROPER C13 C12 O13B O13A for all the serine-based
-lipids in toppar_all36_lipid_miscellaneous.str was added.

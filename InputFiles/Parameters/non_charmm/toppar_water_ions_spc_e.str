@@ -223,7 +223,7 @@ cutnb 14.0 ctofnb 12.0 ctonnb 10.0 eps 1.0 e14fac 1.0 wmin 1.5
 
 !SPC/E
 HT     0.000000  -0.000001     0.0001   !SPC(/E) HYDROGEN PARAMETERS
-OT     0.000000  -0.15529      1.762827 !SPC(/E) OXYGEN PARAMETERS
+OT     0.000000  -0.15529      1.7766   !SPC(/E) OXYGEN PARAMETERS
 
 !for hydroxide
 OX     0.000000  -0.120000     1.700000 ! ALLOW   POL ION

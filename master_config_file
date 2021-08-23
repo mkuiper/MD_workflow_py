@@ -8,7 +8,7 @@
 "TaskPerNode"  : "28",
 "GPUsPerNode"  : "1",
 
-"ModuleFile"   : "namd/2.14b2-ibverbs-smp-cuda",
+"ModuleFile"   : "namd/2.14-verbs-smp-cuda",
 "MPIModule"    : "blank",
 "PsfFileName"  : "ChangeMe.psf",
 "PdbFileName"  : "ChangeMe.pdb",

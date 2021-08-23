@@ -1571,7 +1571,7 @@ IC C NT  CR  HR1    0.00   0.00  180.00   0.00 0.00
 IC C NT  CR  HR2    0.00   0.00   60.00   0.00 0.00
 IC C NT  CR  HR3    0.00   0.00  300.00   0.00 0.00
 
-RESI TP2         1.00 ! prolineamide, R. Dunbrack
+RESI TP2Z        1.00 ! prolineamide, R. Dunbrack, previously TP2
 ATOM N    NP    -0.07 !
 ATOM HN1  HC     0.24 !
 ATOM HN2  HC     0.24 !
