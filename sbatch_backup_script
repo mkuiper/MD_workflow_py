@@ -1,0 +1,24 @@
+#!/bin/bash
+##  sbatch script to backup directories           Aug 2021  MKuiper
+
+#SBATCH --nodes=1
+#SBATCH --time=12:0:0
+#SBATCH --tasks-per-node=4
+
+# clean up git files if present. 
+# rm -rf .git
+# find . -name .gitkeep -type f -delete
+
+dir="directory name -change me"
+
+TODAY="$(date +%d-%m-%Y)"
+
+# Create a local copy of the directory:
+tar -zcvf $dir.$TODAY.tar.gz  $dir
+
+# Move tar archive to store dir.
+mv $dir.$TODAY.tar.gz  $STOREDIR/
+
+#--------------------------------------------------------------------------------
+
+ 
