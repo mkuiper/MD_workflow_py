@@ -200,7 +200,12 @@ Have included the useful program Packmol in the BUILD directory, great for packi
 Please go to this page to cite:
 qm.unicamp.br/packmol/citation.shtml
 
+Helper scripts: 
+Forget what jobs was running in which directory?  Under /Analysis there is a job_reminder.sh script which you can edit 
+to point to your job directories. This will descend into each job and pull out the .psf input file. 
 
+sbatch_backup_script  - edit this script and run as a sbatch job to backup current folder 
+to the $STOREDIR (Bracewell specific) 
 
 
 To cleanup .git related files you may use:

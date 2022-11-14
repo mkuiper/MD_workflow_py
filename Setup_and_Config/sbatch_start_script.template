@@ -16,6 +16,8 @@
 #SBATCH --tasks-per-node=X
 #SBATCH --gres gpu:X
 
+#SBATCH -A O2D_Account
+
 optimize_script=X      
 
 module load openmpi
